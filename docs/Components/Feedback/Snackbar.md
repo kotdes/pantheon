@@ -21,13 +21,13 @@ scope:Snackbar({
 		print("Restored")
 	end,
 	Dismissible = true, -- (1)!
-	OnDismiss = function()
+	OnClose = function()
 		print("Closed")
 	end,
 })
 ```
 
-1.  `Dismissible` adds a close button at the end. The snackbar does not remove itself, so remove it in `OnDismiss`. [SnackbarHost](./SnackbarHost.md) removes its messages for you.
+1.  `Dismissible` adds a close button at the end. The snackbar does not remove itself, so remove it in `OnClose`. [SnackbarHost](./SnackbarHost.md) removes its messages for you.
 
 ## Layout
 

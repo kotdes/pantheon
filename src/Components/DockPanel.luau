@@ -140,8 +140,8 @@ return function(scope: Types.Scope, props: Types.DockPanelProps): Instance
 				end),
 				[OnEvent("Activated")] = function()
 					selected:set(tab.Id)
-					if props.OnTabChanged then
-						props.OnTabChanged(tab.Id)
+					if props.OnChanged then
+						props.OnChanged(tab.Id)
 					end
 				end,
 				[Children] = scope:New("UIPadding")({

@@ -38,15 +38,14 @@ scope:MenuSection({
 | `Items` | `{ any }` | :x: | - | Rows of the group. See [MenuButton](./MenuButton.md). Use `Children` to compose rows yourself. |
 | `Children` | `any` | :x: | - | Rows and other content. |
 | `Collapsible` | `boolean` | :x: | `false` | Let the user collapse the group by pressing the title. |
-| `DefaultExpanded` | `boolean` | :x: | `true` | Whether a collapsible group starts open. |
-| `Expanded` | `UsedAs<boolean>` | :x: | - | Whether the group is open. Follows the state you pass. |
+| `Expanded` | `UsedAs<boolean>` | :x: | `true` | Whether the group is open. A plain boolean is the starting state. Pass a `Value` to control it. |
 | `Compact` | `boolean` | :x: | `true` | Use the 40 px rows. Set `false` for the taller 44 px rows. |
 
 ## Callbacks
 
 | Name | Description |
 | ---- | ----------- |
-| `OnExpandedChanged: (boolean) -> ()` | Runs with the new state when the group opens or closes. |
+| `OnChanged: (boolean) -> ()` | Runs with the new state when the group opens or closes. |
 | `OnClose: () -> ()` | Passed to the rows so that pressing one closes the menu. |
 
 ## See also

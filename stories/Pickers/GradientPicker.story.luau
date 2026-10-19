@@ -26,7 +26,7 @@ return StoryUtil.story(function(scope, _, ctx)
 			scope:GradientPicker({
 				LayoutOrder = 2,
 				Layer = ctx.overlayLayer,
-				OnGradientChanged = function(colors, transparency, rotation, offset)
+				OnChanged = function(colors, transparency, rotation, offset)
 					preview.Color = colors
 					preview.Transparency = transparency
 					preview.Rotation = rotation

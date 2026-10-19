@@ -13,7 +13,7 @@ return StoryUtil.story(function(scope, _, ctx)
 		Step = "1 of 3",
 		Title = "Try this first",
 		Text = "The coach mark points at a control and dims the rest.",
-		OnDismiss = function()
+		OnClose = function()
 			open:set(false)
 		end,
 	})

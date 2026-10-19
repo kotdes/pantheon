@@ -79,7 +79,7 @@ The host is mounted on `Layer`, or on a layer set with `Layer.Provide` or `Layer
 | `Leading` | `Instance` or `(scope, dismiss) -> Instance` | Element before the message. |
 | `Trailing` | `Instance` or `(scope, dismiss) -> Instance` | Element after the action button. |
 | `Dismissible` | `boolean?` | Show a close button. |
-| `OnDismiss` | `() -> ()` | Runs when the user presses the close button. |
+| `OnClose` | `() -> ()` | Runs when the user presses the close button. |
 
 ## See also
 

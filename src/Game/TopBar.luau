@@ -15,7 +15,7 @@ export type TopBarItem = {
 	Text: string?,
 	Badge: any?, -- number | State<number>
 	Active: any?, -- boolean | State<boolean>
-	OnActivated: (() -> ())?,
+	OnClick: (() -> ())?,
 }
 
 export type TopBarProps = {
@@ -70,8 +70,8 @@ return function(scope: any, props: TopBarProps): Instance
 			BackgroundTransparency = fade,
 			BorderSizePixel = 0,
 			[OnEvent("Activated")] = function()
-				if item.OnActivated then
-					item.OnActivated()
+				if item.OnClick then
+					item.OnClick()
 				end
 			end,
 			[OnEvent("MouseEnter")] = function()

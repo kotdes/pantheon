@@ -684,7 +684,7 @@ local function rebuild()
 			scope:GradientPicker({
 				LayoutOrder = 6,
 				Layer = overlayLayer,
-				OnGradientChanged = function(
+				OnChanged = function(
 					colors: ColorSequence,
 					transparency: NumberSequence,
 					rotation: number,
@@ -883,7 +883,7 @@ local function rebuild()
 			OnClose = function()
 				drawerOpen:set(false)
 			end,
-			InitialPage = "root",
+			RootPage = "root",
 			Sections = {
 				{
 					Items = {
@@ -896,7 +896,7 @@ local function rebuild()
 					Title = "Account",
 					Icon = "user",
 					Collapsible = true,
-					DefaultExpanded = true,
+					Expanded = true,
 					Items = {
 						{ Text = "Profile", Leading = "circle-user", OnClick = close },
 						{

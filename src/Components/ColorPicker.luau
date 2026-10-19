@@ -98,9 +98,6 @@ return function(scope: Types.Scope, props: Types.ColorPickerProps): Instance
 		if props.OnAlphaChanged then
 			props.OnAlphaChanged(peek(alpha))
 		end
-		if props.OnChange then
-			props.OnChange(current, peek(alpha))
-		end
 	end
 
 	--- Grey has no hue and black has no saturation, so keep the previous values.

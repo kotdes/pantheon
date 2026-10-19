@@ -93,8 +93,8 @@ return function(scope: Types.Scope, props: Types.SnackbarProps): Instance
 			BackgroundTransparency = 1,
 			Size = UDim2.fromOffset(28, 28),
 			[OnEvent("Activated")] = function()
-				if props.OnDismiss then
-					props.OnDismiss()
+				if props.OnClose then
+					props.OnClose()
 				end
 			end,
 			[Children] = {

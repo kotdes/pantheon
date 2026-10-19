@@ -47,7 +47,7 @@ local function rebuild()
 			Inset = 4,
 			CornerRadius = theme.Metrics.RadiusPanel - 4,
 			OnClose = close,
-			InitialPage = "root",
+			RootPage = "root",
 			Sections = {
 				{
 					Items = {},

@@ -30,7 +30,7 @@ Game.TopBar(scope, {
 			Image = "rbxassetid://0", -- (1)!
 			Badge = unread,
 			Active = chatOpen,
-			OnActivated = function()
+			OnClick = function()
 				chatOpen:set(not peek(chatOpen))
 			end,
 		},
@@ -50,7 +50,7 @@ Game.TopBar(scope, {
 | `Text` | `string?` | Text shown when there is no image. |
 | `Badge` | `number` or `State<number>` | Number in the red marker on the corner. A value of `0` hides the marker. |
 | `Active` | `boolean` or `State<boolean>` | Highlights the button, for example while the panel it opens is shown. |
-| `OnActivated` | `() -> ()` | Runs when the user presses the button. |
+| `OnClick` | `() -> ()` | Runs when the user presses the button. |
 
 ## Properties
 

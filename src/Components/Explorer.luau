@@ -128,7 +128,7 @@ return function(scope: Types.Scope, props: Types.ExplorerProps): Instance
 	local scrolled = 0
 	local viewHeight = 240
 
-	if props.DefaultExpanded ~= false then
+	if props.ExpandRoots ~= false then
 		local first = {}
 		for _, root in roots do
 			first[root] = true

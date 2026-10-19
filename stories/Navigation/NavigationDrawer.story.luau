@@ -16,7 +16,7 @@ return StoryUtil.story(function(scope, _, ctx)
 		Inset = 4,
 		CornerRadius = ctx.theme.Metrics.RadiusPanel + 4,
 		OnClose = close,
-		InitialPage = "root",
+		RootPage = "root",
 		Sections = {
 			{
 				Items = {
@@ -29,7 +29,7 @@ return StoryUtil.story(function(scope, _, ctx)
 				Title = "Account",
 				Icon = "user",
 				Collapsible = true,
-				DefaultExpanded = true,
+				Expanded = true,
 				Items = {
 					{ Text = "Profile", Leading = "circle-user", OnClick = close },
 					{

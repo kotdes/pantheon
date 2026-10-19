@@ -19,7 +19,7 @@ return StoryUtil.story(function(scope, _, ctx)
 		Open = open,
 		OnClose = close,
 		MaxHeight = 280,
-		InitialPage = "root",
+		RootPage = "root",
 		Children = {
 			scope:MenuPage({
 				Id = "root",
@@ -55,7 +55,7 @@ return StoryUtil.story(function(scope, _, ctx)
 						Title = "Edit",
 						Icon = "pencil",
 						Collapsible = true,
-						DefaultExpanded = true,
+						Expanded = true,
 						LayoutOrder = 2,
 						Children = {
 							scope:MenuButton({

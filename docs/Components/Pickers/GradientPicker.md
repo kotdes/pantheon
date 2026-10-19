@@ -17,7 +17,7 @@ local preview = scope:New("UIGradient")({})
 
 scope:GradientPicker({
 	Layer = overlayLayer, -- (1)!
-	OnGradientChanged = function(colors, transparency, rotation, offset)
+	OnChanged = function(colors, transparency, rotation, offset)
 		preview.Color = colors
 		preview.Transparency = transparency
 		preview.Rotation = rotation
@@ -42,7 +42,7 @@ Under the editor, on a darker fill with no gap between them, is a plain [ColorPi
 
 ## Output
 
-`OnGradientChanged` is called with values that can be assigned straight to a `UIGradient`: a `ColorSequence` for `Color`, a `NumberSequence` for `Transparency`, a number for `Rotation` and a `Vector2` for `Offset`. It is called once when the picker is created, so a preview is right before the first edit.
+`OnChanged` is called with values that can be assigned straight to a `UIGradient`: a `ColorSequence` for `Color`, a `NumberSequence` for `Transparency`, a number for `Rotation` and a `Vector2` for `Offset`. It is called once when the picker is created, so a preview is right before the first edit.
 
 ## Properties
 
@@ -68,7 +68,7 @@ Under the editor, on a darker fill with no gap between them, is a plain [ColorPi
 
 | Name | Description |
 | ---- | ----------- |
-| `OnGradientChanged: (ColorSequence, NumberSequence, number, Vector2) -> ()` | Runs with the colours, transparency, rotation and offset when a stop is added, moved, recoloured or removed, or when the rotation, offset or alpha changes. |
+| `OnChanged: (ColorSequence, NumberSequence, number, Vector2) -> ()` | Runs with the colours, transparency, rotation and offset when a stop is added, moved, recoloured or removed, or when the rotation, offset or alpha changes. |
 
 ## See also
 

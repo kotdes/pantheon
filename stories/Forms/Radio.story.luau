@@ -6,7 +6,7 @@ return StoryUtil.story(function(scope)
 	return scope:Radio({
 		Label = "Option",
 		Checked = checked,
-		OnActivated = function()
+		OnClick = function()
 			checked:set(not StoryUtil.Fusion.peek(checked))
 		end,
 	})

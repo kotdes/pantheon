@@ -20,7 +20,7 @@ local function resolveExpanded(
 		local always = scope:Value(true)
 		return always, function() end
 	end
-	if props.Expanded ~= nil then
+	if typeof(props.Expanded) == "table" then
 		local expandedRef = props.Expanded
 		local computed = scope:Computed(function(use)
 			return (if typeof(expandedRef) == "table" then use(expandedRef) else expandedRef)
@@ -30,17 +30,17 @@ local function resolveExpanded(
 			if typeof(expandedRef) == "table" and (expandedRef :: any).set then
 				(expandedRef :: any):set(nextValue)
 			end
-			if props.OnExpandedChanged then
-				props.OnExpandedChanged(nextValue)
+			if props.OnChanged then
+				props.OnChanged(nextValue)
 			end
 		end
 		return computed, setExpanded
 	end
-	local expanded = scope:Value(props.DefaultExpanded ~= false)
+	local expanded = scope:Value(props.Expanded ~= false)
 	local function setExpanded(nextValue: boolean)
 		expanded:set(nextValue)
-		if props.OnExpandedChanged then
-			props.OnExpandedChanged(nextValue)
+		if props.OnChanged then
+			props.OnChanged(nextValue)
 		end
 	end
 	return expanded, setExpanded

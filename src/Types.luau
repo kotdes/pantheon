@@ -427,7 +427,7 @@ export type RadioProps = {
 	Layer: Instance?,
 	Checked: UsedAs<boolean>,
 	Label: UsedAs<string>?,
-	OnActivated: (() -> ())?,
+	OnClick: (() -> ())?,
 	Disabled: UsedAs<boolean>?,
 	[string]: any,
 }
@@ -598,7 +598,7 @@ export type CoachmarkProps = {
 	--- Action button label (default "Got it"); it also dismisses.
 	ActionText: string?,
 	OnAction: (() -> ())?,
-	OnDismiss: (() -> ())?,
+	OnClose: (() -> ())?,
 	Placement: TooltipPlacement?,
 	--- Dim everything but the target (default true).
 	Spotlight: boolean?,
@@ -683,7 +683,7 @@ export type SnackbarProps = {
 	--- Show a close button at the end.
 	Dismissible: boolean?,
 	--- Called when the close button is pressed.
-	OnDismiss: (() -> ())?,
+	OnClose: (() -> ())?,
 	--- Let the message wrap and fill the width, for a fixed-width card (the host does this).
 	Fill: boolean?,
 	[string]: any,
@@ -833,9 +833,9 @@ export type NavigationDrawerProps = {
 	--- Panel corner radius (px). Window drawers typically use `RadiusPanel + 4`.
 	CornerRadius: number?,
 	--- First MenuPage id when composing `Children`.
-	InitialPage: string?,
+	RootPage: string?,
 	Page: UsedAs<string>?,
-	OnPageChanged: ((string) -> ())?,
+	OnChanged: ((string) -> ())?,
 	--- Cap embedded menu height (px). Omit to fill.
 	MaxHeight: number?,
 	[string]: any,
@@ -1016,11 +1016,10 @@ export type MenuSectionProps = {
 	Children: any?,
 	--- Category header can collapse/expand its items.
 	Collapsible: boolean?,
-	--- Initial open state when collapsible (default true).
-	DefaultExpanded: boolean?,
-	--- Controlled expanded state.
+	--- Whether a collapsible group is open (default true). A plain boolean is the starting
+	--- state; pass a Value to control it.
 	Expanded: UsedAs<boolean>?,
-	OnExpandedChanged: ((boolean) -> ())?,
+	OnChanged: ((boolean) -> ())?,
 	Compact: boolean?,
 	OnClose: (() -> ())?,
 	[string]: any,
@@ -1068,10 +1067,10 @@ export type MenuProps = {
 	--- When true, skip Layer.mount. The parent owns layering (AvatarMenu, Popover).
 	Embedded: boolean?,
 	--- First MenuPage id (default: first page child).
-	InitialPage: string?,
+	RootPage: string?,
 	--- Controlled page id; Menu pushes/pops to match.
 	Page: UsedAs<string>?,
-	OnPageChanged: ((string) -> ())?,
+	OnChanged: ((string) -> ())?,
 	[string]: any,
 }
 
@@ -1169,8 +1168,6 @@ export type ColorPickerProps = {
 	--- Opacity 0–1 (default 1). Pass a Value to keep it controlled.
 	Alpha: UsedAs<number>?,
 	OnAlphaChanged: ((number) -> ())?,
-	--- Colour and opacity together.
-	OnChange: ((Color3, number) -> ())?,
 	--- Show the alpha slider (default true).
 	ShowAlpha: boolean?,
 	--- Tabs, in order: "Grid" (swatches), "Spectrum" (saturation/value + hue) and "Sliders".
@@ -1210,7 +1207,7 @@ export type GradientPickerProps = {
 	ShowAlpha: boolean?,
 	--- Called as stops are added, dragged, recoloured or removed. Feed straight into a
 	--- UIGradient's Color / Transparency / Rotation / Offset.
-	OnGradientChanged: ((ColorSequence, NumberSequence, number, Vector2) -> ())?,
+	OnChanged: ((ColorSequence, NumberSequence, number, Vector2) -> ())?,
 	--- Passed on to the node ColorPicker.
 	Modes: { string }?,
 	Models: { string }?,
@@ -1563,7 +1560,7 @@ export type DockPanelProps = {
 	Actions: { Instance }?,
 	--- Shows a close button that calls this.
 	OnClose: (() -> ())?,
-	OnTabChanged: ((id: string) -> ())?,
+	OnChanged: ((id: string) -> ())?,
 	[string]: any,
 }
 
@@ -1672,7 +1669,7 @@ export type ExplorerProps = {
 	--- The selected instances. A `Value` is followed and set when the user selects.
 	Selected: UsedAs<{ Instance }>?,
 	--- Open the roots at first (default true).
-	DefaultExpanded: boolean?,
+	ExpandRoots: boolean?,
 	--- Lucide icon for an instance (default: by class).
 	Icon: ((instance: Instance) -> string)?,
 	--- Height of a row in px (default 24).

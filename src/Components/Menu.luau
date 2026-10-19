@@ -95,9 +95,8 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 					Items = section.Items,
 					Children = section.Children,
 					Collapsible = section.Collapsible == true,
-					DefaultExpanded = section.DefaultExpanded,
 					Expanded = section.Expanded,
-					OnExpandedChanged = section.OnExpandedChanged,
+					OnChanged = section.OnChanged,
 					Compact = if section.Compact ~= nil then section.Compact else compact,
 					OnClose = props.OnClose,
 					LayoutOrder = sectionIndex,
@@ -175,7 +174,7 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 		end
 
 		if #listKids > 0 then
-			local rootId = props.InitialPage or pageOrder[1] or "root"
+			local rootId = props.RootPage or pageOrder[1] or "root"
 			if not pageById[rootId] then
 				local implicit = scope:Frame({
 					Name = "MenuPage",
@@ -202,7 +201,7 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 			end
 		end
 
-		local initial = props.InitialPage or pageOrder[1]
+		local initial = props.RootPage or pageOrder[1]
 		local stack = scope:Value({ initial } :: { string })
 		local depth = scope:Computed(function(use)
 			return #use(stack)
@@ -223,10 +222,10 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 		end
 
 		local function emitPage()
-			if props.OnPageChanged then
+			if props.OnChanged then
 				local id = currentId()
 				if id then
-					props.OnPageChanged(id)
+					props.OnChanged(id)
 				end
 			end
 		end

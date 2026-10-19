@@ -12,7 +12,7 @@
 			Text = "Changes sync automatically, but you can save a snapshot here.",
 			Step = "1 of 3",                -- optional
 			ActionText = "Got it",
-			OnDismiss = function() ... end,
+			OnClose = function() ... end,
 		})
 
 	Mounts on `Layer` (or the ambient overlay layer) so it floats above the layout.
@@ -64,8 +64,8 @@ return function(scope: Types.Scope, props: Types.CoachmarkProps): Instance
 		if open.set then
 			open:set(false)
 		end
-		if props.OnDismiss then
-			props.OnDismiss()
+		if props.OnClose then
+			props.OnClose()
 		end
 	end
 

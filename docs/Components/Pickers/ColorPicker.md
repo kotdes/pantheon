@@ -17,8 +17,8 @@ local color = scope:Value(Color3.fromRGB(0, 105, 92))
 
 scope:ColorPicker({
 	Value = color, -- (1)!
-	OnChange = function(newColor, alpha)
-		print(newColor, alpha)
+	OnChanged = function(newColor)
+		print(newColor)
 	end,
 })
 ```
@@ -65,7 +65,6 @@ There is an alpha slider over a checkerboard on every tab. Set `ShowAlpha = fals
 | ---- | ----------- |
 | `OnChanged: (Color3) -> ()` | Runs with the colour when it changes. |
 | `OnAlphaChanged: (number) -> ()` | Runs with the alpha when it changes. |
-| `OnChange: (Color3, number) -> ()` | Runs with the colour and the alpha when either changes. |
 
 ## See also
 

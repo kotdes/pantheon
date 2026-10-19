@@ -32,7 +32,7 @@ return function(scope: Types.Scope, props: Types.RadioGroupProps): Instance
 			Label = opt.Label,
 			Disabled = disabled,
 			LayoutOrder = i,
-			OnActivated = function()
+			OnClick = function()
 				if disabled then
 					return
 				end

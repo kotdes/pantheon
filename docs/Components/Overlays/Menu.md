@@ -33,7 +33,7 @@ scope:Menu({
 
 ## Pages
 
-To build a submenu, give the menu several [MenuPage](./MenuPage.md)s as `Children`. A [MenuButton](./MenuButton.md) with a `Page` moves to that page, and the pages slide when you push or pop. `InitialPage` picks the first one. Pass a state as `Page` to control which page shows.
+To build a submenu, give the menu several [MenuPage](./MenuPage.md)s as `Children`. A [MenuButton](./MenuButton.md) with a `Page` moves to that page, and the pages slide when you push or pop. `RootPage` picks the first one. Pass a state as `Page` to control which page shows.
 
 ## Properties
 
@@ -53,7 +53,7 @@ To build a submenu, give the menu several [MenuPage](./MenuPage.md)s as `Childre
 | `CornerRadius` | `number` | :x: | `Metrics.RadiusPanel` | Corner radius of the panel in pixels. |
 | `Padding` | `number` | :x: | `4` | Padding around the list in pixels. |
 | `Embedded` | `boolean` | :x: | `false` | Do not mount on a layer. The parent places the menu, as [Popover](./Popover.md) and [AvatarMenu](./AvatarMenu.md) do. |
-| `InitialPage` | `string` | :x: | The first page | Id of the page to show first. |
+| `RootPage` | `string` | :x: | The first page | Id of the page to show first. |
 | `Page` | `UsedAs<string>` | :x: | - | Id of the page to show. The menu moves to it when it changes. |
 | `Corners` | `{ number }` | :x: | - | Radius of each corner as `{ topLeft, topRight, bottomLeft, bottomRight }`. Lets a docked panel round only some corners. |
 
@@ -62,7 +62,7 @@ To build a submenu, give the menu several [MenuPage](./MenuPage.md)s as `Childre
 | Name | Description |
 | ---- | ----------- |
 | `OnClose: () -> ()` | Runs when the user presses outside the menu or presses a row that closes it. |
-| `OnPageChanged: (string) -> ()` | Runs with the id of the page when the user moves between pages. |
+| `OnChanged: (string) -> ()` | Runs with the id of the page when the user moves between pages. |
 
 ## See also
 

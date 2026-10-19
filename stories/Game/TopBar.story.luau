@@ -25,7 +25,7 @@ return StoryUtil.story(function(scope, _, ctx)
 						Text = "…",
 						Badge = unread,
 						Active = chatOpen,
-						OnActivated = function()
+						OnClick = function()
 							chatOpen:set(not peek(chatOpen))
 							unread:set(0)
 						end,
@@ -35,7 +35,7 @@ return StoryUtil.story(function(scope, _, ctx)
 					{
 						Id = "notify",
 						Text = "!",
-						OnActivated = function()
+						OnClick = function()
 							unread:set(peek(unread) + 1)
 						end,
 					},

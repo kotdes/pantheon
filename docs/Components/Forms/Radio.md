@@ -20,7 +20,7 @@ scope:Radio({
 	Checked = scope:Computed(function(use)
 		return use(choice) == "a"
 	end),
-	OnActivated = function()
+	OnClick = function()
 		choice:set("a")
 	end,
 })
@@ -41,7 +41,7 @@ scope:Radio({
 
 | Name | Description |
 | ---- | ----------- |
-| `OnActivated: () -> ()` | Runs when the user presses the button. The component does not choose itself, so update the state you pass to `Checked`. |
+| `OnClick: () -> ()` | Runs when the user presses the button. The component does not choose itself, so update the state you pass to `Checked`. |
 
 ## See also
 
