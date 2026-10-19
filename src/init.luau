@@ -1,7 +1,8 @@
 --!strict
 --[[
-	koterahq/pantheon: Cadence/Tithe design system for Fusion + Iona.
-	Vuetify-scale component kit.
+	koterahq/pantheon | ui library for Roblox, built on Fusion and Iona.
+
+	docs: https://pantheon.7kayoh.net
 ]]
 
 local Packages = script.Parent
@@ -45,17 +46,14 @@ local Pantheon = {
 	Types = Types,
 	Layer = Layer,
 	Flags = require(script.Internal.Flags),
-	--- Inspect overlay + properties panel; needs Flags.DevTools (see DevTools/init).
+
 	DevTools = require(script.DevTools),
 	CanvasFade = require(script.Internal.CanvasFade),
 	Validators = require(script.Internal.Validators),
 	Accessibility = require(script.Internal.Accessibility),
 	Shadow = require(script.Internal.Shadow),
-	--- Fade a whole subtree by driving every descendant's transparency (no CanvasGroup).
 	GroupFade = require(script.Internal.GroupFade),
-	--- Opt-in state persistence across rebuilds (see Internal/Persist).
 	Persist = require(script.Internal.Persist),
-	--- Keyboard and gamepad focus (see Internal/Focus).
 	Focus = require(script.Internal.Focus),
 	Style = require(script.Style),
 	Color = require(script.Internal.Color),
