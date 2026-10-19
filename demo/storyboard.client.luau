@@ -472,10 +472,10 @@ local function rebuild()
 			scope:Progress({ Value = 0.55, Mode = "Determinate", LayoutOrder = 2 }),
 			scope:Progress({ Mode = "Indeterminate", LayoutOrder = 2 }),
 			scope:Progress({ Value = 0.3, Buffer = 0.65, Mode = "Buffering", LayoutOrder = 2 }),
-			scope:Spinner({ SizePx = 36, LayoutOrder = 2 }),
-			scope:Spinner({ SizePx = 48, Contained = true, LayoutOrder = 2 }),
-			scope:Spinner({ SizePx = 36, Style = "Arc", LayoutOrder = 2 }),
-			scope:Spinner({
+			scope:LoadingIndicator({ SizePx = 36, LayoutOrder = 2 }),
+			scope:LoadingIndicator({ SizePx = 48, Contained = true, LayoutOrder = 2 }),
+			scope:LoadingIndicator({ SizePx = 36, Kind = "M2Spinner", LayoutOrder = 2 }),
+			scope:LoadingIndicator({
 				SizePx = 64,
 				Shapes = {
 					"Oval",
@@ -510,10 +510,10 @@ local function rebuild()
 					Padding = 16,
 				},
 				[Children] = {
-					scope:Loader({ Kind = "Beachball", SizePx = 36 }),
-					scope:Loader({ Kind = "Dots", SizePx = 36 }),
-					scope:Loader({ Kind = "Bars", SizePx = 36 }),
-					scope:Loader({ Kind = "Ripple", SizePx = 36 }),
+					scope:LoadingIndicator({ Kind = "Beachball", SizePx = 36 }),
+					scope:LoadingIndicator({ Kind = "Dots", SizePx = 36 }),
+					scope:LoadingIndicator({ Kind = "Bars", SizePx = 36 }),
+					scope:LoadingIndicator({ Kind = "Ripple", SizePx = 36 }),
 				},
 			}),
 			scope:Frame({
@@ -527,15 +527,20 @@ local function rebuild()
 					Padding = 16,
 				},
 				[Children] = {
-					scope:Loader({ Kind = "Orbit", SizePx = 36 }),
-					scope:Loader({ Kind = "Gnome", SizePx = 36 }),
-					scope:Loader({
+					scope:LoadingIndicator({ Kind = "Orbit", SizePx = 36 }),
+					scope:LoadingIndicator({ Kind = "Gnome", SizePx = 36 }),
+					scope:LoadingIndicator({
 						Kind = "Icon",
 						Icon = "hourglass",
 						Motion = "Flip",
 						SizePx = 28,
 					}),
-					scope:Loader({ Kind = "Icon", Icon = "settings", Motion = "Spin", SizePx = 28 }),
+					scope:LoadingIndicator({
+						Kind = "Icon",
+						Icon = "settings",
+						Motion = "Spin",
+						SizePx = 28,
+					}),
 				},
 			}),
 			scope:Progress({ Variant = "Circular", Value = 0.65, SizePx = 48, LayoutOrder = 2 }),
@@ -567,7 +572,7 @@ local function rebuild()
 					Padding = 8,
 				},
 				[Children] = {
-					scope:Spinner({ SizePx = 22 }),
+					scope:LoadingIndicator({ SizePx = 22 }),
 					scope:Text({ Text = "Refreshing…", Variant = "Label" }),
 				},
 			}),

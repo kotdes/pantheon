@@ -43,5 +43,4 @@ scope:Progress({ Variant = "Circular" }) -- (1)!
 
 ## See also
 
-- [Spinner](./Spinner.md)
 - [LoadingIndicator](./LoadingIndicator.md)

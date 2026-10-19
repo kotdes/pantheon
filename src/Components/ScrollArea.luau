@@ -20,7 +20,7 @@ local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local whileActive = require(script.Parent.Parent.Internal.Follow)
 local ScrollInput = require(script.Parent.Parent.Internal.ScrollInput)
 local Icon = require(script.Parent.Icon)
-local Spinner = require(script.Parent.Spinner)
+local LoadingIndicator = require(script.Parent.LoadingIndicator)
 local P = require(script.Parent.Parent.Internal.props)
 
 local Children = Fusion.Children
@@ -1032,7 +1032,9 @@ return function(scope: Types.Scope, props: Types.ScrollAreaProps): Instance
 										return use(pullArmed) and not use(holdingState)
 									end),
 								}),
-								scope:Apply(Spinner(scope, { Theme = theme, SizePx = 20 }))({
+								scope:Apply(
+									LoadingIndicator(scope, { Theme = theme, SizePx = 20 })
+								)({
 									Visible = holdingState,
 								}),
 							},

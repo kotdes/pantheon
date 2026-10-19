@@ -22,5 +22,5 @@ Features finds out which newer Roblox UI features the engine has, so a component
 
 - [Window](../Components/Navigation/Window.md) and [Overlay](../Components/Overlays/Overlay.md) round single corners with `individualCorners`. Without it they keep square corners where they meet.
 - [ColorPicker](../Components/Pickers/ColorPicker.md) draws the hue ring with `gradientTypes`, and falls back to a square.
-- [Loader](../Components/Feedback/Loader.md), [Progress](../Components/Feedback/Progress.md) and the arcs they draw use conical gradients when they can.
+- [LoadingIndicator](../Components/Feedback/LoadingIndicator.md), [Progress](../Components/Feedback/Progress.md) and the arcs they draw use conical gradients when they can.
 - [NumberSpinner](../Components/Forms/NumberSpinner.md) blurs digits with a text shadow when `shadowText` is `true`.

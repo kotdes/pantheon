@@ -493,22 +493,17 @@ export type MultiSelectProps = {
 	[string]: any,
 }
 
-export type SpinnerProps = {
-	Theme: ThemeRef?,
-	LayoutOrder: UsedAs<number>?,
-	Size: UsedAs<UDim2>?,
-	Visible: UsedAs<boolean>?,
-	ZIndex: UsedAs<number>?,
-	Layer: Instance?,
-	SizePx: number?,
-	--- "Morph" (default) = shape-morphing LoadingIndicator; "Arc" = spinning ring arc.
-	Style: ("Morph" | "Arc")?,
-	--- Arc style only: colour the arc "erases" with. Match the surface behind the spinner.
-	Background: Color3?,
-	--- Draw the shape inside a round PrimaryContainer disc (Material 3 "contained").
-	Contained: boolean?,
-	[string]: any,
-}
+export type LoadingIndicatorKind =
+	"M3Morph"
+	| "M2Spinner"
+	| "Beachball"
+	| "Dots"
+	| "Bars"
+	| "Ripple"
+	| "Orbit"
+	| "Gnome"
+	| "Icon"
+export type LoadingIndicatorMotion = "Spin" | "Pulse" | "Bounce" | "Flip" | "Wiggle"
 
 export type LoadingIndicatorProps = {
 	Theme: ThemeRef?,
@@ -516,34 +511,22 @@ export type LoadingIndicatorProps = {
 	Size: UsedAs<UDim2>?,
 	Visible: UsedAs<boolean>?,
 	ZIndex: UsedAs<number>?,
-	--- Container diameter in px (default 48).
+	--- Which indicator to draw (default "M3Morph").
+	Kind: LoadingIndicatorKind?,
+	--- Square size in px (default 48 for M3Morph, 32 for the other kinds).
 	SizePx: number?,
-	--- Draw the shape inside a round PrimaryContainer disc (Material 3 "contained").
+	--- M3Morph: draw the shape inside a round PrimaryContainer disc (Material 3 "contained").
 	Contained: boolean?,
-	--- Shape names to cycle through (see LoadingIndicator); default is the Material 3 sequence.
+	--- M3Morph: shape names to cycle through; default is the Material 3 sequence.
 	Shapes: { string }?,
-	[string]: any,
-}
-
-export type LoaderKind = "Beachball" | "Dots" | "Bars" | "Ripple" | "Orbit" | "Gnome" | "Icon"
-export type LoaderMotion = "Spin" | "Pulse" | "Bounce" | "Flip" | "Wiggle"
-
-export type LoaderProps = {
-	Theme: ThemeRef?,
-	LayoutOrder: UsedAs<number>?,
-	Size: UsedAs<UDim2>?,
-	Visible: UsedAs<boolean>?,
-	ZIndex: UsedAs<number>?,
-	--- Which loader to draw (default "Dots").
-	Kind: LoaderKind?,
-	--- Square size in px (default 32).
-	SizePx: number?,
-	--- Static colour (default theme Primary). Ignored by Beachball, which is rainbow.
+	--- M2Spinner: colour the arc "erases" with. Match the surface behind the spinner.
+	Background: Color3?,
+	--- Static colour for Dots, Bars, Ripple, Orbit, Gnome and Icon (default theme Primary).
 	Color: Color3?,
-	--- Icon kind: Lucide icon name (default "loader").
+	--- Icon: Lucide icon name (default "loader").
 	Icon: string?,
-	--- Icon kind: motion preset (default "Spin").
-	Motion: LoaderMotion?,
+	--- Icon: motion preset (default "Spin").
+	Motion: LoadingIndicatorMotion?,
 	[string]: any,
 }
 

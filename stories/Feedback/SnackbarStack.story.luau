@@ -40,7 +40,7 @@ return StoryUtil.story(function(scope, _, ctx)
 						Duration = math.huge,
 						Dismissible = true,
 						Trailing = function(inner)
-							return inner:Spinner({ SizePx = 18 })
+							return inner:LoadingIndicator({ SizePx = 18 })
 						end,
 					})
 				end,

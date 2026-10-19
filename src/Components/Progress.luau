@@ -9,7 +9,7 @@ local Types = require(script.Parent.Parent.Types)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Arc = require(script.Parent.Parent.Internal.Arc)
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
-local LoadingIndicator = require(script.Parent.LoadingIndicator)
+local LoadingMorph = require(script.Parent.Parent.Internal.LoadingMorph)
 
 local Children = Fusion.Children
 local peek = Fusion.peek
@@ -262,7 +262,7 @@ local function circular(
 			return arcSpinner(scope, props, theme)
 		end
 		-- Default: the shape-morphing loading indicator.
-		return LoadingIndicator(scope, {
+		return LoadingMorph(scope, {
 			Theme = props.Theme,
 			SizePx = props.SizePx,
 			Size = props.Size,

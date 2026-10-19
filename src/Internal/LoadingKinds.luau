@@ -1,6 +1,6 @@
 --!strict
 --[[
-	Loader: a family of indeterminate loading indicators behind one `Kind`.
+	The non-Material kinds of LoadingIndicator (picked by its `Kind`).
 
 	  Beachball  macOS-style spinning rainbow pinwheel
 	  Dots       three bouncing dots (typing / "thinking")
@@ -10,7 +10,6 @@
 	  Gnome      thin ring with a small dot (and fading trail) circling it
 	  Icon       any Lucide icon with a motion preset (Spin, Pulse, Bounce, Flip, Wiggle)
 
-	For the shape-morphing Material indicator use LoadingIndicator / Spinner.
 	All kinds are square (`SizePx`, default 32) so they drop into the same layouts.
 ]]
 local Packages = script.Parent.Parent.Parent
@@ -18,7 +17,7 @@ local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Arc = require(script.Parent.Parent.Internal.Arc)
-local Icon = require(script.Parent.Icon)
+local Icon = require(script.Parent.Parent.Components.Icon)
 local Features = require(script.Parent.Parent.Internal.Features)
 local Flags = require(script.Parent.Parent.Internal.Flags)
 
@@ -203,7 +202,7 @@ local function iconLoader(
 	scope: Types.Scope,
 	px: number,
 	color: Color3,
-	props: Types.LoaderProps
+	props: Types.LoadingIndicatorProps
 ): Built
 	local icon = Icon(scope, {
 		Theme = props.Theme,
@@ -333,7 +332,7 @@ local function beachball(scope: Types.Scope, px: number, clock: any): Built
 	return { children = layers, update = nil }
 end
 
-return function(scope: Types.Scope, props: Types.LoaderProps): Frame
+return function(scope: Types.Scope, props: Types.LoadingIndicatorProps): Frame
 	local theme = resolveTheme(props)
 	local px = props.SizePx or 32
 	local kind = props.Kind or "Dots"
@@ -388,7 +387,7 @@ return function(scope: Types.Scope, props: Types.LoaderProps): Frame
 	end
 
 	return scope:New("Frame")({
-		Name = `Loader{kind}`,
+		Name = `LoadingIndicator{kind}`,
 		BackgroundTransparency = 1,
 		Size = props.Size or UDim2.fromOffset(px, px),
 		LayoutOrder = props.LayoutOrder or 0,
