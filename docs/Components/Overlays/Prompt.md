@@ -13,7 +13,7 @@ Prompt is a [Dialog](./Dialog.md) with a Cancel and a confirm button already set
 Call `Components.Prompt` with a scope and a table of properties:
 
 ```luau
-C.Prompt(scope, {
+scope:Prompt({
 	Layer = overlayLayer,
 	Open = open,
 	Title = "Discard changes?",

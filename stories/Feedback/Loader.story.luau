@@ -4,17 +4,17 @@ local StoryUtil = require(script.Parent.Parent.StoryUtil)
 local KINDS: { any } = { "Beachball", "Dots", "Bars", "Ripple", "Orbit", "Gnome" }
 local MOTIONS: { any } = { "Spin", "Pulse", "Bounce", "Flip", "Wiggle" }
 
-return StoryUtil.story(function(scope, C)
+return StoryUtil.story(function(scope)
 	local Children = StoryUtil.Fusion.Children
 	local items: { any } = {}
 	for index, kind in KINDS do
-		table.insert(items, C.Loader(scope, { Kind = kind, SizePx = 40, LayoutOrder = index }))
+		table.insert(items, scope:Loader({ Kind = kind, SizePx = 40, LayoutOrder = index }))
 	end
 	-- The icon loader takes a Lucide icon and a motion preset.
 	for index, motion in MOTIONS do
 		table.insert(
 			items,
-			C.Loader(scope, {
+			scope:Loader({
 				Kind = "Icon",
 				Icon = "loader",
 				Motion = motion,

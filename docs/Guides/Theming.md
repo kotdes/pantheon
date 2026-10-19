@@ -40,14 +40,14 @@ local theme = Pantheon.Theme.create("Light") -- or "Dark"
 
 ```luau
 Pantheon.Theme.Provide(theme, function()
-	C.Button(scope, { Text = "Hello" })
+	scope:Button({ Text = "Hello" })
 end)
 ```
 
 Components find the theme when they are created. To use another theme for one component, pass `Theme`:
 
 ```luau
-C.Button(scope, { Text = "Hello", Theme = darkTheme })
+scope:Button({ Text = "Hello", Theme = darkTheme })
 ```
 
 ## Switching theme

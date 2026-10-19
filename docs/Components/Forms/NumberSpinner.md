@@ -15,7 +15,7 @@ Call `Components.NumberSpinner` with a scope and a table of properties:
 ```luau
 local count = scope:Value(1280)
 
-C.NumberSpinner(scope, {
+scope:NumberSpinner({
 	Value = count, -- (1)!
 	Prefix = "$",
 	Decimals = 2,

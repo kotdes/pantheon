@@ -2,10 +2,10 @@
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
 -- Hold Q, point at a choice and release. Or press the button and click one.
-return StoryUtil.story(function(scope, C, ctx)
+return StoryUtil.story(function(scope, _, ctx)
 	local open = scope:Value(false)
 	local last = scope:Value("nothing")
-	C.RadialMenu(scope, {
+	scope:RadialMenu({
 		Layer = ctx.overlayLayer,
 		Open = open,
 		Hotkey = Enum.KeyCode.Q,
@@ -27,14 +27,14 @@ return StoryUtil.story(function(scope, C, ctx)
 		AutomaticSize = Enum.AutomaticSize.XY,
 		Layout = { Kind = "List", Padding = 12 },
 		[StoryUtil.Fusion.Children] = {
-			C.Button(scope, {
+			scope:Button({
 				Text = "Open the ring",
 				LayoutOrder = 1,
 				OnClick = function()
 					open:set(true)
 				end,
 			}),
-			C.Text(scope, {
+			scope:Text({
 				Text = scope:Computed(function(use)
 					return "Last: " .. use(last)
 				end),

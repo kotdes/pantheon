@@ -13,7 +13,7 @@ DatePicker is a calendar for choosing a day. The header opens a month picker and
 Call `Components.DatePicker` with a scope and a table of properties:
 
 ```luau
-C.DatePicker(scope, {
+scope:DatePicker({
 	Value = "2026-08-14", -- (1)!
 	OnChanged = function(date)
 		print("Picked", date)

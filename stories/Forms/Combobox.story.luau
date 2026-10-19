@@ -1,8 +1,8 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C, ctx)
-	return C.Combobox(scope, {
+return StoryUtil.story(function(scope, _, ctx)
+	return scope:Combobox({
 		Label = "Filterable role",
 		Layer = ctx.overlayLayer,
 		Options = {

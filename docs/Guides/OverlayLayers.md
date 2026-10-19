@@ -14,7 +14,7 @@ local overlayLayer = scope:Frame({
 	ZIndex = 50,
 })
 
-C.Dialog(scope, {
+scope:Dialog({
 	Layer = overlayLayer,
 	Open = open,
 	Title = "Delete file?",
@@ -29,8 +29,8 @@ The layer must be a `GuiObject`. Put it above your content, usually as the last 
 
 ```luau
 Pantheon.Layer.Provide(overlayLayer, function()
-	C.Dialog(scope, { Open = open, Title = "Delete file?" })
-	C.Tooltip(scope, { Target = button, Text = "Delete" })
+	scope:Dialog({ Open = open, Title = "Delete file?" })
+	scope:Tooltip({ Target = button, Text = "Delete" })
 end)
 ```
 

@@ -14,9 +14,9 @@ Call `Components.Popover` with a scope and a table of properties:
 
 ```luau
 local open = scope:Value(false)
-local button = C.Button(scope, { Text = "Options", OnClick = function() open:set(true) end })
+local button = scope:Button({ Text = "Options", OnClick = function() open:set(true) end })
 
-C.Popover(scope, {
+scope:Popover({
 	Layer = overlayLayer,
 	Target = button,
 	Open = open,

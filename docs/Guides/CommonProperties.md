@@ -27,7 +27,7 @@ A control that lets the user change a value, such as `Checkbox`, `Switch`, `Slid
 ```luau
 local volume = scope:Value(40)
 
-C.Slider(scope, { Min = 0, Max = 100, Value = volume })
+scope:Slider({ Min = 0, Max = 100, Value = volume })
 
 volume:set(75) -- the slider moves
 ```

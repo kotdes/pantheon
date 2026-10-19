@@ -13,8 +13,8 @@ Divider is a line, one pixel thick, that separates content.
 Call `Components.Divider` with a scope and a table of properties:
 
 ```luau
-C.Divider(scope, {})
-C.Divider(scope, { Vertical = true, Size = UDim2.new(0, 1, 0, 24) })
+scope:Divider({})
+scope:Divider({ Vertical = true, Size = UDim2.new(0, 1, 0, 24) })
 ```
 
 ## Properties

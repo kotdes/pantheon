@@ -1,7 +1,7 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C, ctx)
+return StoryUtil.story(function(scope, _, ctx)
 	local Children = StoryUtil.Fusion.Children
 	return scope:Frame({
 		BackgroundTransparency = 1,
@@ -9,7 +9,7 @@ return StoryUtil.story(function(scope, C, ctx)
 		Size = UDim2.fromScale(1, 0),
 		Layout = { Kind = "List", Padding = 12, SortOrder = Enum.SortOrder.LayoutOrder },
 		[Children] = {
-			C.MultiSelect(scope, {
+			scope:MultiSelect({
 				LayoutOrder = 1,
 				Layer = ctx.overlayLayer,
 				Label = "Tags",
@@ -20,7 +20,7 @@ return StoryUtil.story(function(scope, C, ctx)
 					{ Value = "c", Label = "Gamma" },
 				},
 			}),
-			C.MultiSelect(scope, {
+			scope:MultiSelect({
 				LayoutOrder = 2,
 				Layer = ctx.overlayLayer,
 				Label = "Tags (count)",

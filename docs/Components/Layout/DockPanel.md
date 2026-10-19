@@ -13,7 +13,7 @@ DockPanel is a panel with a header, for the docked areas of a tool. The header h
 Call `Components.DockPanel` with a scope and a table of properties:
 
 ```luau
-C.DockPanel(scope, {
+scope:DockPanel({
 	Tabs = {
 		{ Id = "props", Title = "Properties", Content = propertiesView },
 		{ Id = "attrs", Title = "Attributes", Content = attributesView },

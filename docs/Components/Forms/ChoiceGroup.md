@@ -13,7 +13,7 @@ ChoiceGroup lets the user choose one option in a form. It is a RadioGroup or a S
 Call `Components.ChoiceGroup` with a scope and a table of properties:
 
 ```luau
-C.ChoiceGroup(scope, {
+scope:ChoiceGroup({
 	Label = "Role",
 	Variant = "Segmented",
 	Options = {

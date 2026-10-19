@@ -13,10 +13,10 @@ AppBar is the bar at the top of a screen or a [Window](./Window.md), with a titl
 Call `Components.AppBar` with a scope and a table of properties:
 
 ```luau
-C.AppBar(scope, {
+scope:AppBar({
 	Title = "Library",
-	Leading = C.IconButton(scope, { Name = "menu", OnClick = openDrawer }),
-	Actions = { C.IconButton(scope, { Name = "search" }) },
+	Leading = scope:IconButton({ Name = "menu", OnClick = openDrawer }),
+	Actions = { scope:IconButton({ Name = "search" }) },
 	FadeAtTop = true, -- (1)!
 	ScrollOffset = scrollY,
 })

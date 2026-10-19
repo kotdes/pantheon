@@ -1,16 +1,16 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C, ctx)
+return StoryUtil.story(function(scope, _, ctx)
 	local open = scope:Value(false)
-	local trigger = C.Button(scope, {
+	local trigger = scope:Button({
 		Text = "Open popover",
 		Variant = "Tonal",
 		OnClick = function()
 			open:set(true)
 		end,
 	})
-	C.Popover(scope, {
+	scope:Popover({
 		Layer = ctx.overlayLayer,
 		Open = open,
 		Target = trigger,

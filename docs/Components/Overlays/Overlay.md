@@ -17,7 +17,7 @@ Overlay is a full-size scrim that dims what is behind it and takes input. Dialog
 Call `Components.Overlay` with a scope and a table of properties:
 
 ```luau
-C.Overlay(scope, {
+scope:Overlay({
 	OnClick = function()
 		open:set(false)
 	end,

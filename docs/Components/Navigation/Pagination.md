@@ -13,7 +13,7 @@ Pagination lets the user move between pages of content with previous and next bu
 Call `Components.Pagination` with a scope and a table of properties:
 
 ```luau
-C.Pagination(scope, {
+scope:Pagination({
 	PageCount = 12,
 	Page = 1,
 	OnChanged = function(page)

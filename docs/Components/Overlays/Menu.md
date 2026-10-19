@@ -13,7 +13,7 @@ Menu is a panel of rows. It can be a flat list, have groups with titles, and hav
 Call `Components.Menu` with a scope and a table of properties:
 
 ```luau
-C.Menu(scope, {
+scope:Menu({
 	Layer = overlayLayer,
 	Open = open,
 	Sections = {

@@ -13,7 +13,7 @@ RangeSlider is one track with two handles. The user chooses a range of values, n
 Call `Components.RangeSlider` with a scope and a table of properties:
 
 ```luau
-C.RangeSlider(scope, {
+scope:RangeSlider({
 	Min = 0,
 	Max = 100,
 	Value = NumberRange.new(20, 60),

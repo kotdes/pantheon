@@ -13,10 +13,10 @@ ScrollArea is a scrolling container with its own scroll bar. It scrolls with the
 Call `Components.ScrollArea` with a scope and a table of properties:
 
 ```luau
-C.ScrollArea(scope, {
+scope:ScrollArea({
 	Size = UDim2.fromScale(1, 1),
 	Children = {
-		C.Text(scope, { Text = "Long content" }),
+		scope:Text({ Text = "Long content" }),
 	},
 	OnRefresh = function() -- (1)!
 		reload()

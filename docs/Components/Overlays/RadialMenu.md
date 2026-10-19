@@ -13,7 +13,7 @@ RadialMenu shows a ring of choices around the pointer, as in the emote wheel of 
 Call `Components.RadialMenu` with a scope and a table of properties:
 
 ```luau
-C.RadialMenu(scope, {
+scope:RadialMenu({
 	Layer = overlayLayer,
 	Hotkey = Enum.KeyCode.Q, -- (1)!
 	Title = "Emote",

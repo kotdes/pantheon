@@ -13,7 +13,7 @@ Snackbar is a short message on a surface that contrasts with the app. It can hav
 Call `Components.Snackbar` with a scope and a table of properties:
 
 ```luau
-C.Snackbar(scope, {
+scope:Snackbar({
 	Message = "Message deleted",
 	Icon = "trash-2",
 	ActionText = "Undo",

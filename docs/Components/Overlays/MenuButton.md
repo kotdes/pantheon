@@ -13,7 +13,7 @@ MenuButton is one row of a [Menu](./Menu.md), with an icon or element at each en
 Call `Components.MenuButton` with a scope and a table of properties:
 
 ```luau
-C.MenuButton(scope, {
+scope:MenuButton({
 	Text = "Settings",
 	LeadingIcon = "settings",
 	Page = "settings", -- (1)!

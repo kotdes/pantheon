@@ -1,8 +1,8 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C)
-	return C.RangeSlider(scope, {
+return StoryUtil.story(function(scope)
+	return scope:RangeSlider({
 		Label = "Price",
 		Min = 0,
 		Max = 100,

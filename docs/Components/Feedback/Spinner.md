@@ -17,8 +17,8 @@ Spinner shows that something is loading with no end in sight. By default it is t
 Call `Components.Spinner` with a scope and a table of properties:
 
 ```luau
-C.Spinner(scope, { SizePx = 32 })
-C.Spinner(scope, { Style = "Arc", Background = theme.Colors.Surface })
+scope:Spinner({ SizePx = 32 })
+scope:Spinner({ Style = "Arc", Background = theme.Colors.Surface })
 ```
 
 ## Properties

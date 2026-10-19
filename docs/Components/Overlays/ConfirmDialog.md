@@ -13,7 +13,7 @@ ConfirmDialog is a [Prompt](./Prompt.md) with `Destructive` always on. Use it to
 Call `Components.ConfirmDialog` with a scope and a table of properties:
 
 ```luau
-C.ConfirmDialog(scope, {
+scope:ConfirmDialog({
 	Layer = overlayLayer,
 	Open = open,
 	Title = "Delete project?",

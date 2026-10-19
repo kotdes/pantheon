@@ -13,11 +13,11 @@ Card puts related content on a raised surface. It can have a title and a subtitl
 Call `Components.Card` with a scope and a table of properties:
 
 ```luau
-C.Card(scope, {
+scope:Card({
 	Title = "Weekly report",
 	Subtitle = "Updated today",
 	Children = {
-		C.Text(scope, { Text = "12 new sign-ups" }),
+		scope:Text({ Text = "12 new sign-ups" }),
 	},
 })
 ```

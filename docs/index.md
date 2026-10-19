@@ -78,13 +78,12 @@ Pantheon is a set of user interface components for Roblox. It is built on [Fusio
 
 ```luau
 local Pantheon = require(Packages.Pantheon)
-local C = Pantheon.Components
 
 local scope = Pantheon.scoped()
 local theme = Pantheon.Theme.create("Light")
 
 Pantheon.Theme.Provide(theme, function()
-	C.Button(scope, {
+	scope:Button({
 		Text = "Run",
 		Variant = "Filled",
 		OnClick = function()

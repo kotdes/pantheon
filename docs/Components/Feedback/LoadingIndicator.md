@@ -13,7 +13,7 @@ LoadingIndicator is the loading shape from Material 3 Expressive. It is a solid 
 Call `Components.LoadingIndicator` with a scope and a table of properties:
 
 ```luau
-C.LoadingIndicator(scope, { SizePx = 56, Contained = true })
+scope:LoadingIndicator({ SizePx = 56, Contained = true })
 ```
 
 ## How it is drawn

@@ -13,10 +13,10 @@ ListItem is a row with a title. It can also have a subtitle and an element at ea
 Call `Components.ListItem` with a scope and a table of properties:
 
 ```luau
-C.ListItem(scope, {
+scope:ListItem({
 	Title = "Ada Lovelace",
 	Subtitle = "Last seen today",
-	Leading = C.Avatar(scope, { Initials = "AL" }),
+	Leading = scope:Avatar({ Initials = "AL" }),
 	OnClick = function()
 		print("Open profile")
 	end,

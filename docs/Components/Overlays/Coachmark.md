@@ -15,7 +15,7 @@ Call `Components.Coachmark` with a scope and a table of properties:
 ```luau
 local open = scope:Value(true)
 
-C.Coachmark(scope, {
+scope:Coachmark({
 	Layer = overlayLayer,
 	Target = newButton,
 	Open = open,

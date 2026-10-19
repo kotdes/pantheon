@@ -13,7 +13,7 @@ AvatarMenu is an account popover. It has a profile header with a picture and nam
 Call `Components.AvatarMenu` with a scope and a table of properties:
 
 ```luau
-C.AvatarMenu(scope, {
+scope:AvatarMenu({
 	Layer = overlayLayer,
 	Target = avatarButton,
 	Open = open,

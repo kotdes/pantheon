@@ -1,9 +1,9 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C)
+return StoryUtil.story(function(scope)
 	local checked = scope:Value(true)
-	return C.Radio(scope, {
+	return scope:Radio({
 		Label = "Option",
 		Checked = checked,
 		OnActivated = function()

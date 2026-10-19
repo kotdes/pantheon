@@ -15,7 +15,7 @@ Call `Components.RadioGroup` with a scope and a table of properties:
 ```luau
 local plan = scope:Value("free")
 
-C.RadioGroup(scope, {
+scope:RadioGroup({
 	Options = {
 		{ Value = "free", Label = "Free" },
 		{ Value = "pro", Label = "Pro" },

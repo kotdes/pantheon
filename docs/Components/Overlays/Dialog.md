@@ -15,7 +15,7 @@ Call `Components.Dialog` with a scope and a table of properties:
 ```luau
 local open = scope:Value(false)
 
-C.Dialog(scope, {
+scope:Dialog({
 	Layer = overlayLayer, -- (1)!
 	Open = open,
 	Title = "Delete file?",

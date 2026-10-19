@@ -15,7 +15,7 @@ Slider lets the user choose a number from a range by dragging a handle. The hand
 Call `Components.Slider` with a scope and a table of properties:
 
 ```luau
-C.Slider(scope, {
+scope:Slider({
 	Label = "Volume",
 	Min = 0,
 	Max = 100,

@@ -15,7 +15,7 @@ Switch turns a setting on or off. The handle stretches as it moves. The track ca
 Call `Components.Switch` with a scope and a table of properties:
 
 ```luau
-C.Switch(scope, {
+scope:Switch({
 	Label = "Notifications",
 	Checked = true,
 	OnChanged = function(on)

@@ -13,7 +13,7 @@ DataTable shows rows of data in columns. The user can sort by a column, and you 
 Call `Components.DataTable` with a scope and a table of properties:
 
 ```luau
-C.DataTable(scope, {
+scope:DataTable({
 	Columns = {
 		{ Id = "name", Title = "Name", Sortable = true },
 		{ Id = "role", Title = "Role", Width = 120 },

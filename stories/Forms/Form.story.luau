@@ -1,13 +1,13 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C, _ctx)
-	return C.Form(scope, {
+return StoryUtil.story(function(scope, _, _ctx)
+	return scope:Form({
 		Title = "Profile",
 		Children = {
-			C.TextField(scope, { Label = "Name", Placeholder = "Type…", LayoutOrder = 1 }),
-			C.Checkbox(scope, { Label = "Public profile", LayoutOrder = 2 }),
-			C.Button(scope, { Text = "Save", Variant = "Primary", LayoutOrder = 3 }),
+			scope:TextField({ Label = "Name", Placeholder = "Type…", LayoutOrder = 1 }),
+			scope:Checkbox({ Label = "Public profile", LayoutOrder = 2 }),
+			scope:Button({ Text = "Save", Variant = "Primary", LayoutOrder = 3 }),
 		},
 	})
 end)

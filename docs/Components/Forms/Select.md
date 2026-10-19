@@ -13,7 +13,7 @@ Select shows the chosen option in a field. When the user presses the field, it o
 Call `Components.Select` with a scope and a table of properties:
 
 ```luau
-C.Select(scope, {
+scope:Select({
 	Label = "Country",
 	Options = {
 		{ Value = "ca", Label = "Canada" },

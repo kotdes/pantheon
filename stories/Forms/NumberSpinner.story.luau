@@ -1,7 +1,7 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C)
+return StoryUtil.story(function(scope)
 	local Children = StoryUtil.Fusion.Children
 	local peek = StoryUtil.peek
 	local count = scope:Value(1280)
@@ -14,7 +14,7 @@ return StoryUtil.story(function(scope, C)
 		AutomaticSize = Enum.AutomaticSize.Y,
 		Layout = { Kind = "List", Padding = 16 },
 		[Children] = {
-			C.NumberSpinner(scope, {
+			scope:NumberSpinner({
 				Value = count,
 				Prefix = "$",
 				Decimals = 2,
@@ -22,10 +22,7 @@ return StoryUtil.story(function(scope, C)
 				LayoutOrder = 1,
 			}),
 			-- "Roll" turns every digit in between, like an odometer.
-			C.NumberSpinner(
-				scope,
-				{ Value = count, Style = "Roll", TextSize = 28, LayoutOrder = 2 }
-			),
+			scope:NumberSpinner({ Value = count, Style = "Roll", TextSize = 28, LayoutOrder = 2 }),
 			scope:Frame({
 				BackgroundTransparency = 1,
 				AutomaticSize = Enum.AutomaticSize.XY,
@@ -36,21 +33,21 @@ return StoryUtil.story(function(scope, C)
 					Padding = 8,
 				},
 				[Children] = {
-					C.Button(scope, {
+					scope:Button({
 						Text = "+7",
 						LayoutOrder = 1,
 						OnClick = function()
 							nudge(7)
 						end,
 					}),
-					C.Button(scope, {
+					scope:Button({
 						Text = "+1,234",
 						LayoutOrder = 2,
 						OnClick = function()
 							nudge(1234)
 						end,
 					}),
-					C.Button(scope, {
+					scope:Button({
 						Text = "−500",
 						LayoutOrder = 3,
 						OnClick = function()

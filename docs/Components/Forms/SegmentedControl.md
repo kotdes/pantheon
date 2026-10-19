@@ -13,7 +13,7 @@ SegmentedControl is a row of options. The user chooses one. A pill slides and st
 Call `Components.SegmentedControl` with a scope and a table of properties:
 
 ```luau
-C.SegmentedControl(scope, {
+scope:SegmentedControl({
 	Items = {
 		{ Id = "day", Label = "Day" },
 		{ Id = "week", Label = "Week" },

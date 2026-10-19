@@ -13,12 +13,12 @@ NavigationRail is a set of destinations along the side of a screen. Set `Orienta
 Call `Components.NavigationRail` with a scope and a table of properties:
 
 ```luau
-C.NavigationRail(scope, {
+scope:NavigationRail({
 	Items = {
 		{ Id = "home", Icon = "home", Label = "Home" },
 		{ Id = "library", Icon = "library", Label = "Library" },
 	},
-	Leading = C.IconButton(scope, { Name = "menu", OnClick = openDrawer }), -- (1)!
+	Leading = scope:IconButton({ Name = "menu", OnClick = openDrawer }), -- (1)!
 	OnChanged = function(id)
 		print("Go to", id)
 	end,

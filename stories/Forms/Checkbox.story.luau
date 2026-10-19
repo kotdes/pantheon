@@ -1,7 +1,7 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C)
+return StoryUtil.story(function(scope)
 	local Children = StoryUtil.Fusion.Children
 	return scope:Frame({
 		BackgroundTransparency = 1,
@@ -9,8 +9,8 @@ return StoryUtil.story(function(scope, C)
 		Size = UDim2.fromScale(1, 0),
 		Layout = { Kind = "List", Padding = 8 },
 		[Children] = {
-			C.Checkbox(scope, { Label = "Accept" }),
-			C.Checkbox(scope, { Label = "Disabled", Disabled = true }),
+			scope:Checkbox({ Label = "Accept" }),
+			scope:Checkbox({ Label = "Disabled", Disabled = true }),
 		},
 	})
 end)

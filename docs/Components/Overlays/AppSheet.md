@@ -13,11 +13,11 @@ AppSheet is a bottom sheet in the style of iOS. A panel slides up from the botto
 Call `Components.AppSheet` with a scope and a table of properties:
 
 ```luau
-C.AppSheet(scope, {
+scope:AppSheet({
 	Layer = overlayLayer,
 	Open = open,
 	Title = "Share",
-	Children = { C.Text(scope, { Text = "Choose how to share." }) },
+	Children = { scope:Text({ Text = "Choose how to share." }) },
 	OnClose = function()
 		open:set(false)
 	end,

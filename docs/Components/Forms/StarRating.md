@@ -13,7 +13,7 @@ StarRating shows a score as stars. The user can change the score, or you can mak
 Call `Components.StarRating` with a scope and a table of properties:
 
 ```luau
-C.StarRating(scope, {
+scope:StarRating({
 	Value = 3,
 	Max = 5,
 	OnChanged = function(stars)

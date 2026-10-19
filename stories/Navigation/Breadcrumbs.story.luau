@@ -1,8 +1,8 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C)
-	return C.Breadcrumbs(scope, {
+return StoryUtil.story(function(scope)
+	return scope:Breadcrumbs({
 		Items = {
 			{ Label = "Home" },
 			{ Label = "Library" },

@@ -15,7 +15,7 @@ Call `Components.CurveEditor` with a scope and a table of properties:
 ```luau
 local curve = scope:Value(NumberSequence.new(0, 1))
 
-C.CurveEditor(scope, {
+scope:CurveEditor({
 	Value = curve, -- (1)!
 	Min = 0,
 	Max = 1,

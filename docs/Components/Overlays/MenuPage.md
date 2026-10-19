@@ -13,14 +13,14 @@ MenuPage is a named page inside a [Menu](./Menu.md). Pages slide when the user m
 Call `Components.MenuPage` with a scope and a table of properties:
 
 ```luau
-C.Menu(scope, {
+scope:Menu({
 	Layer = overlayLayer,
 	Children = {
-		C.MenuPage(scope, { Id = "root", Children = {
-			C.MenuButton(scope, { Text = "Language", Page = "language" }),
+		scope:MenuPage({ Id = "root", Children = {
+			scope:MenuButton({ Text = "Language", Page = "language" }),
 		} }),
-		C.MenuPage(scope, { Id = "language", Title = "Language", Children = {
-			C.MenuButton(scope, { Text = "English" }),
+		scope:MenuPage({ Id = "language", Title = "Language", Children = {
+			scope:MenuButton({ Text = "English" }),
 		} }),
 	},
 })

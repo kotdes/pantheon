@@ -13,7 +13,7 @@ TreeView shows nested items, such as files or an object hierarchy. Branches open
 Call `Components.TreeView` with a scope and a table of properties:
 
 ```luau
-C.TreeView(scope, {
+scope:TreeView({
 	Nodes = {
 		{
 			Id = "src",

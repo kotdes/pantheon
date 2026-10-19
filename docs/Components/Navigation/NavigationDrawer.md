@@ -15,7 +15,7 @@ Call `Components.NavigationDrawer` with a scope and a table of properties:
 ```luau
 local open = scope:Value(false)
 
-C.NavigationDrawer(scope, {
+scope:NavigationDrawer({
 	Open = open,
 	Title = "Ada Lovelace",
 	Subtitle = "ada@example.com",

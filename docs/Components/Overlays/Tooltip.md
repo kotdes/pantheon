@@ -17,9 +17,9 @@ Tooltip shows a short label when the pointer is over an element. The tip is kept
 Call `Components.Tooltip` with a scope and a table of properties:
 
 ```luau
-local save = C.IconButton(scope, { Name = "save" })
+local save = scope:IconButton({ Name = "save" })
 
-C.Tooltip(scope, {
+scope:Tooltip({
 	Layer = overlayLayer,
 	Target = save,
 	Text = "Save",

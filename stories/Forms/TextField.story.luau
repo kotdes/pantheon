@@ -1,7 +1,7 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C, ctx)
+return StoryUtil.story(function(scope, _, ctx)
 	local Children = StoryUtil.Fusion.Children
 	local V = ctx.Pantheon.Validators
 	return scope:Frame({
@@ -10,8 +10,8 @@ return StoryUtil.story(function(scope, C, ctx)
 		Size = UDim2.fromScale(1, 0),
 		Layout = { Kind = "List", Padding = 12, SortOrder = Enum.SortOrder.LayoutOrder },
 		[Children] = {
-			C.TextField(scope, { Label = "Name", Placeholder = "Type…", LayoutOrder = 1 }),
-			C.TextField(scope, {
+			scope:TextField({ Label = "Name", Placeholder = "Type…", LayoutOrder = 1 }),
+			scope:TextField({
 				Label = "Notes",
 				Placeholder = "Multiline…",
 				Multiline = true,
@@ -20,13 +20,13 @@ return StoryUtil.story(function(scope, C, ctx)
 				Resize = "Y",
 				LayoutOrder = 2,
 			}),
-			C.TextField(scope, {
+			scope:TextField({
 				Label = "Email",
 				Placeholder = "you@game.com",
 				Error = "Required field",
 				LayoutOrder = 3,
 			}),
-			C.TextField(scope, {
+			scope:TextField({
 				Label = "Validated email",
 				LeadingIcon = "mail",
 				Placeholder = "you@game.com",

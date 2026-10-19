@@ -15,7 +15,7 @@ Call `Components.GradientPicker` with a scope and a table of properties:
 ```luau
 local preview = scope:New("UIGradient")({})
 
-C.GradientPicker(scope, {
+scope:GradientPicker({
 	Layer = overlayLayer, -- (1)!
 	OnGradientChanged = function(colors, transparency, rotation, offset)
 		preview.Color = colors

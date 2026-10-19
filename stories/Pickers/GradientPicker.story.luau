@@ -4,7 +4,7 @@ local Fusion = StoryUtil.Fusion
 
 local Children = Fusion.Children
 
-return StoryUtil.story(function(scope, C, ctx)
+return StoryUtil.story(function(scope, _, ctx)
 	local preview = scope:New("UIGradient")({})
 	return scope:Frame({
 		BackgroundTransparency = 1,
@@ -23,7 +23,7 @@ return StoryUtil.story(function(scope, C, ctx)
 					preview,
 				},
 			}),
-			C.GradientPicker(scope, {
+			scope:GradientPicker({
 				LayoutOrder = 2,
 				Layer = ctx.overlayLayer,
 				OnGradientChanged = function(colors, transparency, rotation, offset)

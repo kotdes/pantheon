@@ -1,13 +1,13 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C, ctx)
+return StoryUtil.story(function(scope, _, ctx)
 	local open = scope:Value(false)
 	local notifyOn = scope:Value(true)
 	local function close()
 		open:set(false)
 	end
-	C.NavigationDrawer(scope, {
+	scope:NavigationDrawer({
 		Layer = ctx.overlayLayer,
 		Open = open,
 		Title = "Cadence",
@@ -43,17 +43,17 @@ return StoryUtil.story(function(scope, C, ctx)
 			},
 		},
 		Children = {
-			C.MenuPage(scope, {
+			scope:MenuPage({
 				Id = "settings",
 				Title = "Settings",
 				Children = {
-					C.MenuButton(scope, {
+					scope:MenuButton({
 						Text = "Notifications",
 						Leading = "bell",
-						Trailing = C.Switch(scope, { Checked = notifyOn }),
+						Trailing = scope:Switch({ Checked = notifyOn }),
 						LayoutOrder = 1,
 					}),
-					C.MenuButton(scope, {
+					scope:MenuButton({
 						Text = "Appearance",
 						Leading = "moon",
 						Trailing = "chevron-right",
@@ -64,7 +64,7 @@ return StoryUtil.story(function(scope, C, ctx)
 			}),
 		},
 	})
-	return C.Button(scope, {
+	return scope:Button({
 		Text = "Open drawer",
 		LeadingIcon = "menu",
 		OnClick = function()

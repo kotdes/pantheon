@@ -13,14 +13,14 @@ Window is a rounded app shell. It holds an app bar, a navigation rail, the conte
 Call `Components.Window` with a scope and a table of properties:
 
 ```luau
-C.Window(scope, {
+scope:Window({
 	Size = scope:Value(UDim2.fromOffset(640, 420)), -- (1)!
 	Position = scope:Value(UDim2.fromScale(0.5, 0.5)),
 	AnchorPoint = Vector2.new(0.5, 0.5),
 	Draggable = true,
 	Resizable = true,
-	AppBar = C.AppBar(scope, { Title = "Catalog" }),
-	NavigationRail = C.NavigationRail(scope, { Items = items }),
+	AppBar = scope:AppBar({ Title = "Catalog" }),
+	NavigationRail = scope:NavigationRail({ Items = items }),
 	Overlays = { overlayLayer }, -- (2)!
 	Children = { content },
 })

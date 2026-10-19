@@ -13,11 +13,11 @@ SettingsList is a list of rows on rounded cards, like the Settings app on iOS. E
 Call `Components.SettingsList` with a scope and a table of properties:
 
 ```luau
-C.SettingsList(scope, {
+scope:SettingsList({
 	Header = "Account",
 	Items = {
 		{ Title = "Profile", Icon = "user", ShowChevron = true, OnClick = openProfile },
-		{ Title = "Notifications", Icon = "bell", Trailing = C.Switch(scope, {}) },
+		{ Title = "Notifications", Icon = "bell", Trailing = scope:Switch({}) },
 	},
 })
 ```

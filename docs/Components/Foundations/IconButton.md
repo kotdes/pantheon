@@ -13,7 +13,7 @@ IconButton is a round button that shows only an icon. Use it for toolbar actions
 Call `Components.IconButton` with a scope and a table of properties:
 
 ```luau
-C.IconButton(scope, {
+scope:IconButton({
 	Name = "settings", -- (1)!
 	Variant = "Tonal",
 	OnClick = function()

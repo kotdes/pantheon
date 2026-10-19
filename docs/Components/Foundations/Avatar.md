@@ -13,7 +13,7 @@ Avatar shows a round profile picture. If there is no picture, it shows initials.
 Call `Components.Avatar` with a scope and a table of properties:
 
 ```luau
-C.Avatar(scope, {
+scope:Avatar({
 	Initials = "EU",
 	AvatarSize = 48,
 })

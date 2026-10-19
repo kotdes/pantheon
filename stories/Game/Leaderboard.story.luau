@@ -59,10 +59,11 @@ return StoryUtil.story(function(scope, _, ctx)
 				BackgroundTransparency = 1,
 				Position = UDim2.fromOffset(12, 12),
 				AutomaticSize = Enum.AutomaticSize.XY,
-				[Children] = ctx.Pantheon.Components.Button(
-					scope,
-					{ Text = "A player joins", Variant = "Tonal", OnClick = join }
-				),
+				[Children] = scope:Button({
+					Text = "A player joins",
+					Variant = "Tonal",
+					OnClick = join,
+				}),
 			}),
 		},
 	})

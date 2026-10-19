@@ -1,9 +1,9 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C, ctx)
+return StoryUtil.story(function(scope, _, ctx)
 	local open = scope:Value(false)
-	C.AppSheet(scope, {
+	scope:AppSheet({
 		Layer = ctx.overlayLayer,
 		Open = open,
 		Title = "Quick sheet",
@@ -23,22 +23,20 @@ return StoryUtil.story(function(scope, C, ctx)
 					Padding = 8,
 				},
 				[scope.Children] = {
-					scope:Hydrate(
-						C.Text(
-							scope,
-							{ Text = "iOS-style app sheet with grabber + scrim.", Variant = "Body" }
-						)
-					)({
+					scope:Hydrate(scope:Text({
+						Text = "iOS-style app sheet with grabber + scrim.",
+						Variant = "Body",
+					}))({
 						LayoutOrder = 1,
 					}),
-					scope:Hydrate(C.StarRating(scope, { Value = 5 }))({
+					scope:Hydrate(scope:StarRating({ Value = 5 }))({
 						LayoutOrder = 2,
 					}),
 				},
 			}) :: Frame,
 		},
 	})
-	return C.Button(scope, {
+	return scope:Button({
 		Text = "Open app sheet",
 		LeadingIcon = "panel-bottom",
 		OnClick = function()

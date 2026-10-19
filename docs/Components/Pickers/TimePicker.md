@@ -13,7 +13,7 @@ TimePicker chooses a time of day with two rollers, one for the hours and one for
 Call `Components.TimePicker` with a scope and a table of properties:
 
 ```luau
-C.TimePicker(scope, {
+scope:TimePicker({
 	Value = 9 * 3600 + 30 * 60, -- (1)!
 	OnChanged = function(seconds)
 		print("Picked", seconds)

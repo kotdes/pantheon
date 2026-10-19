@@ -10,7 +10,6 @@ local peek = Fusion.peek
 
 local playerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
 local rootScope = Pantheon.scoped()
-local C = Pantheon.Components
 
 -- Dev tools: F8 opens the panel. The pointer button picks an element on screen.
 Pantheon.Flags.DevTools = true
@@ -68,7 +67,7 @@ local V = Pantheon.Validators
 
 local function appendSection(scope: any, into: { any }, title: string, order: number, kids: { any })
 	local children: { Instance } = {
-		C.Text(scope, { Text = title, Variant = "Title", LayoutOrder = 0 }),
+		scope:Text({ Text = title, Variant = "Title", LayoutOrder = 0 }),
 	}
 	for _, kid in kids do
 		if kid ~= nil then
@@ -141,26 +140,26 @@ local function rebuild()
 			ZIndex = 50,
 		})
 
-		local host = C.SnackbarHost(scope, { Layer = overlayLayer })
+		local host = scope:SnackbarHost({ Layer = overlayLayer })
 		local avatarBtn
 		local popoverBtn
 		local themeBtn
 
 		appendSection(scope, sections, "Typography & actions", 1, {
-			C.Text(scope, { Text = "Display", Variant = "Display", LayoutOrder = 1 }),
-			C.Text(scope, {
+			scope:Text({ Text = "Display", Variant = "Display", LayoutOrder = 1 }),
+			scope:Text({
 				Text = "Body copy for Cadence/Tithe surfaces.",
 				Variant = "Body",
 				LayoutOrder = 2,
 			}),
-			C.Button(scope, { Text = "Primary", Variant = "Primary", LayoutOrder = 3 }),
-			C.Button(scope, { Text = "Tonal", Variant = "Tonal", LayoutOrder = 4 }),
-			C.Button(scope, { Text = "Outlined", Variant = "Outlined", LayoutOrder = 5 }),
-			C.Button(scope, { Text = "Disabled", Disabled = true, LayoutOrder = 6 }),
-			C.Chip(scope, { Text = "Chip", Selected = true, LayoutOrder = 7 }),
+			scope:Button({ Text = "Primary", Variant = "Primary", LayoutOrder = 3 }),
+			scope:Button({ Text = "Tonal", Variant = "Tonal", LayoutOrder = 4 }),
+			scope:Button({ Text = "Outlined", Variant = "Outlined", LayoutOrder = 5 }),
+			scope:Button({ Text = "Disabled", Disabled = true, LayoutOrder = 6 }),
+			scope:Chip({ Text = "Chip", Selected = true, LayoutOrder = 7 }),
 		})
 		appendSection(scope, sections, "Cadence controls", 7, {
-			C.SettingsList(scope, {
+			scope:SettingsList({
 				LayoutOrder = 1,
 				Header = "Account",
 				Items = {
@@ -180,7 +179,7 @@ local function rebuild()
 						Title = "Animate theme",
 						Subtitle = "Use Theme.createAnimated in apps",
 						Icon = "sparkles",
-						Trailing = C.Switch(scope, {
+						Trailing = scope:Switch({
 							Checked = peek(animateTheme),
 							OnChanged = function(on)
 								animateTheme:set(on)
@@ -192,7 +191,7 @@ local function rebuild()
 						Title = "Dark mode",
 						Subtitle = "Appearance",
 						Icon = "moon",
-						Trailing = C.Switch(scope, {
+						Trailing = scope:Switch({
 							Checked = peek(mode) == "Dark",
 							OnChanged = function(on)
 								mode:set(if on then "Dark" else "Light")
@@ -202,7 +201,7 @@ local function rebuild()
 					},
 				} :: { any },
 			}),
-			C.SegmentedControl(scope, {
+			scope:SegmentedControl({
 				LayoutOrder = 2,
 				Items = {
 					{ Id = "day", Label = "Day" },
@@ -210,8 +209,8 @@ local function rebuild()
 					{ Id = "month", Label = "Month" },
 				},
 			}),
-			C.StarRating(scope, { LayoutOrder = 3, Value = 4 }),
-			C.MultiSelect(scope, {
+			scope:StarRating({ LayoutOrder = 3, Value = 4 }),
+			scope:MultiSelect({
 				LayoutOrder = 4,
 				Layer = overlayLayer,
 				Label = "Tags",
@@ -222,7 +221,7 @@ local function rebuild()
 					{ Value = "c", Label = "Gamma" },
 				},
 			}),
-			C.MultiSelect(scope, {
+			scope:MultiSelect({
 				LayoutOrder = 4,
 				Layer = overlayLayer,
 				Label = "Tags (count)",
@@ -233,14 +232,14 @@ local function rebuild()
 					{ Value = "c", Label = "Gamma" },
 				},
 			}),
-			C.Collapsible(scope, {
+			scope:Collapsible({
 				LayoutOrder = 5,
 				Title = "Advanced",
 				Children = {
-					C.Text(scope, { Text = "Hidden until expanded.", Variant = "Body" }),
+					scope:Text({ Text = "Hidden until expanded.", Variant = "Body" }),
 				},
 			}),
-			C.TreeView(scope, {
+			scope:TreeView({
 				LayoutOrder = 6,
 				Nodes = {
 					{
@@ -261,7 +260,7 @@ local function rebuild()
 					},
 				},
 			}),
-			C.Button(scope, {
+			scope:Button({
 				Text = "Open app sheet",
 				LeadingIcon = "panel-bottom",
 				LayoutOrder = 7,
@@ -269,15 +268,15 @@ local function rebuild()
 					sheetOpen:set(true)
 				end,
 			}),
-			C.TextField(scope, {
+			scope:TextField({
 				LayoutOrder = 8,
 				Label = "Email",
 				LeadingIcon = "mail",
 				Placeholder = "you@game.com",
 				Validators = { V.required(), V.email() },
 			}),
-			C.Chip(scope, { Text = "Filter", LeadingIcon = "filter", LayoutOrder = 9 }),
-			C.ChoiceGroup(scope, {
+			scope:Chip({ Text = "Filter", LeadingIcon = "filter", LayoutOrder = 9 }),
+			scope:ChoiceGroup({
 				LayoutOrder = 10,
 				Label = "Plan",
 				Variant = "Segmented",
@@ -288,12 +287,12 @@ local function rebuild()
 			}),
 		})
 		appendSection(scope, sections, "Forms", 2, {
-			C.TextField(scope, {
+			scope:TextField({
 				Label = "Name (kept across theme switches)",
 				Placeholder = "Type, then switch theme…",
 				LayoutOrder = 1,
 			}),
-			C.TextField(scope, {
+			scope:TextField({
 				Label = "Notes",
 				Placeholder = "Multiline…",
 				Multiline = true,
@@ -302,27 +301,24 @@ local function rebuild()
 				Resize = "Y",
 				LayoutOrder = 1,
 			}),
-			C.TextField(scope, {
+			scope:TextField({
 				Label = "Email",
 				Placeholder = "you@game.com",
 				Error = "Required field",
 				LayoutOrder = 1,
 			}),
-			C.Checkbox(scope, { Label = "Accept", LayoutOrder = 2 }),
-			C.Checkbox(scope, { Label = "Disabled", Disabled = true, LayoutOrder = 2 }),
-			C.Switch(scope, { Label = "Enabled", LayoutOrder = 3 }),
-			C.Switch(
-				scope,
-				{ Label = "Disabled", Disabled = true, Checked = true, LayoutOrder = 3 }
-			),
-			C.RadioGroup(scope, {
+			scope:Checkbox({ Label = "Accept", LayoutOrder = 2 }),
+			scope:Checkbox({ Label = "Disabled", Disabled = true, LayoutOrder = 2 }),
+			scope:Switch({ Label = "Enabled", LayoutOrder = 3 }),
+			scope:Switch({ Label = "Disabled", Disabled = true, Checked = true, LayoutOrder = 3 }),
+			scope:RadioGroup({
 				LayoutOrder = 4,
 				Options = {
 					{ Value = "a", Label = "Alpha" },
 					{ Value = "b", Label = "Beta" },
 				},
 			}),
-			C.Select(scope, {
+			scope:Select({
 				LayoutOrder = 5,
 				Label = "Role",
 				Layer = overlayLayer,
@@ -331,15 +327,14 @@ local function rebuild()
 					{ Value = "admin", Label = "Admin" },
 				},
 			}),
-			C.Slider(scope, { Label = "Level", Min = 0, Max = 10, Step = 1, LayoutOrder = 6 }),
-			C.RangeSlider(scope, { Min = 0, Max = 100, LayoutOrder = 7 }),
+			scope:Slider({ Label = "Level", Min = 0, Max = 10, Step = 1, LayoutOrder = 6 }),
+			scope:RangeSlider({ Min = 0, Max = 100, LayoutOrder = 7 }),
 		})
 		local demoGradient = scope:New("UIGradient")({}) :: UIGradient
 		local counter = persist("counter", 1280)
 		local tipOpen = persist("tipOpen", false)
-		local tipTarget =
-			C.Button(scope, { Text = "New feature", Variant = "Tonal", LayoutOrder = 1 })
-		C.Coachmark(scope, {
+		local tipTarget = scope:Button({ Text = "New feature", Variant = "Tonal", LayoutOrder = 1 })
+		scope:Coachmark({
 			Layer = overlayLayer,
 			Target = tipTarget,
 			Open = tipOpen,
@@ -349,10 +344,12 @@ local function rebuild()
 			ActionText = "Got it",
 		})
 		appendSection(scope, sections, "Feedback", 3, {
-			C.Alert(
-				scope,
-				{ Title = "Info", Text = "Opaque MD3 alert.", Tone = "Info", LayoutOrder = 1 }
-			),
+			scope:Alert({
+				Title = "Info",
+				Text = "Opaque MD3 alert.",
+				Tone = "Info",
+				LayoutOrder = 1,
+			}),
 			scope:Frame({
 				BackgroundTransparency = 1,
 				AutomaticSize = Enum.AutomaticSize.XY,
@@ -364,7 +361,7 @@ local function rebuild()
 					Padding = 8,
 				},
 				[Children] = ({
-					C.NumberSpinner(scope, {
+					scope:NumberSpinner({
 						Value = counter,
 						Prefix = "$",
 						Decimals = 2,
@@ -372,14 +369,14 @@ local function rebuild()
 						Digits = 6,
 						LayoutOrder = 1,
 					}) :: Instance,
-					C.Button(scope, {
+					scope:Button({
 						Text = "+",
 						LayoutOrder = 2,
 						OnClick = function()
 							counter:set(peek(counter) + math.random(1, 1500) + math.random())
 						end,
 					}),
-					C.Button(scope, {
+					scope:Button({
 						Text = "−",
 						LayoutOrder = 3,
 						OnClick = function()
@@ -388,7 +385,7 @@ local function rebuild()
 							)
 						end,
 					}),
-					C.NumberSpinner(scope, {
+					scope:NumberSpinner({
 						Value = counter,
 						Style = "Roll",
 						Decimals = 0,
@@ -410,7 +407,7 @@ local function rebuild()
 				},
 				[Children] = {
 					tipTarget,
-					C.Button(scope, {
+					scope:Button({
 						Text = "Show tip",
 						Variant = "Text",
 						LayoutOrder = 2,
@@ -431,7 +428,7 @@ local function rebuild()
 					Padding = 8,
 				},
 				[Children] = {
-					C.Button(scope, {
+					scope:Button({
 						Text = "Stack toasts",
 						Variant = "Tonal",
 						LayoutOrder = 1,
@@ -443,7 +440,7 @@ local function rebuild()
 							end
 						end,
 					}),
-					C.Button(scope, {
+					scope:Button({
 						Text = "Clear toasts",
 						Variant = "Text",
 						LayoutOrder = 2,
@@ -464,21 +461,21 @@ local function rebuild()
 					Padding = 8,
 				},
 				[Children] = {
-					C.LoadingIndicator(scope, { SizePx = 56, Contained = true, LayoutOrder = 1 }),
-					C.LoadingIndicator(scope, {
+					scope:LoadingIndicator({ SizePx = 56, Contained = true, LayoutOrder = 1 }),
+					scope:LoadingIndicator({
 						SizePx = 40,
 						Shapes = { "Triangle", "Diamond", "Gem", "Fan" },
 						LayoutOrder = 2,
 					}),
 				},
 			}),
-			C.Progress(scope, { Value = 0.55, Mode = "Determinate", LayoutOrder = 2 }),
-			C.Progress(scope, { Mode = "Indeterminate", LayoutOrder = 2 }),
-			C.Progress(scope, { Value = 0.3, Buffer = 0.65, Mode = "Buffering", LayoutOrder = 2 }),
-			C.Spinner(scope, { SizePx = 36, LayoutOrder = 2 }),
-			C.Spinner(scope, { SizePx = 48, Contained = true, LayoutOrder = 2 }),
-			C.Spinner(scope, { SizePx = 36, Style = "Arc", LayoutOrder = 2 }),
-			C.Spinner(scope, {
+			scope:Progress({ Value = 0.55, Mode = "Determinate", LayoutOrder = 2 }),
+			scope:Progress({ Mode = "Indeterminate", LayoutOrder = 2 }),
+			scope:Progress({ Value = 0.3, Buffer = 0.65, Mode = "Buffering", LayoutOrder = 2 }),
+			scope:Spinner({ SizePx = 36, LayoutOrder = 2 }),
+			scope:Spinner({ SizePx = 48, Contained = true, LayoutOrder = 2 }),
+			scope:Spinner({ SizePx = 36, Style = "Arc", LayoutOrder = 2 }),
+			scope:Spinner({
 				SizePx = 64,
 				Shapes = {
 					"Oval",
@@ -513,10 +510,10 @@ local function rebuild()
 					Padding = 16,
 				},
 				[Children] = {
-					C.Loader(scope, { Kind = "Beachball", SizePx = 36 }),
-					C.Loader(scope, { Kind = "Dots", SizePx = 36 }),
-					C.Loader(scope, { Kind = "Bars", SizePx = 36 }),
-					C.Loader(scope, { Kind = "Ripple", SizePx = 36 }),
+					scope:Loader({ Kind = "Beachball", SizePx = 36 }),
+					scope:Loader({ Kind = "Dots", SizePx = 36 }),
+					scope:Loader({ Kind = "Bars", SizePx = 36 }),
+					scope:Loader({ Kind = "Ripple", SizePx = 36 }),
 				},
 			}),
 			scope:Frame({
@@ -530,20 +527,19 @@ local function rebuild()
 					Padding = 16,
 				},
 				[Children] = {
-					C.Loader(scope, { Kind = "Orbit", SizePx = 36 }),
-					C.Loader(scope, { Kind = "Gnome", SizePx = 36 }),
-					C.Loader(
-						scope,
-						{ Kind = "Icon", Icon = "hourglass", Motion = "Flip", SizePx = 28 }
-					),
-					C.Loader(
-						scope,
-						{ Kind = "Icon", Icon = "settings", Motion = "Spin", SizePx = 28 }
-					),
+					scope:Loader({ Kind = "Orbit", SizePx = 36 }),
+					scope:Loader({ Kind = "Gnome", SizePx = 36 }),
+					scope:Loader({
+						Kind = "Icon",
+						Icon = "hourglass",
+						Motion = "Flip",
+						SizePx = 28,
+					}),
+					scope:Loader({ Kind = "Icon", Icon = "settings", Motion = "Spin", SizePx = 28 }),
 				},
 			}),
-			C.Progress(scope, { Variant = "Circular", Value = 0.65, SizePx = 48, LayoutOrder = 2 }),
-			C.Progress(scope, {
+			scope:Progress({ Variant = "Circular", Value = 0.65, SizePx = 48, LayoutOrder = 2 }),
+			scope:Progress({
 				Variant = "Circular",
 				Style = "Classic",
 				Value = 0.65,
@@ -553,12 +549,12 @@ local function rebuild()
 			-- Conical-gradient calibration (Studio beta): the ring below should fill from 12 o'clock
 			-- round to 3 o'clock. If it's rotated or mirrored, adjust Pantheon.Flags.ConicalRotation /
 			-- ConicalClockwise.
-			C.Text(scope, {
+			scope:Text({
 				Text = "Conical check: 25% should fill 12 → 3 o'clock",
 				Variant = "Label",
 				LayoutOrder = 2,
 			}),
-			C.Progress(scope, { Variant = "Circular", Value = 0.25, SizePx = 48, LayoutOrder = 2 }),
+			scope:Progress({ Variant = "Circular", Value = 0.25, SizePx = 48, LayoutOrder = 2 }),
 			scope:Frame({
 				BackgroundTransparency = 1,
 				AutomaticSize = Enum.AutomaticSize.XY,
@@ -571,24 +567,24 @@ local function rebuild()
 					Padding = 8,
 				},
 				[Children] = {
-					C.Spinner(scope, { SizePx = 22 }),
-					C.Text(scope, { Text = "Refreshing…", Variant = "Label" }),
+					scope:Spinner({ SizePx = 22 }),
+					scope:Text({ Text = "Refreshing…", Variant = "Label" }),
 				},
 			}),
-			C.Icon(scope, { Name = "sparkles", IconSize = 28, LayoutOrder = 2 }),
-			C.Badge(scope, {
+			scope:Icon({ Name = "sparkles", IconSize = 28, LayoutOrder = 2 }),
+			scope:Badge({
 				LayoutOrder = 3,
 				Count = 3,
-				Content = C.IconButton(scope, { Name = "bell" }),
+				Content = scope:IconButton({ Name = "bell" }),
 			}),
-			C.Button(scope, {
+			scope:Button({
 				Text = "Toast",
 				LayoutOrder = 4,
 				OnClick = function()
 					host.Show("Saved successfully")
 				end,
 			}),
-			C.Button(scope, {
+			scope:Button({
 				Text = "Open prompt",
 				Variant = "Outlined",
 				LayoutOrder = 5,
@@ -596,14 +592,14 @@ local function rebuild()
 					promptOpen:set(true)
 				end,
 			}),
-			C.Text(scope, {
+			scope:Text({
 				Text = "Pull down on the main scroll to refresh.",
 				Variant = "Label",
 				LayoutOrder = 6,
 			}),
 		})
 		appendSection(scope, sections, "Navigation", 4, {
-			C.Breadcrumbs(scope, {
+			scope:Breadcrumbs({
 				LayoutOrder = 1,
 				Items = {
 					{ Label = "Home" },
@@ -611,21 +607,21 @@ local function rebuild()
 					{ Label = "Catalog" },
 				},
 			}),
-			C.Tabs(scope, {
+			scope:Tabs({
 				LayoutOrder = 2,
 				Items = {
 					{ Id = "one", Label = "One" },
 					{ Id = "two", Label = "Two" },
 				},
 			}),
-			C.Pagination(scope, { PageCount = 5, LayoutOrder = 3 }),
-			C.Card(scope, {
+			scope:Pagination({ PageCount = 5, LayoutOrder = 3 }),
+			scope:Card({
 				Title = "Card",
 				Subtitle = "Elevated surface",
 				LayoutOrder = 4,
 			}),
-			C.Divider(scope, { LayoutOrder = 5 }),
-			C.Button(scope, {
+			scope:Divider({ LayoutOrder = 5 }),
+			scope:Button({
 				Text = scope:Computed(function(use)
 					return if use(railOrientation) == "Vertical"
 						then "Rail → Horizontal"
@@ -641,7 +637,7 @@ local function rebuild()
 				end,
 			}),
 			(function()
-				popoverBtn = C.Button(scope, {
+				popoverBtn = scope:Button({
 					Text = "Open popover",
 					Variant = "Tonal",
 					LayoutOrder = 7,
@@ -652,7 +648,7 @@ local function rebuild()
 				return popoverBtn
 			end)(),
 			(function()
-				avatarBtn = C.Button(scope, {
+				avatarBtn = scope:Button({
 					Text = "Avatar menu",
 					Variant = "Outlined",
 					LayoutOrder = 8,
@@ -664,11 +660,11 @@ local function rebuild()
 			end)(),
 		})
 		appendSection(scope, sections, "Pickers", 5, {
-			C.DatePicker(scope, { LayoutOrder = 1 }),
-			C.TimePicker(scope, { LayoutOrder = 2 }),
-			C.ColorPicker(scope, { LayoutOrder = 3 }),
+			scope:DatePicker({ LayoutOrder = 1 }),
+			scope:TimePicker({ LayoutOrder = 2 }),
+			scope:ColorPicker({ LayoutOrder = 3 }),
 			-- Hue ring (needs conical gradients; otherwise the square), chosen tabs.
-			C.ColorPicker(scope, {
+			scope:ColorPicker({
 				LayoutOrder = 4,
 				Area = "Wheel",
 				Modes = { "Spectrum", "Sliders", "Grid" },
@@ -685,7 +681,7 @@ local function rebuild()
 					demoGradient,
 				},
 			}),
-			C.GradientPicker(scope, {
+			scope:GradientPicker({
 				LayoutOrder = 6,
 				Layer = overlayLayer,
 				OnGradientChanged = function(
@@ -716,15 +712,17 @@ local function rebuild()
 			return scope:Frame({
 				BackgroundTransparency = 1,
 				Padding = { 8 },
-				[Children] = C.Text(scope, { Text = text, Variant = "Label" }),
+				[Children] = scope:Text({ Text = text, Variant = "Label" }),
 			})
 		end
 		appendSection(scope, sections, "Studio tools", 9, {
-			C.NumberField(
-				scope,
-				{ Label = "X", Value = persist("fieldX", 0), Suffix = "px", LayoutOrder = 1 }
-			),
-			C.NumberField(scope, {
+			scope:NumberField({
+				Label = "X",
+				Value = persist("fieldX", 0),
+				Suffix = "px",
+				LayoutOrder = 1,
+			}),
+			scope:NumberField({
 				Label = "α",
 				Value = persist("fieldAlpha", 0.5),
 				Min = 0,
@@ -732,7 +730,7 @@ local function rebuild()
 				Step = 0.01,
 				LayoutOrder = 2,
 			}),
-			C.Toolbar(scope, {
+			scope:Toolbar({
 				Layer = overlayLayer,
 				LayoutOrder = 3,
 				Items = {
@@ -763,7 +761,7 @@ local function rebuild()
 					{ Id = "play", Icon = "play", Text = "Play" },
 				},
 			}),
-			C.StatusBar(scope, {
+			scope:StatusBar({
 				Layer = overlayLayer,
 				LayoutOrder = 4,
 				Start = { { Icon = "check", Text = "Ready", Tone = "Success" } } :: { any },
@@ -781,10 +779,10 @@ local function rebuild()
 				BackgroundTransparency = 1,
 				Size = UDim2.new(1, 0, 0, 200),
 				LayoutOrder = 5,
-				[Children] = C.SplitPane(scope, {
+				[Children] = scope:SplitPane({
 					Panes = {
 						pane("Explorer"),
-						C.SplitPane(scope, {
+						scope:SplitPane({
 							Orientation = "Vertical",
 							Panes = { pane("Output"), pane("Properties") },
 						}),
@@ -792,8 +790,8 @@ local function rebuild()
 					Ratios = { 1, 2 },
 				}),
 			}),
-			C.CurveEditor(scope, { Value = studioCurve, LayoutOrder = 6 }),
-			C.TextField(scope, {
+			scope:CurveEditor({ Value = studioCurve, LayoutOrder = 6 }),
+			scope:TextField({
 				Placeholder = "Filter the tree",
 				Text = studioFilter,
 				LeadingIcon = "search",
@@ -803,7 +801,7 @@ local function rebuild()
 				BackgroundTransparency = 1,
 				Size = UDim2.new(1, 0, 0, 220),
 				LayoutOrder = 8,
-				[Children] = C.Explorer(scope, {
+				[Children] = scope:Explorer({
 					Roots = { demoTree },
 					Filter = studioFilter,
 					AllowReparent = true,
@@ -811,13 +809,13 @@ local function rebuild()
 			}),
 		})
 		appendSection(scope, sections, "Data", 6, {
-			C.Avatar(scope, { Initials = "EU", LayoutOrder = 1 }),
+			scope:Avatar({ Initials = "EU", LayoutOrder = 1 }),
 			scope:Frame({
 				Size = UDim2.new(1, 0, 0, 220),
 				BackgroundTransparency = 1,
 				LayoutOrder = 2,
 				[Children] = {
-					C.DataTable(scope, {
+					scope:DataTable({
 						Columns = {
 							{ Id = "id", Title = "Id", Width = 60 },
 							{ Id = "name", Title = "Name", Width = 140 },
@@ -833,7 +831,7 @@ local function rebuild()
 				BackgroundTransparency = 1,
 				LayoutOrder = 3,
 				[Children] = {
-					C.VirtualList(scope, {
+					scope:VirtualList({
 						ItemCount = 1000,
 						ItemHeight = 28,
 						Size = UDim2.fromScale(1, 1),
@@ -851,7 +849,7 @@ local function rebuild()
 					}),
 				},
 			}),
-			C.EmptyState(scope, {
+			scope:EmptyState({
 				Title = "Nothing here",
 				Subtitle = "Empty state sample",
 				LayoutOrder = 4,
@@ -859,7 +857,7 @@ local function rebuild()
 			}),
 		})
 
-		C.Prompt(scope, {
+		scope:Prompt({
 			Layer = overlayLayer,
 			Title = "Discard changes?",
 			Body = "Your edits will be lost. This action cannot be undone.",
@@ -875,7 +873,7 @@ local function rebuild()
 				host.Show("Discarded")
 			end,
 		})
-		C.NavigationDrawer(scope, {
+		scope:NavigationDrawer({
 			Layer = overlayLayer,
 			Open = drawerOpen,
 			Title = "Cadence",
@@ -917,24 +915,24 @@ local function rebuild()
 				},
 			},
 			Children = {
-				C.MenuPage(scope, {
+				scope:MenuPage({
 					Id = "settings",
 					Title = "Settings",
 					Children = {
-						C.MenuButton(scope, {
+						scope:MenuButton({
 							Text = "Notifications",
 							Leading = "bell",
-							Trailing = C.Switch(scope, { Checked = notifyOn }),
+							Trailing = scope:Switch({ Checked = notifyOn }),
 							LayoutOrder = 1,
 						}),
-						C.MenuButton(scope, {
+						scope:MenuButton({
 							Text = "Appearance",
 							Leading = "moon",
 							Trailing = "chevron-right",
 							Page = "appearance",
 							LayoutOrder = 2,
 						}),
-						C.MenuButton(scope, {
+						scope:MenuButton({
 							Text = "Language",
 							Leading = "globe",
 							Trailing = "chevron-right",
@@ -943,11 +941,11 @@ local function rebuild()
 						}),
 					},
 				}),
-				C.MenuPage(scope, {
+				scope:MenuPage({
 					Id = "appearance",
 					Title = "Appearance",
 					Children = {
-						C.RadioGroup(scope, {
+						scope:RadioGroup({
 							Options = {
 								{ Label = "Light", Value = "light" },
 								{ Label = "Dark", Value = "dark" },
@@ -955,11 +953,11 @@ local function rebuild()
 						}),
 					},
 				}),
-				C.MenuPage(scope, {
+				scope:MenuPage({
 					Id = "language",
 					Title = "Language",
 					Children = {
-						C.RadioGroup(scope, {
+						scope:RadioGroup({
 							Options = {
 								{ Label = "English", Value = "english" },
 								{ Label = "Spanish", Value = "spanish" },
@@ -975,7 +973,7 @@ local function rebuild()
 				}),
 			},
 		})
-		C.Popover(scope, {
+		scope:Popover({
 			Layer = overlayLayer,
 			Open = popoverOpen,
 			Target = popoverBtn,
@@ -999,7 +997,7 @@ local function rebuild()
 				{ Text = "Disabled", Disabled = true },
 			} :: { any },
 		})
-		C.AvatarMenu(scope, {
+		scope:AvatarMenu({
 			Layer = overlayLayer,
 			Open = avatarMenuOpen,
 			Target = avatarBtn,
@@ -1030,7 +1028,7 @@ local function rebuild()
 				},
 			},
 		})
-		C.AppSheet(scope, {
+		scope:AppSheet({
 			Layer = overlayLayer,
 			Open = sheetOpen,
 			Title = "Quick sheet",
@@ -1038,21 +1036,18 @@ local function rebuild()
 				sheetOpen:set(false)
 			end,
 			Children = {
-				C.Text(
-					scope,
-					{ Text = "iOS-style app sheet with grabber + scrim.", Variant = "Body" }
-				),
-				C.StarRating(scope, { Value = 5 }),
+				scope:Text({ Text = "iOS-style app sheet with grabber + scrim.", Variant = "Body" }),
+				scope:StarRating({ Value = 5 }),
 			},
 		})
 
-		themeBtn = C.IconButton(scope, {
+		themeBtn = scope:IconButton({
 			Name = if peek(mode) == "Light" then "moon" else "sun",
 			OnClick = function()
 				mode:set(if peek(mode) == "Light" then "Dark" else "Light")
 			end,
 		})
-		C.Tooltip(scope, {
+		scope:Tooltip({
 			Layer = overlayLayer,
 			Target = themeBtn,
 			Text = if peek(mode) == "Light" then "Switch to dark" else "Switch to light",
@@ -1062,13 +1057,13 @@ local function rebuild()
 		-- With a side rail the menu button lives at the top of the rail; with a bottom bar it
 		-- stays in the app bar.
 		local verticalRail = peek(railOrientation) == "Vertical"
-		local menuButton = C.IconButton(scope, {
+		local menuButton = scope:IconButton({
 			Name = "menu",
 			OnClick = function()
 				drawerOpen:set(true)
 			end,
 		})
-		local rail = C.NavigationRail(scope, {
+		local rail = scope:NavigationRail({
 			Orientation = peek(railOrientation),
 			Leading = if verticalRail then menuButton else nil,
 			Layer = overlayLayer,
@@ -1084,7 +1079,7 @@ local function rebuild()
 			table.insert(scrollKids, section)
 		end
 
-		local scroll = C.ScrollArea(scope, {
+		local scroll = scope:ScrollArea({
 			Children = scrollKids,
 			Smooth = true,
 			Inertia = true,
@@ -1117,7 +1112,7 @@ local function rebuild()
 			ReleaseHint = "Release to refresh",
 		})
 
-		local appBar = C.AppBar(scope, {
+		local appBar = scope:AppBar({
 			Title = "pantheon catalog",
 			Leading = if verticalRail then nil else menuButton,
 			Actions = { themeBtn },
@@ -1130,7 +1125,7 @@ local function rebuild()
 		})
 
 		-- The catalog lives in a draggable window (drag it by the app bar), like the admin demo.
-		local window = C.Window(scope, {
+		local window = scope:Window({
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			-- A Value here persists the dragged position across rebuilds.
 			Position = windowPosition,
@@ -1228,7 +1223,7 @@ do
 		ZIndex = 50,
 	})
 	Pantheon.Theme.Provide(Pantheon.Theme.create("Dark"), function()
-		Pantheon.Components.RadialMenu(rootScope, {
+		rootScope:RadialMenu({
 			Layer = hudLayer,
 			Hotkey = Enum.KeyCode.Q,
 			Title = "Emote",

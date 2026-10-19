@@ -1,12 +1,12 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C)
+return StoryUtil.story(function(scope)
 	local function page(text: string): Instance
 		return scope:Frame({
 			BackgroundTransparency = 1,
 			Padding = { 10 },
-			[StoryUtil.Fusion.Children] = C.Text(scope, { Text = text }),
+			[StoryUtil.Fusion.Children] = scope:Text({ Text = text }),
 		})
 	end
 	return scope:Frame({
@@ -14,7 +14,7 @@ return StoryUtil.story(function(scope, C)
 		Size = UDim2.new(1, 0, 0, 340),
 		Layout = { Kind = "List", Padding = 8 },
 		[StoryUtil.Fusion.Children] = {
-			C.DockPanel(scope, {
+			scope:DockPanel({
 				Tabs = {
 					{ Id = "props", Title = "Properties", Content = page("Name: Part") },
 					{ Id = "attr", Title = "Attributes", Content = page("No attributes") },
@@ -22,7 +22,7 @@ return StoryUtil.story(function(scope, C)
 				Size = UDim2.new(1, 0, 0, 140),
 				LayoutOrder = 1,
 			}),
-			C.DockPanel(scope, {
+			scope:DockPanel({
 				Title = "Output",
 				Collapsible = true,
 				Children = { page("Ready.") },

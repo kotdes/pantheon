@@ -15,7 +15,7 @@ Call `Components.Radio` with a scope and a table of properties:
 ```luau
 local choice = scope:Value("a")
 
-C.Radio(scope, {
+scope:Radio({
 	Label = "Option A",
 	Checked = scope:Computed(function(use)
 		return use(choice) == "a"

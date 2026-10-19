@@ -13,7 +13,7 @@ MultiSelect works like Select, but the user can choose more than one option. It 
 Call `Components.MultiSelect` with a scope and a table of properties:
 
 ```luau
-C.MultiSelect(scope, {
+scope:MultiSelect({
 	Label = "Tags",
 	Options = {
 		{ Value = "ui", Label = "UI" },

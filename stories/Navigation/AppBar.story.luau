@@ -1,12 +1,12 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C)
-	return C.AppBar(scope, {
+return StoryUtil.story(function(scope)
+	return scope:AppBar({
 		Title = "pantheon catalog",
-		Leading = C.IconButton(scope, { Name = "menu" }),
+		Leading = scope:IconButton({ Name = "menu" }),
 		Actions = {
-			C.IconButton(scope, { Name = "moon" }),
+			scope:IconButton({ Name = "moon" }),
 		},
 	})
 end)

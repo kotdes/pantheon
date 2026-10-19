@@ -1,7 +1,7 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C)
+return StoryUtil.story(function(scope)
 	local Children = StoryUtil.Fusion.Children
 	return scope:Frame({
 		BackgroundTransparency = 1,
@@ -13,9 +13,9 @@ return StoryUtil.story(function(scope, C)
 			VerticalAlignment = Enum.VerticalAlignment.Center,
 		},
 		[Children] = {
-			C.Spinner(scope, { SizePx = 22 }),
-			C.Spinner(scope, { SizePx = 36 }),
-			C.Text(scope, { Text = "Loading…", Variant = "Label" }),
+			scope:Spinner({ SizePx = 22 }),
+			scope:Spinner({ SizePx = 36 }),
+			scope:Text({ Text = "Loading…", Variant = "Label" }),
 		},
 	})
 end)

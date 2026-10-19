@@ -15,7 +15,7 @@ Call `Components.NumberField` with a scope and a table of properties:
 ```luau
 local x = scope:Value(0)
 
-C.NumberField(scope, {
+scope:NumberField({
 	Label = "X", -- (1)!
 	Value = x,
 	Step = 1,

@@ -1,11 +1,11 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C, ctx)
+return StoryUtil.story(function(scope, _, ctx)
 	return StoryUtil.panel(
 		scope,
 		220,
-		C.VirtualList(scope, {
+		scope:VirtualList({
 			ItemCount = 1000,
 			ItemHeight = 28,
 			Size = UDim2.fromScale(1, 1),

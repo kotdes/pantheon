@@ -15,7 +15,7 @@ Tabs is a row of chips that switches between views. The row scrolls sideways whe
 Call `Components.Tabs` with a scope and a table of properties:
 
 ```luau
-C.Tabs(scope, {
+scope:Tabs({
 	Items = {
 		{ Id = "all", Label = "All" },
 		{ Id = "unread", Label = "Unread" },

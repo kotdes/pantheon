@@ -4,12 +4,11 @@ This page builds a small interface. You need to know the basics of Fusion: value
 
 ## Scopes
 
-Fusion keeps everything it creates in a scope, and destroys it when you clean the scope up. Pantheon has its own `scoped`. It gives you the usual Fusion methods and the instance methods from Iona, such as `scope:Frame`:
+Fusion keeps everything it creates in a scope, and destroys it when you clean the scope up. Pantheon has its own `scoped`. It gives you the usual Fusion methods, the instance methods from Iona such as `scope:Frame`, and every Pantheon component, such as `scope:Button`:
 
 ```luau
 local Pantheon = require(Packages.Pantheon)
 local Fusion = Pantheon.Fusion
-local C = Pantheon.Components
 
 local scope = Pantheon.scoped()
 ```
@@ -30,10 +29,10 @@ If you leave this out, creating a component fails with the error `Pantheon.Theme
 
 ## A component
 
-A component is a function. It takes a scope and a table of properties, and returns an instance:
+A component is a method on the scope. It takes a table of properties and returns an instance. `scope:Button({ ... })` is the same as `Pantheon.Components.Button(scope, { ... })`, which you can use when you want the typed function:
 
 ```luau
-local save = C.Button(scope, {
+local save = scope:Button({
 	Text = "Save",
 	Variant = "Filled",
 	OnClick = function()
@@ -47,7 +46,7 @@ A property of type `UsedAs<T>` takes a plain value or a Fusion state. If you giv
 ```luau
 local name = scope:Value("Ada")
 
-C.Text(scope, {
+scope:Text({
 	Text = scope:Computed(function(use)
 		return "Hello, " .. use(name)
 	end),
@@ -68,11 +67,11 @@ local gui = scope:New("ScreenGui")({
 	ResetOnSpawn = false,
 	Parent = Players.LocalPlayer:WaitForChild("PlayerGui"),
 	[Fusion.Children] = {
-		C.Window(scope, {
+		scope:Window({
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Position = UDim2.fromScale(0.5, 0.5),
 			Size = UDim2.fromOffset(480, 320),
-			AppBar = C.AppBar(scope, { Title = "My app" }),
+			AppBar = scope:AppBar({ Title = "My app" }),
 			Children = { save },
 		}),
 	},

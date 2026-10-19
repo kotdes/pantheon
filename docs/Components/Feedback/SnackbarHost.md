@@ -13,7 +13,7 @@ SnackbarHost shows toasts as a stack. The newest is in front and the ones before
 Call `Components.SnackbarHost` with a scope and a table of properties:
 
 ```luau
-local toasts = C.SnackbarHost(scope, {
+local toasts = scope:SnackbarHost({
 	Layer = overlayLayer,
 	MaxVisible = 5,
 })
@@ -46,7 +46,7 @@ When the pointer is over the stack or next to it, the toasts spread out into a c
 toasts.Show("Uploading", nil, nil, {
 	Duration = math.huge,
 	Trailing = function(toastScope, dismiss)
-		return C.Button(toastScope, { Text = "Cancel", OnClick = dismiss })
+		return toastScope:Button({ Text = "Cancel", OnClick = dismiss })
 	end,
 })
 ```

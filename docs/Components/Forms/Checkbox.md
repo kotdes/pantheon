@@ -19,7 +19,7 @@ Checkbox lets the user turn one option on or off. The check mark is drawn in two
 Call `Components.Checkbox` with a scope and a table of properties:
 
 ```luau
-C.Checkbox(scope, {
+scope:Checkbox({
 	Label = "Remember me",
 	Checked = true,
 	OnChanged = function(checked)

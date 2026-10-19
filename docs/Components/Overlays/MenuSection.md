@@ -13,7 +13,7 @@ MenuSection groups rows in a [Menu](./Menu.md) under an optional title. It can c
 Call `Components.MenuSection` with a scope and a table of properties:
 
 ```luau
-C.MenuSection(scope, {
+scope:MenuSection({
 	Title = "Account",
 	Icon = "user",
 	Collapsible = true,

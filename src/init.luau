@@ -65,8 +65,19 @@ table.freeze(FusionMethods)
 
 Pantheon.Apply = Apply
 
+-- Components are `(scope, props) -> Instance`, so they work as scope methods as they are:
+-- `scope:Button({ ... })` is `Components.Button(scope, { ... })`. Scope methods share one
+-- namespace with Fusion's and Iona's, so a clash is an error here, not a silent override.
+local ComponentMethods = table.clone(Components :: any)
+for name in ComponentMethods do
+	if (FusionMethods :: any)[name] ~= nil or (Iona :: any)[name] ~= nil then
+		error(`[Pantheon] component "{name}" clashes with a Fusion or Iona scope method`, 0)
+	end
+end
+table.freeze(ComponentMethods)
+
 function Pantheon.scoped(): Types.Scope
-	return Fusion.scoped(FusionMethods, Iona) :: any
+	return Fusion.scoped(FusionMethods, Iona, ComponentMethods) :: any
 end
 
 return Pantheon

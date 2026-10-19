@@ -15,7 +15,7 @@ Call `Components.ColorPicker` with a scope and a table of properties:
 ```luau
 local color = scope:Value(Color3.fromRGB(0, 105, 92))
 
-C.ColorPicker(scope, {
+scope:ColorPicker({
 	Value = color, -- (1)!
 	OnChange = function(newColor, alpha)
 		print(newColor, alpha)

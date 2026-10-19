@@ -14,7 +14,6 @@ local Children = Fusion.Children
 
 local playerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
 local rootScope = Pantheon.scoped()
-local C = Pantheon.Components
 local peek = Fusion.peek
 
 local mode = rootScope:Value("Light" :: "Light" | "Dark")
@@ -43,7 +42,7 @@ local function rebuild()
 			navDrawerOpen:set(false)
 		end
 
-		local navDrawer = C.NavigationDrawer(scope, {
+		local navDrawer = scope:NavigationDrawer({
 			Open = navDrawerOpen,
 			Inset = 4,
 			CornerRadius = theme.Metrics.RadiusPanel - 4,
@@ -79,13 +78,13 @@ local function rebuild()
 									},
 									Padding = theme.Metrics.SpaceSm,
 									[Children] = {
-										C.Text(scope, {
+										scope:Text({
 											Text = "Pantheon",
 											Variant = "BoldBody",
 											Size = UDim2.fromScale(1, 0),
 											LayoutOrder = 0,
 										}),
-										C.Text(scope, {
+										scope:Text({
 											Text = "Administration Panel",
 											Variant = "Caption",
 											Color = theme.Colors.OnSurfaceVariant,
@@ -101,7 +100,7 @@ local function rebuild()
 									LayoutOrder = 1,
 									ClipsDescendants = false,
 									[Children] = {
-										scope:Hydrate(C.Divider(scope, {
+										scope:Hydrate(scope:Divider({
 											Theme = theme,
 										}))({
 											Size = UDim2.new(1, 2, 0, 1),
@@ -147,30 +146,30 @@ local function rebuild()
 				},
 			},
 			Children = {
-				C.MenuPage(scope, {
+				scope:MenuPage({
 					Id = "settings",
 					Title = "Settings",
 					Children = {
-						C.MenuButton(scope, {
+						scope:MenuButton({
 							Text = "Sounds",
 							Leading = "audio-lines",
-							Trailing = C.Switch(scope, {}),
+							Trailing = scope:Switch({}),
 							LayoutOrder = 0,
 						}),
-						C.MenuButton(scope, {
+						scope:MenuButton({
 							Text = "Notifications",
 							Leading = "bell",
-							Trailing = C.Switch(scope, {}),
+							Trailing = scope:Switch({}),
 							LayoutOrder = 1,
 						}),
-						C.MenuButton(scope, {
+						scope:MenuButton({
 							Text = "Appearance",
 							Leading = "moon",
 							Trailing = "chevron-right",
 							Page = "appearance",
 							LayoutOrder = 2,
 						}),
-						C.MenuButton(scope, {
+						scope:MenuButton({
 							Text = "Language",
 							Leading = "globe",
 							Trailing = "chevron-right",
@@ -179,11 +178,11 @@ local function rebuild()
 						}),
 					},
 				}),
-				C.MenuPage(scope, {
+				scope:MenuPage({
 					Id = "appearance",
 					Title = "Appearance",
 					Children = {
-						C.RadioGroup(scope, {
+						scope:RadioGroup({
 							Options = {
 								{ Label = "Light", Value = "light" },
 								{ Label = "Dark", Value = "dark" },
@@ -191,11 +190,11 @@ local function rebuild()
 						}),
 					},
 				}),
-				C.MenuPage(scope, {
+				scope:MenuPage({
 					Id = "language",
 					Title = "Language",
 					Children = {
-						C.RadioGroup(scope, {
+						scope:RadioGroup({
 							Options = {
 								{ Label = "English", Value = "english" },
 								{ Label = "Spanish", Value = "spanish" },
@@ -211,21 +210,21 @@ local function rebuild()
 				}),
 			},
 		})
-		local appBar = C.AppBar(scope, {
+		local appBar = scope:AppBar({
 			Title = pageName,
-			Leading = C.IconButton(scope, {
+			Leading = scope:IconButton({
 				Name = "menu",
 				OnClick = function()
 					navDrawerOpen:set(true)
 				end,
 			}),
 			Actions = {
-				C.IconButton(scope, { Name = "search" }),
-				C.IconButton(scope, { Name = "x" }),
+				scope:IconButton({ Name = "search" }),
+				scope:IconButton({ Name = "x" }),
 			},
 			Radius = { theme.Metrics.RadiusPanel, 0 },
 		})
-		local rootWindow = C.Window(scope, {
+		local rootWindow = scope:Window({
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Position = UDim2.fromScale(0.5, 0.5),
 			Size = UDim2.new(0.55, 0, 0.7, 0),
@@ -249,7 +248,7 @@ local function rebuild()
 						SortOrder = Enum.SortOrder.LayoutOrder,
 					},
 					[Children] = {
-						C.SegmentedControl(scope, {
+						scope:SegmentedControl({
 							LayoutOrder = 2,
 							Items = {
 								{ Id = "day", Label = "Day" },

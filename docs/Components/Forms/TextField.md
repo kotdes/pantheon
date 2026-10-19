@@ -15,7 +15,7 @@ TextField is a text box. Its outline shows when it has focus. It can have a labe
 Call `Components.TextField` with a scope and a table of properties:
 
 ```luau
-C.TextField(scope, {
+scope:TextField({
 	Label = "Email",
 	Placeholder = "you@example.com",
 	Helper = "We never share it.",

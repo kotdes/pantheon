@@ -13,7 +13,7 @@ Alert is a banner that gives the user a message. Its colour shows how serious th
 Call `Components.Alert` with a scope and a table of properties:
 
 ```luau
-C.Alert(scope, {
+scope:Alert({
 	Title = "Heads up",
 	Text = "Your session expires in five minutes.",
 	Tone = "Warning", -- (1)!

@@ -13,8 +13,8 @@ Loader is a set of loading animations. Choose one with `Kind`. All of them are s
 Call `Components.Loader` with a scope and a table of properties:
 
 ```luau
-C.Loader(scope, { Kind = "Orbit", SizePx = 36 })
-C.Loader(scope, { Kind = "Icon", Icon = "refresh-cw", Motion = "Spin" })
+scope:Loader({ Kind = "Orbit", SizePx = 36 })
+scope:Loader({ Kind = "Icon", Icon = "refresh-cw", Motion = "Spin" })
 ```
 
 ## Kinds

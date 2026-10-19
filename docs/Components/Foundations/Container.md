@@ -13,9 +13,9 @@ Container centres its content and stops it getting wider than `MaxWidth`. Use it
 Call `Components.Container` with a scope and a table of properties:
 
 ```luau
-C.Container(scope, {
+scope:Container({
 	MaxWidth = 720,
-	Children = { C.Text(scope, { Text = "Page content" }) },
+	Children = { scope:Text({ Text = "Page content" }) },
 })
 ```
 
