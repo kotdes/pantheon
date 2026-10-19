@@ -9,7 +9,7 @@ local Fusion = require(Packages.Fusion)
 local Iona = require(Packages.Iona)
 
 local Theme = require(script.Theme)
-local Components = require(script.Components)
+local Directives = require(script.Internal.Directives)
 local Types = require(script.Types)
 local Layer = require(script.Internal.Layer)
 
@@ -29,7 +29,8 @@ export type ThemePalette = Types.ThemePalette
 local Pantheon = {
 	Theme = Theme,
 	Components = Components,
-	--- In-game HUD set (TopBar, Hotbar, ...), kept apart from the app components.
+	Directives = Directives,
+
 	Game = require(script.Game),
 	Types = Types,
 	Layer = Layer,

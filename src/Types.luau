@@ -6,6 +6,11 @@
 export type Scope = any
 export type UsedAs<T> = T | any
 
+export type Directive = {
+	type: "Directive",
+	apply: (self: any, scope: Scope, value: any, target: Instance) -> (),
+}
+
 export type ThemeMode = "Light" | "Dark"
 
 export type ThemeColors = {

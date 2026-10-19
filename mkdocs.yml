@@ -74,6 +74,7 @@ nav:
       - Common properties: Guides/CommonProperties.md
       - Theming: Guides/Theming.md
       - Persisting state: Guides/PersistingState.md
+      - Directives: Guides/Directives.md
       - Overlay layers: Guides/OverlayLayers.md
       - Accessibility: Guides/Accessibility.md
       - Performance: Guides/Performance.md
