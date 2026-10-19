@@ -26,6 +26,25 @@ export type Options = {
 	equals: ((a: any, b: any) -> boolean)?,
 }
 
+--- A state that can't be set (a Computed) only drives the control. If the user then changes the
+--- control, the two disagree, and the state can't follow properly. This warns the developer that the two are in conflict.
+local function warnReadOnly(scope: Types.Scope, prop: any, internal: any)
+	local warned = false
+	table.insert(
+		scope,
+		scope:Observer(internal):onChange(function()
+			if warned or peek(internal) == peek(prop) then
+				return
+			end
+			warned = true
+			warn(
+				"[Pantheon] An external entity changed a control whose value is a read-only state (a "
+					.. "Computed), so the two now in conflict. Pass a Value to sync."
+			)
+		end)
+	)
+end
+
 local Bind = {}
 
 function Bind.isState(value: any): boolean
@@ -99,6 +118,8 @@ function Bind.link(scope: Types.Scope, prop: any, internal: any, options: Option
 				end
 			end)
 		)
+	elseif not toInternal and not toProp and not (options and options.equals) then
+		warnReadOnly(scope, prop, internal)
 	end
 end
 
