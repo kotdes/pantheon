@@ -166,7 +166,7 @@ return function(scope: Types.Scope, props: Types.WindowProps): Instance
 	-- side rail, the rail takes both left corners and the app bar the top right. With a bottom
 	-- bar, the app bar takes the top corners and the bar the bottom ones.
 	local r: number = radius :: any
-	if verticalRail then
+	if hasRail and verticalRail then
 		Corners.apply(props.AppBar, 0, r, 0, 0)
 		Corners.apply(props.NavigationRail, r, 0, r, 0)
 	else
