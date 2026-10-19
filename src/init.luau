@@ -10,10 +10,20 @@ local Iona = require(Packages.Iona)
 
 local Theme = require(script.Theme)
 local Directives = require(script.Internal.Directives)
+local RawComponents = require(script.Components)
 local Types = require(script.Types)
 local Layer = require(script.Internal.Layer)
 
 require(script.Internal.FusionPerf).apply()
+
+
+local Components: { [string]: any } = {}
+for name, component in RawComponents :: any do
+	Components[name] = if typeof(component) == "function"
+		then Directives.wrap(component)
+		else component
+end
+table.freeze(Components)
 
 export type Theme = Types.Theme
 export type ThemeMode = Types.ThemeMode
