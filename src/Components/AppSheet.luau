@@ -49,7 +49,7 @@ return function(scope: Types.Scope, props: Types.AppSheetProps): Instance
 			Theme = theme,
 			Name = "x",
 			OnClick = props.OnClose,
-			Color = theme.Colors.Outline,
+			Color = "surface",
 			Variant = "Tonal",
 		}))({
 			LayoutOrder = 2,
