@@ -22,6 +22,10 @@ scope:MenuButton({
 
 1.  `Page` is the `Id` of a [MenuPage](./MenuPage.md). Pressing the row moves to that page and does not close the menu.
 
+## Long text
+
+Text that is too long for the row ends in an ellipsis. When it does, hovering the row shows the full text in a [Tooltip](./Tooltip.md). The tooltip needs a layer, so pass `Layer` or create the row after a [Window](../Navigation/Window.md). A [Menu](./Menu.md) passes its own `Layer` to the rows it builds.
+
 ## Properties
 
 | Name | Type | Required | Default | Description |
@@ -39,6 +43,7 @@ scope:MenuButton({
 | `TrailingIcon` | `string` | :x: | - | Same as `Trailing` when it is an icon name. |
 | `Color` | `UsedAs<ColorInput>` | :x: | `Colors.OnSurface` | Tint of the label and the icons, such as `"error"`. |
 | `Page` | `string` | :x: | - | Id of a [MenuPage](./MenuPage.md) to move to when pressed. |
+| `Layer` | `Instance` | :x: | The layer from `Layer.Provide` or `Layer.bind` | Overlay layer for the tooltip that shows long text. |
 | `Selected` | `UsedAs<boolean>` | :x: | `false` | Marks the row as the current choice. It is filled with the primary container colour. It follows a state, so the row changes when the state does. |
 | `Compact` | `boolean` | :x: | `true` | Use the 40 px row. Set `false` for the taller 44 px row of a header menu. |
 | `Children` | `any` | :x: | - | Content placed in the row. |

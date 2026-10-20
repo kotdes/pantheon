@@ -90,6 +90,7 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 				listKids,
 				MenuSection(scope, {
 					Theme = theme,
+					Layer = props.Layer,
 					Title = section.Title,
 					Icon = section.Icon,
 					Items = section.Items,

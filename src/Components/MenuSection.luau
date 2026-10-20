@@ -204,6 +204,7 @@ return function(scope: Types.Scope, props: Types.MenuSectionProps): Instance
 					Color = item.Color,
 					Page = item.Page,
 					Selected = item.Selected,
+					Layer = props.Layer,
 					Compact = compact,
 					OnClose = props.OnClose,
 					LayoutOrder = i,

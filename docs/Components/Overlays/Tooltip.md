@@ -37,6 +37,7 @@ scope:Tooltip({
 | `Target` | `Instance` | :x: | - | The element that shows the tooltip when hovered. |
 | `Placement` | `TooltipPlacement` | :x: | `"Auto"` | Preferred side of the target. `"Auto"` picks the side with most room. |
 | `Gap` | `number` | :x: | `8` | Space between the target and the tooltip in pixels. |
+| `Enabled` | `UsedAs<boolean>` | :x: | `true` | Whether hovering the target shows the tooltip. Pass a state to turn it on and off. |
 
 ## See also
 

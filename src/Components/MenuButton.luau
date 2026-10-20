@@ -7,6 +7,7 @@ local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local Color = require(script.Parent.Parent.Internal.Color)
 local MenuNav = require(script.Parent.Parent.Internal.MenuNav)
 local Icon = require(script.Parent.Icon)
+local Tooltip = require(script.Parent.Tooltip)
 local P = require(script.Parent.Parent.Internal.props)
 
 local Children = Fusion.Children
@@ -151,8 +152,12 @@ return function(scope: Types.Scope, props: Types.MenuButtonProps): Instance
 						TextTransparency = if disabled then 0.38 else 0,
 						TextXAlignment = Enum.TextXAlignment.Left,
 						Text = props.Text,
-						AutomaticSize = Enum.AutomaticSize.XY,
+						Name = "Label",
+						-- Takes the width that is left, and ends in an ellipsis when the text is longer.
+						Size = UDim2.new(0, 0, 1, 0),
+						TextTruncate = Enum.TextTruncate.AtEnd,
 						LayoutOrder = 2,
+						[Children] = scope:New("UIFlexItem")({ FlexMode = Enum.UIFlexMode.Fill }),
 					}),
 				},
 			}),
@@ -193,5 +198,32 @@ return function(scope: Types.Scope, props: Types.MenuButtonProps): Instance
 		btn:SetAttribute("PantheonMenuPushPage", props.Page)
 	end
 	ix.wire(btn)
+
+	-- When the label is cut short, hovering the row shows the full text in a tooltip. The tooltip
+	-- is made the first time the label is cut, so rows that fit never pay for one.
+	local label = btn:FindFirstChild("Label", true) :: TextLabel?
+	if label then
+		local truncated = scope:Value(false)
+		local tooltipMade = false
+		local function refresh()
+			local cut = not label.TextFits
+			truncated:set(cut)
+			if cut and not tooltipMade then
+				tooltipMade = true
+				Tooltip(scope, {
+					Theme = theme,
+					Layer = props.Layer,
+					Target = btn,
+					Text = props.Text,
+					Placement = "Right",
+					Enabled = truncated,
+				})
+			end
+		end
+		table.insert(scope, label:GetPropertyChangedSignal("TextFits"):Connect(refresh))
+		table.insert(scope, label:GetPropertyChangedSignal("AbsoluteSize"):Connect(refresh))
+		task.defer(refresh)
+	end
+
 	return btn
 end

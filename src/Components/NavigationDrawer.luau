@@ -89,6 +89,7 @@ return function(scope: Types.Scope, props: Types.NavigationDrawerProps): Instanc
 
 	local menu = Menu(scope, {
 		Theme = theme,
+		Layer = props.Layer,
 		Embedded = true,
 		Open = shown,
 		Header = props.Header,

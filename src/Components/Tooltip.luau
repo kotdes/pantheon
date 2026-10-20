@@ -94,6 +94,9 @@ return function(scope: Types.Scope, props: Types.TooltipProps): Instance
 		table.insert(
 			scope,
 			hoverTarget.MouseEnter:Connect(function()
+				if props.Enabled ~= nil and not Fusion.peek(props.Enabled) then
+					return
+				end
 				visible:set(1)
 				task.defer(updatePosition)
 			end)
