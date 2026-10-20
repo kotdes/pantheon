@@ -82,11 +82,24 @@ return function(scope: Types.Scope, props: Types.WindowProps): Instance
 		ZIndex = 50,
 	}) :: Frame
 
+	-- A docked NavigationDrawer takes room at the left. The app bar and the content move over,
+	-- and a side rail stays under the drawer.
+	local dock = scope:Value(0)
+	local dockS = scope:Spring(dock, theme.Motion.SpringSpeed, theme.Motion.SpringDamping)
+	local leftEdge = scope:Computed(function(use)
+		local docked = use(dockS) :: number
+		return if verticalRail then math.max(railWidth, docked) else docked
+	end)
+
 	if props.AppBar then
 		-- With a side rail, the rail is full height and the app bar is narrower.
 		scope:Apply(props.AppBar)({
-			Position = UDim2.fromOffset(railWidth, 0),
-			Size = UDim2.new(1, -railWidth, 0, appBarHeight),
+			Position = scope:Computed(function(use)
+				return UDim2.fromOffset(use(leftEdge), 0)
+			end),
+			Size = scope:Computed(function(use)
+				return UDim2.new(1, -use(leftEdge), 0, appBarHeight)
+			end),
 			ZIndex = 10,
 		})
 	end
@@ -95,10 +108,14 @@ return function(scope: Types.Scope, props: Types.WindowProps): Instance
 		scope:Apply(props.NavigationRail)({
 			Position = if verticalRail
 				then UDim2.fromOffset(0, 0)
-				else UDim2.new(0, 0, 1, -railBottom),
+				else scope:Computed(function(use)
+					return UDim2.new(0, use(leftEdge), 1, -railBottom)
+				end),
 			Size = if verticalRail
 				then UDim2.new(0, railWidth, 1, 0)
-				else UDim2.new(1, 0, 0, railBottom),
+				else scope:Computed(function(use)
+					return UDim2.new(1, -use(leftEdge), 0, railBottom)
+				end),
 			-- The side rail sits above the app bar so its shadow falls on it.
 			ZIndex = if verticalRail then 11 else 5,
 		})
@@ -107,12 +124,12 @@ return function(scope: Types.Scope, props: Types.WindowProps): Instance
 	local content = scope:Frame({
 		Name = "Content",
 		BackgroundTransparency = 1,
-		Position = if verticalRail
-			then UDim2.fromOffset(railWidth, appBarHeight)
-			else UDim2.fromOffset(0, appBarHeight),
-		Size = if verticalRail
-			then UDim2.new(1, -railWidth, 1, -appBarHeight)
-			else UDim2.new(1, 0, 1, -(appBarHeight + railBottom)),
+		Position = scope:Computed(function(use)
+			return UDim2.fromOffset(use(leftEdge), appBarHeight)
+		end),
+		Size = scope:Computed(function(use)
+			return UDim2.new(1, -use(leftEdge), 1, -(appBarHeight + railBottom))
+		end),
 		ZIndex = 1,
 		ClipsDescendants = true,
 		[Children] = props.Children,
@@ -173,6 +190,40 @@ return function(scope: Types.Scope, props: Types.WindowProps): Instance
 		Corners.apply(props.AppBar, r, r, 0, 0)
 		Corners.apply(props.NavigationRail, 0, 0, r, r)
 	end
+
+	-- Watch for a docked NavigationDrawer anywhere in the overlay layer. It sets the width it
+	-- takes in the `PantheonDockWidth` attribute, and the widest one decides how far to move over.
+	local DOCK_ATTRIBUTE = "PantheonDockWidth"
+	local dockWidths: { [Instance]: number } = {}
+	local function updateDock()
+		local widest = 0
+		for _, width in dockWidths do
+			widest = math.max(widest, width)
+		end
+		dock:set(widest)
+	end
+	local function trackDock(inst: Instance)
+		if dockWidths[inst] ~= nil or inst:GetAttribute(DOCK_ATTRIBUTE) == nil then
+			return
+		end
+		local function read()
+			local width = inst:GetAttribute(DOCK_ATTRIBUTE)
+			dockWidths[inst] = if typeof(width) == "number" then width else 0
+			updateDock()
+		end
+		read()
+		table.insert(scope, inst:GetAttributeChangedSignal(DOCK_ATTRIBUTE):Connect(read))
+	end
+	table.insert(scope, overlayLayer.DescendantAdded:Connect(trackDock))
+	table.insert(
+		scope,
+		overlayLayer.DescendantRemoving:Connect(function(inst: Instance)
+			if dockWidths[inst] ~= nil then
+				dockWidths[inst] = nil
+				updateDock()
+			end
+		end)
+	)
 
 	local overlays = props.Overlays
 	if overlays then

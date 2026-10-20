@@ -829,6 +829,11 @@ export type NavigationDrawerProps = {
 	OnChanged: ((string) -> ())?,
 	--- Cap embedded menu height (px). Omit to fill.
 	MaxHeight: number?,
+	--- Width of the drawer's parent, in px, from which the drawer stays open beside the content,
+	--- like a sidebar. Below that width it slides in over the content. Omit to never dock.
+	DockAt: number?,
+	--- Runs with `true` when the drawer docks and `false` when it floats again.
+	OnDockChanged: ((boolean) -> ())?,
 	[string]: any,
 }
 

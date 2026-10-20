@@ -35,6 +35,10 @@ With a vertical rail, the rail runs the full height of the window. The app bar s
 
 A window cannot clip to rounded corners, so the app bar and the rail round their own corners to match the window: with a vertical rail the rail takes the two left corners and the app bar the top right.
 
+## Docked drawer
+
+A [NavigationDrawer](./NavigationDrawer.md) with `DockAt` stays open beside the content once the window is wide enough. The window moves its app bar and content over to make room, and moves them back when the drawer floats again. A side rail stays under the drawer.
+
 ## Dragging
 
 The window is dragged by its app bar. `DragBounds` decides how far it may go off screen.
