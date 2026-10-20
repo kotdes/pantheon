@@ -12,7 +12,7 @@
           "$path": "src"
         },
         "PantheonRouter": {
-          "$path": "../pantheon-router/src"
+          "$path": "libs/router/src"
         }
       },
       "DevPackages": {
