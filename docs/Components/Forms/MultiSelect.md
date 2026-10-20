@@ -41,7 +41,6 @@ scope:MultiSelect({
 | `Disabled` | `UsedAs<boolean>` | :x: | - | Stops the field opening. The component reads this once, when it creates the field. |
 | `Validators` | `{ Validator }` | :x: | - | Validators to run on the list of chosen values. |
 | `Display` | `"Chips" \| "Count"` | :x: | `"Chips"` | `"Chips"` shows a chip for each choice. `"Count"` shows how many choices there are. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 

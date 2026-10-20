@@ -41,7 +41,6 @@ scope:TreeView({
 | `Nodes` | `{ TreeNode }` | :white_check_mark: | - | The top level items. Each has an `Id` and a `Label`, and can have an `Icon` and `Children`, a list of nodes. |
 | `Expanded` | `UsedAs<{ [string]: boolean }>` | :x: | `{}` | The open branches, as a table from `Id` to `true`. A plain table is only the starting set. A `Value` is followed, and is set when a branch opens or closes. |
 | `Selected` | `UsedAs<string>` | :x: | `""` | `Id` of the selected node. A plain value is only the starting selection. A `Value` is followed, and is set when the user picks a node. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 

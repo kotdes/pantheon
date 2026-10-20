@@ -17,7 +17,7 @@ return function(scope: Types.Scope, props: Types.CollapsibleProps): Instance
 	local theme = resolveTheme(props)
 	local open = Persist.value(
 		scope,
-		Persist.key("Collapsible", props.Id, typeof(props.Open) == "table"),
+		Persist.key("Collapsible", typeof(props.Open) == "table"),
 		"open",
 		peek(props.Open) == true
 	)

@@ -33,7 +33,6 @@ Drag a divider to move it. The panes next to it grow and shrink, and no pane get
 
 | Name | Type | Required | Default | Description |
 | ---- | ---- | -------- | ------- | ----------- |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## See also
 

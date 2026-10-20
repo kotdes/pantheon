@@ -9,6 +9,9 @@ export type UsedAs<T> = T | any
 export type Directive = {
 	type: "Directive",
 	apply: (self: any, scope: Scope, value: any, target: Instance) -> (),
+	around: (
+		(self: any, scope: Scope, value: any, build: () -> Instance, kind: string) -> Instance
+	)?,
 }
 
 export type ThemeMode = "Light" | "Dark"
@@ -1183,8 +1186,6 @@ export type GradientPickerProps = {
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
-	--- Persist key (with a Persist store provided).
-	Id: string?,
 	--- Where button tooltips are mounted. Without a layer, or one set with Layer.Provide / Layer.bind, there are no tooltips.
 	Layer: Instance?,
 	--- Starting gradient, one stop per keypoint, and its transparency (alpha = 1 - transparency).
@@ -1475,7 +1476,6 @@ export type NumberFieldProps = {
 	Size: UsedAs<UDim2>?,
 	Visible: UsedAs<boolean>?,
 	ZIndex: UsedAs<number>?,
-	Id: string?,
 	--- The number. A `Value` is followed and set as the user edits.
 	Value: UsedAs<number>?,
 	Min: number?,
@@ -1501,7 +1501,6 @@ export type SplitPaneProps = {
 	Size: UsedAs<UDim2>?,
 	Visible: UsedAs<boolean>?,
 	ZIndex: UsedAs<number>?,
-	Id: string?,
 	--- The panes, in order. Each is sized to fill its slot.
 	Panes: { Instance },
 	--- `"Horizontal"` puts the panes side by side, `"Vertical"` stacks them (default "Horizontal").
@@ -1531,7 +1530,6 @@ export type DockPanelProps = {
 	Size: UsedAs<UDim2>?,
 	Visible: UsedAs<boolean>?,
 	ZIndex: UsedAs<number>?,
-	Id: string?,
 	--- Text of the header. Ignored when there are `Tabs`.
 	Title: string?,
 	--- Tabs in the header, each with the content it shows.
@@ -1624,7 +1622,6 @@ export type CurveEditorProps = {
 	Size: UsedAs<UDim2>?,
 	Visible: UsedAs<boolean>?,
 	ZIndex: UsedAs<number>?,
-	Id: string?,
 	--- The curve. A `Value` is followed and set as the user edits. Default: a line from `Min` to `Max`.
 	Value: UsedAs<NumberSequence>?,
 	--- Lowest and highest value on the plot (default 0 and 1).
@@ -1697,7 +1694,6 @@ export type RadialMenuProps = {
 	LayoutOrder: UsedAs<number>?,
 	ZIndex: UsedAs<number>?,
 	Layer: Instance?,
-	Id: string?,
 	--- The choices, placed round the ring clockwise from the top.
 	Items: { RadialItem },
 	--- Whether the ring is shown. A `Value` is followed and set when the ring closes.

@@ -29,7 +29,7 @@ end
 
 return function(scope: Types.Scope, props: Types.TreeViewProps): Instance
 	local theme = resolveTheme(props)
-	local persistKey = Persist.key("TreeView", props.Id, typeof(props.Expanded) == "table")
+	local persistKey = Persist.key("TreeView", typeof(props.Expanded) == "table")
 	local expanded =
 		Persist.value(scope, persistKey, "expanded", copyExpanded(peek(props.Expanded)))
 	local selected = Persist.value(scope, persistKey, "selected", peek(props.Selected) or "")

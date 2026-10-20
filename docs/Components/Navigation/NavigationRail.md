@@ -40,7 +40,6 @@ scope:NavigationRail({
 | `Selected` | `UsedAs<string>` | :x: | The first item | `Id` of the selected destination. A plain value is only the starting destination. A `Value` is followed, and is set when the user picks one. |
 | `Orientation` | `"Vertical" \| "Horizontal"` | :x: | `"Vertical"` | `"Vertical"` for a rail at the side, `"Horizontal"` for a bar along the bottom. |
 | `Shadow` | `boolean` | :x: | `true` | Set `false` to remove the shadow. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 

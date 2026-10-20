@@ -35,7 +35,6 @@ scope:StarRating({
 | `Max` | `number` | :x: | `5` | Number of stars. |
 | `ReadOnly` | `boolean` | :x: | `false` | Show the score only. The stars do not react to input. |
 | `IconSize` | `number` | :x: | `24` | Size of one star, in pixels. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 

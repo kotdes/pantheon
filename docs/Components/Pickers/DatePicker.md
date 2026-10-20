@@ -31,7 +31,6 @@ scope:DatePicker({
 | `LayoutOrder` | `UsedAs<number>` | :x: | `0` | Position in a parent `UIListLayout` or `UIGridLayout`. |
 | `Size` | `UsedAs<UDim2>` | :x: | - | Size of the component. |
 | `Value` | `UsedAs<string>?, -- YYYY-MM-DD` | :white_check_mark: | Today | The date as `YYYY-MM-DD`. A plain value is only the starting date. A `Value` is followed, and is set when the user picks a day. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 

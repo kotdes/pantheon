@@ -37,7 +37,6 @@ scope:SegmentedControl({
 | `Items` | `{ { Id: string, Label: string, Icon: string? } }` | :white_check_mark: | - | The segments. Each has an `Id`, a `Label` and an optional Lucide `Icon`. |
 | `Selected` | `UsedAs<string>` | :x: | The first item | `Id` of the chosen segment. A plain value is only the starting segment. A `Value` stays in step with the control: the user's changes set it, and setting it changes the control. |
 | `Disabled` | `UsedAs<boolean>` | :x: | `false` | Stops the control reacting to input. The component reads this once, when it creates the control. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 

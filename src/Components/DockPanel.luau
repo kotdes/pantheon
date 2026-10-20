@@ -24,7 +24,7 @@ return function(scope: Types.Scope, props: Types.DockPanelProps): Instance
 	local tabs = props.Tabs
 	local hasTabs = tabs ~= nil and #tabs > 0
 
-	local persistKey = Persist.key("DockPanel", props.Id, false)
+	local persistKey = Persist.key("DockPanel", false)
 	local open = Persist.value(scope, persistKey, "open", peek(props.Open) ~= false)
 	Bind.link(scope, props.Open, open)
 	local selected = Persist.value(

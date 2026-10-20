@@ -34,7 +34,6 @@ scope:Collapsible({
 | `Title` | `UsedAs<string>` | :white_check_mark: | - | Text of the title row. |
 | `Open` | `UsedAs<boolean>` | :x: | `false` | Whether the content is shown. A plain value is only the starting state. A `Value` is followed, and is set when the user opens or closes it. |
 | `Children` | `any` | :x: | - | The content that is shown and hidden. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 

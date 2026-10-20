@@ -19,7 +19,7 @@ local INSET = 4
 
 return function(scope: Types.Scope, props: Types.SwitchProps): Instance
 	local theme = resolveTheme(props)
-	local persistKey = Persist.key("Switch", props.Id, typeof(props.Checked) == "table")
+	local persistKey = Persist.key("Switch", typeof(props.Checked) == "table")
 	local checked = Persist.value(scope, persistKey, "checked", peek(props.Checked) == true)
 	Bind.link(scope, props.Checked, checked)
 	local disabled = peek(props.Disabled) == true

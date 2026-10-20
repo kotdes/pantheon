@@ -36,14 +36,37 @@ end
 --- Create a directive. `apply(scope, value, target)` runs once, with the root Instance of the
 --- component and the value it was given (a plain value or a state). Anything that needs
 --- cleaning up can be put in `scope`.
+---
+--- `around(scope, value, build, kind)` is for a directive that has to be in place while the
+--- component is being built, not after. It must call `build()` and return the Instance. `kind`
+--- is the name of the component (`"Switch"`).
 function Directives.create(
-	apply: (scope: Types.Scope, value: any, target: Instance) -> ()
+	apply: ((scope: Types.Scope, value: any, target: Instance) -> ())?,
+	around: ((
+		scope: Types.Scope,
+		value: any,
+		build: () -> Instance,
+		kind: string
+	) -> Instance)?
 ): Types.Directive
 	return table.freeze({
 		type = "Directive",
 		apply = function(_self: any, scope: Types.Scope, value: any, target: Instance)
-			apply(scope, value, target)
+			if apply then
+				apply(scope, value, target)
+			end
 		end,
+		around = if around
+			then function(
+				_self: any,
+				scope: Types.Scope,
+				value: any,
+				build: () -> Instance,
+				kind: string
+			)
+				return around(scope, value, build, kind)
+			end
+			else nil,
 	}) :: any
 end
 
@@ -83,7 +106,8 @@ end
 
 --- Wrap a component `(scope, props) -> Instance` so it understands directives. Props without
 --- one go straight through, so a component that is not given a directive costs one table scan.
-function Directives.wrap(component: (scope: Types.Scope, props: any) -> Instance)
+--- `kind` is the name of the component.
+function Directives.wrap(kind: string, component: (scope: Types.Scope, props: any) -> Instance)
 	return function(scope: Types.Scope, props: any): Instance
 		local found: { [any]: any }? = nil
 		for key, value in props do
@@ -101,7 +125,18 @@ function Directives.wrap(component: (scope: Types.Scope, props: any) -> Instance
 		for key in found do
 			plain[key] = nil
 		end
-		local instance = component(scope, plain)
+		local build: () -> Instance = function()
+			return component(scope, plain)
+		end
+		for key, value in found do
+			if (key :: any).around then
+				local inner = build
+				build = function()
+					return (key :: any):around(scope, value, inner, kind)
+				end
+			end
+		end
+		local instance = build()
 		for key, value in found do
 			key:apply(scope, value, instance)
 		end

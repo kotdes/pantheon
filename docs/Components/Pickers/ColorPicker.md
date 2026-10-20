@@ -57,7 +57,6 @@ There is an alpha slider over a checkerboard on every tab. Set `ShowAlpha = fals
 | `Palette` | `{ Color3 }` | :x: | A grey ramp and a grid of hues | Swatches for the Grid tab. |
 | `Footer` | `boolean` | :x: | `true` | Show the swatch, hex field and alpha readout at the bottom. |
 | `Background` | `Color3` | :x: | `Colors.Surface` | Fill colour of the picker. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 

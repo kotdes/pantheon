@@ -48,7 +48,6 @@ Type a number and press Enter, or click away, to confirm it. If the text is not 
 | `Suffix` | `string` | :x: | - | Fixed text at the end of the field, such as a unit. |
 | `ScrubSpeed` | `number` | :x: | See [Scrubbing](#scrubbing) | Change in value for each pixel of scrubbing. |
 | `Disabled` | `UsedAs<boolean>` | :x: | `false` | Stops the field reacting to input. The component reads this once, when it creates the field. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 

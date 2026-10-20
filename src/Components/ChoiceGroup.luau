@@ -23,7 +23,7 @@ return function(scope: Types.Scope, props: Types.ChoiceGroupProps): Instance
 	local disabled = peek(props.Disabled) == true
 	local selected = Persist.value(
 		scope,
-		Persist.key("ChoiceGroup", props.Id, typeof(props.Value) == "table"),
+		Persist.key("ChoiceGroup", typeof(props.Value) == "table"),
 		"value",
 		peek(props.Value) or (props.Options[1] and props.Options[1].Value) or ""
 	)

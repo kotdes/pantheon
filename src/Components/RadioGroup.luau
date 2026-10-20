@@ -15,7 +15,7 @@ return function(scope: Types.Scope, props: Types.RadioGroupProps): Instance
 		then props.Value
 		else Persist.value(
 			scope,
-			Persist.key("RadioGroup", props.Id),
+			Persist.key("RadioGroup"),
 			"value",
 			(props.Options[1] and props.Options[1].Value) or ""
 		)

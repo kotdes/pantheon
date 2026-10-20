@@ -39,7 +39,6 @@ scope:ChoiceGroup({
 | `Variant` | `"Radio" \| "Segmented"` | :x: | `"Radio"` | `"Radio"` shows a list of radio buttons. `"Segmented"` shows a segmented control. |
 | `Validators` | `{ Validator }` | :x: | - | Validators to run on the chosen value. If one fails, its message appears under the group. |
 | `Label` | `UsedAs<string>` | :x: | - | Label above the group. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 

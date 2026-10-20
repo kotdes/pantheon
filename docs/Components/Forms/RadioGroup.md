@@ -36,7 +36,6 @@ scope:RadioGroup({
 | `Options` | `{ RadioOption }` | :white_check_mark: | - | The options, each with a `Value` and a `Label`. |
 | `Value` | `UsedAs<string>` | :x: | - | A `Value<string>` that holds the chosen option. If you leave it out, the group keeps its own state and starts on the first option. |
 | `Disabled` | `UsedAs<boolean>` | :x: | `false` | Stops the options reacting to input. The component reads this once, when it creates the group. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 

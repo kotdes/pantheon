@@ -55,7 +55,7 @@ return function(scope: Types.Scope, props: Types.NumberFieldProps): Instance
 		return math.floor(n * factor + 0.5) / factor
 	end
 
-	local persistKey = Persist.key("NumberField", props.Id, typeof(props.Value) == "table")
+	local persistKey = Persist.key("NumberField", typeof(props.Value) == "table")
 	local value = Persist.value(scope, persistKey, "value", clamp(peek(props.Value) or 0))
 	Bind.link(scope, props.Value, value)
 

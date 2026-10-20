@@ -24,7 +24,7 @@ return function(scope: Types.Scope, props: Types.SliderProps): Instance
 	local step = props.Step or 0.01
 	local value = Persist.value(
 		scope,
-		Persist.key("Slider", props.Id, typeof(props.Value) == "table"),
+		Persist.key("Slider", typeof(props.Value) == "table"),
 		"value",
 		peek(props.Value) or minV
 	)

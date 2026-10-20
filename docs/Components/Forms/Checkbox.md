@@ -38,7 +38,6 @@ scope:Checkbox({
 | `Checked` | `UsedAs<boolean>` | :x: | `false` | The value. A plain value is only the starting value. A `Value` stays in step with the control: the user's changes set it, and setting it changes the control. |
 | `Label` | `UsedAs<string>` | :x: | - | Text next to the box. |
 | `Disabled` | `UsedAs<boolean>` | :x: | `false` | Stops the box reacting to input. The component reads this once, when it creates the checkbox. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 

@@ -51,7 +51,6 @@ Under the editor, on a darker fill with no gap between them, is a plain [ColorPi
 | `Theme` | `ThemeRef` | :x: | The contextual theme | Theme to use for this component instead of the one from `Theme.Provide`. |
 | `LayoutOrder` | `UsedAs<number>` | :x: | `0` | Position in a parent `UIListLayout` or `UIGridLayout`. |
 | `Size` | `UsedAs<UDim2>` | :x: | - | Size of the component. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 | `Layer` | `Instance` | :x: | The layer from `Layer.Provide` or `Layer.bind` | Overlay layer that floating content is mounted in. See [Overlay layers](../../Guides/OverlayLayers.md). |
 | `Gradient` | `UsedAs<ColorSequence>` | :x: | Two stops, the default colour and white | Starting colours, one stop for each keypoint. |
 | `GradientTransparency` | `UsedAs<NumberSequence>` | :x: | - | Starting transparency. The alpha of a stop is `1 - transparency`. |

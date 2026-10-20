@@ -35,7 +35,6 @@ With `Collapsible`, an arrow at the start of the header collapses the panel to t
 
 | Name | Type | Required | Default | Description |
 | ---- | ---- | -------- | ------- | ----------- |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## See also
 

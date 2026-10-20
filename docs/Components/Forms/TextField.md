@@ -53,7 +53,6 @@ scope:TextField({
 | `Compact` | `boolean` | :x: | `false` | A smaller version for fields inside other widgets. It is 28 pixels tall, with less padding and 13-pixel text. |
 | `Height` | `number` | :x: | `40`, or `28` when compact | Height of the box, in pixels. |
 | `Prefix` | `string` | :x: | - | Fixed text at the start of the box, such as `"#"`. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 

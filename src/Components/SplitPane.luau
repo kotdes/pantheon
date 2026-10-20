@@ -53,7 +53,7 @@ return function(scope: Types.Scope, props: Types.SplitPaneProps): Instance
 	local minPanel = props.MinSize or 80
 
 	local initial = normalised(peek(props.Ratios), count)
-	local persistKey = Persist.key("SplitPane", props.Id, typeof(props.Ratios) == "table")
+	local persistKey = Persist.key("SplitPane", typeof(props.Ratios) == "table")
 	local ratios = Persist.value(scope, persistKey, "ratios", initial)
 	Bind.link(scope, props.Ratios, ratios, {
 		toInternal = function(value: { number })

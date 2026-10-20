@@ -17,11 +17,10 @@ local Layer = require(script.Internal.Layer)
 
 require(script.Internal.FusionPerf).apply()
 
-
 local Components: { [string]: any } = {}
 for name, component in RawComponents :: any do
 	Components[name] = if typeof(component) == "function"
-		then Directives.wrap(component)
+		then Directives.wrap(name, component)
 		else component
 end
 table.freeze(Components)

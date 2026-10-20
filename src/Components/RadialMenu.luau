@@ -31,7 +31,7 @@ return function(scope: Types.Scope, props: Types.RadialMenuProps): Instance
 	local count = #items
 	local radius = props.Radius or 96
 	local itemSize = props.ItemSize or 52
-	local persistKey = Persist.key("RadialMenu", props.Id, true)
+	local persistKey = Persist.key("RadialMenu", true)
 	local open = Persist.value(scope, persistKey, "open", peek(props.Open) == true)
 	Bind.link(scope, props.Open, open)
 

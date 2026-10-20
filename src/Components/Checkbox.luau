@@ -17,7 +17,7 @@ local peek = Fusion.peek
 
 return function(scope: Types.Scope, props: Types.CheckboxProps): Instance
 	local theme = resolveTheme(props)
-	local persistKey = Persist.key("Checkbox", props.Id, typeof(props.Checked) == "table")
+	local persistKey = Persist.key("Checkbox", typeof(props.Checked) == "table")
 	local checked = Persist.value(scope, persistKey, "checked", peek(props.Checked) == true)
 	Bind.link(scope, props.Checked, checked)
 	local checkedS = scope:Spring(

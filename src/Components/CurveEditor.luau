@@ -197,7 +197,7 @@ return function(scope: Types.Scope, props: Types.CurveEditorProps): Instance
 			{ time = 0, value = minValue, envelope = 0 },
 			{ time = 1, value = maxValue, envelope = 0 },
 		}
-	local persistKey = Persist.key("CurveEditor", props.Id, typeof(props.Value) == "table")
+	local persistKey = Persist.key("CurveEditor", typeof(props.Value) == "table")
 	local points = Persist.value(scope, persistKey, "points", initial)
 	local lastEmitted: NumberSequence? = nil
 	if Bind.isState(props.Value) then
