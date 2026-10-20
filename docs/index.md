@@ -18,7 +18,7 @@ Pantheon is a set of user interface components for Roblox. It is built on [Fusio
 
 !!! note
 
-    Pantheon is still being built. It is not on Wally yet, and parts of it will change before version 1.
+    Pantheon is on Wally, and it is still being built. Parts of the API will change before version 1. If you use version 0.1, read [Migrating to 0.2](Guides/Migrating.md).
 
 ## Features
 
@@ -63,6 +63,14 @@ Pantheon is a set of user interface components for Roblox. It is built on [Fusio
     A panel for inspecting an interface while it runs. You can browse the element tree and change properties.
 
     [:octicons-arrow-right-24: DevTools](Modules/DevTools.md)
+
+-   :material-puzzle-outline:{ .lg .middle } __Directives__
+
+    ---
+
+    Add behaviour to any component with a key in its properties, such as utility classes or a stable id for saved state.
+
+    [:octicons-arrow-right-24: Directives](Guides/Directives.md)
 
 -   :material-library:{ .lg .middle } __Built with Fusion__
 

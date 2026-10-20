@@ -1,3 +1,7 @@
+---
+description: How to add Pantheon to a Roblox project with Wally.
+---
+
 # Installing Pantheon
 
 Pantheon is on Wally. Add it to your `wally.toml` and run `wally install`:
