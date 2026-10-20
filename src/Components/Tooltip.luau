@@ -24,7 +24,7 @@ return function(scope: Types.Scope, props: Types.TooltipProps): Instance
 		AutomaticSize = Enum.AutomaticSize.XY,
 		Visible = CanvasFade.shown(scope, visibleS, nil, { Theme = theme }),
 		BackgroundTransparency = CanvasFade.surfaceTransparency(scope, visibleS, { Theme = theme }),
-		ZIndex = props.ZIndex or 120,
+		ZIndex = props.ZIndex or 160,
 		[Children] = {
 			scope:New("UICorner")({ CornerRadius = UDim.new(0, theme.Metrics.RadiusSm) }),
 			scope:New("UIPadding")({
@@ -94,6 +94,9 @@ return function(scope: Types.Scope, props: Types.TooltipProps): Instance
 		table.insert(
 			scope,
 			hoverTarget.MouseEnter:Connect(function()
+				if props.Enabled ~= nil and not Fusion.peek(props.Enabled) then
+					return
+				end
 				visible:set(1)
 				task.defer(updatePosition)
 			end)

@@ -1,7 +1,7 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C, ctx)
+return StoryUtil.story(function(scope, _, ctx)
 	local Children = StoryUtil.Fusion.Children
 	local snap = scope:Value(true)
 	local progress = scope:Value(0.4)
@@ -11,7 +11,7 @@ return StoryUtil.story(function(scope, C, ctx)
 		AutomaticSize = Enum.AutomaticSize.Y,
 		Layout = { Kind = "List", Padding = 16 },
 		[Children] = {
-			C.Toolbar(scope, {
+			scope:Toolbar({
 				Layer = ctx.overlayLayer,
 				LayoutOrder = 1,
 				Items = {
@@ -50,7 +50,7 @@ return StoryUtil.story(function(scope, C, ctx)
 					{ Id = "off", Icon = "lock", Tooltip = "Disabled", Disabled = true },
 				},
 			}),
-			C.StatusBar(scope, {
+			scope:StatusBar({
 				Layer = ctx.overlayLayer,
 				LayoutOrder = 2,
 				Start = {

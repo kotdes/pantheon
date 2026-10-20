@@ -6,6 +6,7 @@ on:
     paths:
       - src/**
       - stories/**
+      - libs/**
       - wally.toml
       - .github/workflows/ci.yml
   pull_request:
@@ -20,4 +21,24 @@ jobs:
           curl -fsSL https://raw.githubusercontent.com/rojo-rbx/rokit/main/scripts/install.sh | bash
           echo "$HOME/.rokit/bin" >> $GITHUB_PATH
       - run: rokit install --no-trust-check
-      - run: selene src demo
+      - run: selene src demo libs/router/src
+
+  router-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rokit
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/rojo-rbx/rokit/main/scripts/install.sh | bash
+          echo "$HOME/.rokit/bin" >> $GITHUB_PATH
+      - run: rokit install --no-trust-check
+      # The tests run in the `luau` command line tool, which is not in Rokit's list here.
+      - name: Install Luau
+        run: |
+          curl -fsSL -o luau.zip https://github.com/luau-lang/luau/releases/latest/download/luau-ubuntu.zip
+          unzip -q luau.zip luau
+          sudo mv luau /usr/local/bin/luau
+      - run: wally install
+        working-directory: libs/router
+      - run: tests/run.sh
+        working-directory: libs/router

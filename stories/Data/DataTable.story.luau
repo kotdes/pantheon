@@ -1,7 +1,7 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C)
+return StoryUtil.story(function(scope)
 	local rows = {}
 	for i = 1, 50 do
 		table.insert(rows, {
@@ -14,7 +14,7 @@ return StoryUtil.story(function(scope, C)
 	return StoryUtil.panel(
 		scope,
 		260,
-		C.DataTable(scope, {
+		scope:DataTable({
 			Columns = {
 				{ Id = "id", Title = "Id", Width = 60 },
 				{ Id = "name", Title = "Name", Width = 140 },

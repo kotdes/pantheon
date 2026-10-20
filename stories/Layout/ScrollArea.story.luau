@@ -1,10 +1,10 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C, _ctx)
+return StoryUtil.story(function(scope, _, _ctx)
 	local status = scope:Value("Pull down from the top")
 	local kids = {
-		C.Text(scope, {
+		scope:Text({
 			Text = status,
 			Variant = "Label",
 			LayoutOrder = 0,
@@ -13,14 +13,14 @@ return StoryUtil.story(function(scope, C, _ctx)
 	for i = 1, 40 do
 		table.insert(
 			kids,
-			C.Text(scope, {
+			scope:Text({
 				Text = "Scroll row " .. i,
 				Variant = "Body",
 				LayoutOrder = i,
 			})
 		)
 	end
-	local scroll = C.ScrollArea(scope, {
+	local scroll = scope:ScrollArea({
 		Children = kids,
 		Smooth = true,
 		Inertia = true,

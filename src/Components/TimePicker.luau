@@ -13,7 +13,7 @@ local peek = Fusion.peek
 return function(scope: Types.Scope, props: Types.TimePickerProps): Instance
 	local theme = resolveTheme(props)
 	local total = peek(props.Value) or 0
-	local persistKey = Persist.key("TimePicker", props.Id, typeof(props.Value) == "table")
+	local persistKey = Persist.key("TimePicker", typeof(props.Value) == "table")
 	local hours = Persist.value(scope, persistKey, "hours", math.floor(total / 3600) % 24)
 	local minutes = Persist.value(scope, persistKey, "minutes", math.floor(total / 60) % 60)
 	Bind.linkParts(scope, props.Value, { hours, minutes }, function(h: number, m: number)

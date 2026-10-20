@@ -14,9 +14,9 @@ Call `Components.Popover` with a scope and a table of properties:
 
 ```luau
 local open = scope:Value(false)
-local button = C.Button(scope, { Text = "Options", OnClick = function() open:set(true) end })
+local button = scope:Button({ Text = "Options", OnClick = function() open:set(true) end })
 
-C.Popover(scope, {
+scope:Popover({
 	Layer = overlayLayer,
 	Target = button,
 	Open = open,
@@ -39,18 +39,22 @@ C.Popover(scope, {
 | `ZIndex` | `UsedAs<number>` | :x: | - | Z index of the component. |
 | `Open` | `UsedAs<boolean>` | :x: | - | Whether the popover is shown. Follows the state you pass. |
 | `Target` | `Instance` | :x: | - | The element the popover is placed next to. |
-| `Placement` | `"Bottom" \| "Top" \| "Left" \| "Right"` | :x: | `"Bottom"` | Preferred side of the target: `"Bottom"`, `"Top"`, `"Left"` or `"Right"`. |
+| `Placement` | `"Auto" \| "Bottom" \| "Top" \| "Left" \| "Right"` | :x: | `"Bottom"` | Preferred side of the target. If the popover does not fit on that side, it moves to the opposite side, and it always stays inside its layer. `"Auto"` picks the side with the most room. |
 | `Items` | `{ any }` | :x: | - | Menu rows. See [MenuButton](./MenuButton.md). |
 | `Sections` | `{ MenuSectionProps }` | :x: | - | Groups of rows. See [MenuSection](./MenuSection.md). |
 | `MaxHeight` | `number` | :x: | - | Largest height in pixels of the menu. It scrolls past that. |
+| `AutoHeight` | `boolean` | :x: | `true` | Make the popover as tall as its content, up to `MaxHeight`, and change height with a spring when the content or the page changes. Set `false` for a fixed height. |
 | `Children` | `any` | :x: | - | Menu content built from [MenuSection](./MenuSection.md) and [MenuButton](./MenuButton.md). |
 | `Width` | `number` | :x: | `240` | Width of the popover in pixels. |
+| `RootPage` | `string` | :x: | The first page | Id of the first [MenuPage](./MenuPage.md) when `Children` has pages. Set it to `"root"` to show `Items` or `Sections` first. |
+| `Page` | `UsedAs<string>` | :x: | - | Id of the page to show. The popover moves to it when it changes. |
 
 ## Callbacks
 
 | Name | Description |
 | ---- | ----------- |
 | `OnClose: () -> ()` | Runs when the user presses outside the popover, or an item that closes it. |
+| `OnChanged: (string) -> ()` | Runs with the id of the page when the user moves between pages. |
 
 ## See also
 

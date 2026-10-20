@@ -1,5 +1,6 @@
 site_name: Pantheon
 site_url: https://pantheon.7kayoh.net/
+site_description: User interface components for Roblox, built on Fusion.
 repo_name: kotdes/pantheon
 repo_url: https://github.com/kotdes/pantheon
 edit_uri: edit/main/docs/
@@ -40,8 +41,16 @@ theme:
 
   language: en
 
+hooks:
+  - hooks/page_description.py
+
 plugins:
   - search
+  # Social cards need Cairo, so they are off for local builds. Set CARDS=true to build them.
+  - social:
+      enabled: !ENV [CARDS, false]
+      cards_layout_dir: layouts
+      cards_layout: pantheon
   - tags:
       tags_file: Tags.md
   - glightbox
@@ -71,9 +80,11 @@ nav:
       - Installing Pantheon: Tutorials/InstallingPantheon.md
       - Using Pantheon: Tutorials/UsingPantheon.md
   - Guides:
+      - Migrating to 0.2: Guides/Migrating.md
       - Common properties: Guides/CommonProperties.md
       - Theming: Guides/Theming.md
       - Persisting state: Guides/PersistingState.md
+      - Directives: Guides/Directives.md
       - Overlay layers: Guides/OverlayLayers.md
       - Accessibility: Guides/Accessibility.md
       - Performance: Guides/Performance.md
@@ -116,12 +127,10 @@ nav:
     - Feedback:
         - Components/Feedback/Alert.md
         - Components/Feedback/EmptyState.md
-        - Components/Feedback/Loader.md
         - Components/Feedback/LoadingIndicator.md
         - Components/Feedback/Progress.md
         - Components/Feedback/Snackbar.md
         - Components/Feedback/SnackbarHost.md
-        - Components/Feedback/Spinner.md
     - Navigation:
         - Components/Navigation/AppBar.md
         - Components/Navigation/Breadcrumbs.md
@@ -163,10 +172,18 @@ nav:
         - Components/Pickers/GradientPicker.md
         - Components/Pickers/TimePicker.md
   - Game:
-      - Game/TopBar.md
       - Game/Hotbar.md
       - Game/Backpack.md
-      - Game/Leaderboard.md
+  - Router:
+      - Router/index.md
+      - Routes and paths: Router/Routes.md
+      - Nested routes: Router/NestedRoutes.md
+      - Navigation: Router/Navigation.md
+      - Load data: Router/LoadData.md
+      - Guards: Router/Guards.md
+      - Transitions: Router/Transitions.md
+      - Versions: Router/Versions.md
+      - Changelog: Router/Changelog.md
   - Modules:
       - Modules/Bind.md
       - Modules/DevTools.md
@@ -184,6 +201,9 @@ nav:
   - Tags: Tags.md
 
 extra:
+  version:
+    provider: mike
+    default: latest
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/kotdes/pantheon

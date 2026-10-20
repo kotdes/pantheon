@@ -13,7 +13,7 @@ RadialMenu shows a ring of choices around the pointer, as in the emote wheel of 
 Call `Components.RadialMenu` with a scope and a table of properties:
 
 ```luau
-C.RadialMenu(scope, {
+scope:RadialMenu({
 	Layer = overlayLayer,
 	Hotkey = Enum.KeyCode.Q, -- (1)!
 	Title = "Emote",
@@ -44,7 +44,6 @@ The ring is mounted on a layer, so it needs `Layer`, or one from `Layer.Provide`
 
 | Name | Type | Required | Default | Description |
 | ---- | ---- | -------- | ------- | ----------- |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## See also
 

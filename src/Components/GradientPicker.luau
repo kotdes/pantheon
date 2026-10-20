@@ -119,7 +119,7 @@ return function(scope: Types.Scope, props: Types.GradientPickerProps): Instance
 	local showAlpha = props.ShowAlpha ~= false
 	local gap = theme.Metrics.SpaceSm
 	local initial: Color3 = Color3.fromRGB(0, 105, 92)
-	local persistKey = Persist.key("GradientPicker", props.Id, false)
+	local persistKey = Persist.key("GradientPicker", false)
 
 	--- Tooltip for a button. Skipped when there is no overlay layer (`Layer`, or one set with Layer.Provide or Layer.bind).
 	local function tip(target: Instance, text: string)
@@ -170,9 +170,9 @@ return function(scope: Types.Scope, props: Types.GradientPickerProps): Instance
 	end
 
 	local function emitGradient()
-		if props.OnGradientChanged then
+		if props.OnChanged then
 			local colors, transparency = sequences(peek(stops))
-			props.OnGradientChanged(
+			props.OnChanged(
 				colors,
 				transparency,
 				peek(rotation),
@@ -1026,7 +1026,7 @@ return function(scope: Types.Scope, props: Types.GradientPickerProps): Instance
 		Model = props.Model,
 		Area = props.Area,
 		Palette = props.Palette,
-		OnChange = function(c: Color3)
+		OnChanged = function(c: Color3)
 			setStopColor(peek(selected), c)
 		end,
 	}) :: Frame

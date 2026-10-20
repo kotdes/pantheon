@@ -113,8 +113,8 @@ return function(scope: Types.Scope, props: Types.RadioProps): Instance
 			if disabled then
 				return
 			end
-			if props.OnActivated then
-				props.OnActivated()
+			if props.OnClick then
+				props.OnClick()
 			end
 		end,
 		Layout = {

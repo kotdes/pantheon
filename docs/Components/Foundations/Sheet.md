@@ -13,7 +13,7 @@ Sheet is a [Surface](./Surface.md) that is always elevated. Windows and bottom s
 Call `Components.Sheet` with a scope and a table of properties:
 
 ```luau
-C.Sheet(scope, {
+scope:Sheet({
 	Size = UDim2.fromOffset(320, 200),
 })
 ```

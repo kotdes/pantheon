@@ -15,7 +15,7 @@ Tabs is a row of chips that switches between views. The row scrolls sideways whe
 Call `Components.Tabs` with a scope and a table of properties:
 
 ```luau
-C.Tabs(scope, {
+scope:Tabs({
 	Items = {
 		{ Id = "all", Label = "All" },
 		{ Id = "unread", Label = "Unread" },
@@ -35,7 +35,6 @@ C.Tabs(scope, {
 | `Size` | `UsedAs<UDim2>` | :x: | `UDim2.new(1, 0, 0, 44)` | Size of the component. |
 | `Items` | `{ TabItem }` | :white_check_mark: | - | The tabs. Each has an `Id` and a `Label`. |
 | `Selected` | `UsedAs<string>` | :x: | The first item | `Id` of the selected tab. A plain value is only the starting tab. A `Value` is followed, and is set when the user picks one. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 

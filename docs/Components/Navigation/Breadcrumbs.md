@@ -13,7 +13,7 @@ Breadcrumbs shows the path to the current page, with each step separated by a sl
 Call `Components.Breadcrumbs` with a scope and a table of properties:
 
 ```luau
-C.Breadcrumbs(scope, {
+scope:Breadcrumbs({
 	Items = {
 		{ Label = "Home", OnClick = goHome },
 		{ Label = "Settings", OnClick = goSettings },

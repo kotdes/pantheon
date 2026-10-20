@@ -22,17 +22,17 @@ A control that lets the user change a value, such as `Checkbox`, `Switch`, `Slid
 
 - A plain value, such as `Checked = true`, is the starting value. The control keeps its own state from then on.
 - A `Value` is linked to the control in both directions. Setting the `Value` moves the control, and the user changing the control sets the `Value`.
-- A `Computed` cannot be set, so it only moves the control. The control still changes when the user uses it, and the next change of the `Computed` overrides that.
+- A `Computed` cannot be set, so it only moves the control. The control still changes when the user uses it, and the next change of the `Computed` overrides that. Pantheon warns once when this happens, because the state and the control now disagree.
 
 ```luau
 local volume = scope:Value(40)
 
-C.Slider(scope, { Min = 0, Max = 100, Value = volume })
+scope:Slider({ Min = 0, Max = 100, Value = volume })
 
 volume:set(75) -- the slider moves
 ```
 
-Use the callback of the component, which is `OnChanged` for most of them, when you want to run code on a change.
+Use `OnChanged` when you want to run code on a change. Every control that has a value calls it with the new value. Events that are not a change of value have their own names, such as `OnClick` and `OnClose`.
 
 A control whose value you link this way is not [kept across rebuilds](PersistingState.md), since you own that state.
 

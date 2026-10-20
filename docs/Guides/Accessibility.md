@@ -1,3 +1,7 @@
+---
+description: How Pantheon follows the accessibility settings of the player, works with a keyboard or a gamepad, and checks colour contrast.
+---
+
 # Accessibility
 
 Pantheon helps in three ways: the theme follows the accessibility settings of the player, the controls can be used from the keyboard and a gamepad, and a helper checks the contrast of your colours.

@@ -15,7 +15,7 @@ Call `Components.CurveEditor` with a scope and a table of properties:
 ```luau
 local curve = scope:Value(NumberSequence.new(0, 1))
 
-C.CurveEditor(scope, {
+scope:CurveEditor({
 	Value = curve, -- (1)!
 	Min = 0,
 	Max = 1,
@@ -38,7 +38,6 @@ C.CurveEditor(scope, {
 
 | Name | Type | Required | Default | Description |
 | ---- | ---- | -------- | ------- | ----------- |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## See also
 

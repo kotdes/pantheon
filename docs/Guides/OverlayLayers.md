@@ -14,7 +14,7 @@ local overlayLayer = scope:Frame({
 	ZIndex = 50,
 })
 
-C.Dialog(scope, {
+scope:Dialog({
 	Layer = overlayLayer,
 	Open = open,
 	Title = "Delete file?",
@@ -29,14 +29,31 @@ The layer must be a `GuiObject`. Put it above your content, usually as the last 
 
 ```luau
 Pantheon.Layer.Provide(overlayLayer, function()
-	C.Dialog(scope, { Open = open, Title = "Delete file?" })
-	C.Tooltip(scope, { Target = button, Text = "Delete" })
+	scope:Dialog({ Open = open, Title = "Delete file?" })
+	scope:Tooltip({ Target = button, Text = "Delete" })
 end)
 ```
 
 ## Layers and windows
 
 A [Window](../Components/Navigation/Window.md) makes a layer inside itself and mounts its `Overlays` there, so floating content moves with the window and follows its rounded corners. When a Window is created, it also sets its layer as the fallback for components that are created after it and that were not given a layer. Components that are created before the Window do not get it, so pass `Layer` to those.
+
+## Stacking order
+
+Components on the same layer are drawn in order of their `ZIndex`. The defaults put what blocks the interface above what sits beside it, and tooltips and toasts above everything:
+
+| `ZIndex` | Component |
+| -------- | --------- |
+| 60 | [NavigationDrawer](../Components/Navigation/NavigationDrawer.md) |
+| 80 | [Menu](../Components/Overlays/Menu.md) |
+| 90 | [Popover](../Components/Overlays/Popover.md) |
+| 110 | [AppSheet](../Components/Overlays/AppSheet.md) |
+| 140 | [Dialog](../Components/Overlays/Dialog.md), [ConfirmDialog](../Components/Overlays/ConfirmDialog.md) and [Prompt](../Components/Overlays/Prompt.md) |
+| 150 | [Coachmark](../Components/Overlays/Coachmark.md) |
+| 160 | [Tooltip](../Components/Overlays/Tooltip.md) |
+| 180 | [SnackbarHost](../Components/Feedback/SnackbarHost.md) |
+
+Set `ZIndex` on a component to change where it is in this order.
 
 ## When there is no layer
 

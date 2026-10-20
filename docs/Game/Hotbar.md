@@ -119,4 +119,3 @@ A scope returns a string, or a list of strings, for an item. A search for `type:
 ## See also
 
 - [Backpack](./Backpack.md)
-- [TopBar](./TopBar.md)

@@ -20,7 +20,7 @@ return function(scope: Types.Scope, props: Types.StarRatingProps): Instance
 	local iconSize = props.IconSize or 24
 	local value = Persist.value(
 		scope,
-		Persist.key("StarRating", props.Id, typeof(props.Value) == "table"),
+		Persist.key("StarRating", typeof(props.Value) == "table"),
 		"value",
 		peek(props.Value) or 0
 	)

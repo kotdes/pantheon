@@ -77,7 +77,7 @@ return function(scope: Types.Scope, props: Types.MultiSelectProps): Instance
 	)
 	local selected = Persist.value(
 		scope,
-		Persist.key("MultiSelect", props.Id, typeof(props.Value) == "table"),
+		Persist.key("MultiSelect", typeof(props.Value) == "table"),
 		"value",
 		copyList(peek(props.Value) or {})
 	)

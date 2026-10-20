@@ -38,7 +38,7 @@ return function(scope: Types.Scope, props: Types.DatePickerProps): Instance
 	local theme = resolveTheme(props)
 	local now = os.date("*t")
 	local y0, m0, d0 = Calendar.parseISO(peek(props.Value) or "")
-	local persistKey = Persist.key("DatePicker", props.Id, typeof(props.Value) == "table")
+	local persistKey = Persist.key("DatePicker", typeof(props.Value) == "table")
 	local year = Persist.value(scope, persistKey, "year", y0 or now.year)
 	local month = Persist.value(scope, persistKey, "month", m0 or now.month)
 	local day = Persist.value(scope, persistKey, "day", d0 or now.day)

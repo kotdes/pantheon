@@ -13,7 +13,7 @@ Pagination lets the user move between pages of content with previous and next bu
 Call `Components.Pagination` with a scope and a table of properties:
 
 ```luau
-C.Pagination(scope, {
+scope:Pagination({
 	PageCount = 12,
 	Page = 1,
 	OnChanged = function(page)
@@ -30,7 +30,6 @@ C.Pagination(scope, {
 | `LayoutOrder` | `UsedAs<number>` | :x: | `0` | Position in a parent `UIListLayout` or `UIGridLayout`. |
 | `Page` | `UsedAs<number>` | :x: | `1` | The page, counted from `1`. A plain value is only the starting page. A `Value` is followed, and is set when the user changes page. |
 | `PageCount` | `number` | :white_check_mark: | - | Number of pages. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 

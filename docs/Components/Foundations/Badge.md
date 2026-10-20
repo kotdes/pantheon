@@ -13,9 +13,9 @@ Badge adds a small red marker to the corner of another element. The marker shows
 Call `Components.Badge` with a scope and a table of properties:
 
 ```luau
-C.Badge(scope, {
+scope:Badge({
 	Count = unread, -- (1)!
-	Content = C.IconButton(scope, { Name = "bell" }),
+	Content = scope:IconButton({ Name = "bell" }),
 })
 ```
 

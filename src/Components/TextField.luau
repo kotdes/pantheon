@@ -33,7 +33,7 @@ return function(scope: Types.Scope, props: Types.TextFieldProps): Instance
 	end)
 	-- Typed text survives a rebuild when the app provides a Persist store (unless the text is
 	-- controlled from outside).
-	local persistKey = Persist.key("TextField", props.Id, typeof(props.Text) == "table")
+	local persistKey = Persist.key("TextField", typeof(props.Text) == "table")
 	local persistedText = if persistKey
 		then Persist.value(scope, persistKey, "text", props.Text or "")
 		else nil

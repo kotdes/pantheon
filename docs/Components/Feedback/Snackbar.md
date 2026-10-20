@@ -13,7 +13,7 @@ Snackbar is a short message on a surface that contrasts with the app. It can hav
 Call `Components.Snackbar` with a scope and a table of properties:
 
 ```luau
-C.Snackbar(scope, {
+scope:Snackbar({
 	Message = "Message deleted",
 	Icon = "trash-2",
 	ActionText = "Undo",
@@ -21,13 +21,13 @@ C.Snackbar(scope, {
 		print("Restored")
 	end,
 	Dismissible = true, -- (1)!
-	OnDismiss = function()
+	OnClose = function()
 		print("Closed")
 	end,
 })
 ```
 
-1.  `Dismissible` adds a close button at the end. The snackbar does not remove itself, so remove it in `OnDismiss`. [SnackbarHost](./SnackbarHost.md) removes its messages for you.
+1.  `Dismissible` adds a close button at the end. The snackbar does not remove itself, so remove it in `OnClose`. [SnackbarHost](./SnackbarHost.md) removes its messages for you.
 
 ## Layout
 

@@ -15,14 +15,14 @@ Call `Components.Coachmark` with a scope and a table of properties:
 ```luau
 local open = scope:Value(true)
 
-C.Coachmark(scope, {
+scope:Coachmark({
 	Layer = overlayLayer,
 	Target = newButton,
 	Open = open,
 	Step = "1 of 3",
 	Title = "Try this first",
 	Text = "The new button starts a project.",
-	OnDismiss = function()
+	OnClose = function()
 		open:set(false)
 	end,
 })
@@ -62,7 +62,7 @@ The card and the pulse are placed in the space of the layer and kept inside it, 
 | Name | Description |
 | ---- | ----------- |
 | `OnAction: () -> ()` | Runs when the button is pressed. |
-| `OnDismiss: () -> ()` | Runs when the coachmark closes. |
+| `OnClose: () -> ()` | Runs when the coachmark closes. |
 
 ## See also
 

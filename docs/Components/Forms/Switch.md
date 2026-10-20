@@ -15,7 +15,7 @@ Switch turns a setting on or off. The handle stretches as it moves. The track ca
 Call `Components.Switch` with a scope and a table of properties:
 
 ```luau
-C.Switch(scope, {
+scope:Switch({
 	Label = "Notifications",
 	Checked = true,
 	OnChanged = function(on)
@@ -34,7 +34,6 @@ C.Switch(scope, {
 | `Label` | `UsedAs<string>` | :x: | - | Text next to the switch. |
 | `Disabled` | `UsedAs<boolean>` | :x: | `false` | Stops the switch reacting to input. The component reads this once, when it creates the switch. |
 | `Icons` | `boolean` | :x: | `theme.Controls.SwitchIcons` | Show the I and O marks on the track. Overrides `theme.Controls.SwitchIcons`. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 

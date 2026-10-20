@@ -14,7 +14,7 @@ return function(scope: Types.Scope, props: Types.TabsProps): Instance
 	local theme = resolveTheme(props)
 	local selected = Persist.value(
 		scope,
-		Persist.key("Tabs", props.Id, typeof(props.Selected) == "table"),
+		Persist.key("Tabs", typeof(props.Selected) == "table"),
 		"selected",
 		peek(props.Selected) or (props.Items[1] and props.Items[1].Id) or ""
 	)

@@ -1,7 +1,8 @@
 --!strict
 --[[
-	koterahq/pantheon: Cadence/Tithe design system for Fusion + Iona.
-	Vuetify-scale component kit.
+	koterahq/pantheon | ui library for Roblox, built on Fusion and Iona.
+
+	docs: https://pantheon.7kayoh.net
 ]]
 
 local Packages = script.Parent
@@ -9,11 +10,20 @@ local Fusion = require(Packages.Fusion)
 local Iona = require(Packages.Iona)
 
 local Theme = require(script.Theme)
-local Components = require(script.Components)
+local Directives = require(script.Internal.Directives)
+local RawComponents = require(script.Components)
 local Types = require(script.Types)
 local Layer = require(script.Internal.Layer)
 
 require(script.Internal.FusionPerf).apply()
+
+local Components: { [string]: any } = {}
+for name, component in RawComponents :: any do
+	Components[name] = if typeof(component) == "function"
+		then Directives.wrap(name, component)
+		else component
+end
+table.freeze(Components)
 
 export type Theme = Types.Theme
 export type ThemeMode = Types.ThemeMode
@@ -29,22 +39,20 @@ export type ThemePalette = Types.ThemePalette
 local Pantheon = {
 	Theme = Theme,
 	Components = Components,
-	--- In-game HUD set (TopBar, Hotbar, ...), kept apart from the app components.
+	Directives = Directives,
+
 	Game = require(script.Game),
 	Types = Types,
 	Layer = Layer,
 	Flags = require(script.Internal.Flags),
-	--- Inspect overlay + properties panel; needs Flags.DevTools (see DevTools/init).
+
 	DevTools = require(script.DevTools),
 	CanvasFade = require(script.Internal.CanvasFade),
 	Validators = require(script.Internal.Validators),
 	Accessibility = require(script.Internal.Accessibility),
 	Shadow = require(script.Internal.Shadow),
-	--- Fade a whole subtree by driving every descendant's transparency (no CanvasGroup).
 	GroupFade = require(script.Internal.GroupFade),
-	--- Opt-in state persistence across rebuilds (see Internal/Persist).
 	Persist = require(script.Internal.Persist),
-	--- Keyboard and gamepad focus (see Internal/Focus).
 	Focus = require(script.Internal.Focus),
 	Style = require(script.Style),
 	Color = require(script.Internal.Color),
@@ -65,8 +73,19 @@ table.freeze(FusionMethods)
 
 Pantheon.Apply = Apply
 
+-- Components are `(scope, props) -> Instance`, so they work as scope methods as they are:
+-- `scope:Button({ ... })` is `Components.Button(scope, { ... })`. Scope methods share one
+-- namespace with Fusion's and Iona's, so a clash is an error here, not a silent override.
+local ComponentMethods = table.clone(Components :: any)
+for name in ComponentMethods do
+	if (FusionMethods :: any)[name] ~= nil or (Iona :: any)[name] ~= nil then
+		error(`[Pantheon] component "{name}" clashes with a Fusion or Iona scope method`, 0)
+	end
+end
+table.freeze(ComponentMethods)
+
 function Pantheon.scoped(): Types.Scope
-	return Fusion.scoped(FusionMethods, Iona) :: any
+	return Fusion.scoped(FusionMethods, Iona, ComponentMethods) :: any
 end
 
 return Pantheon

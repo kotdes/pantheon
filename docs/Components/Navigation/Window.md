@@ -13,14 +13,14 @@ Window is a rounded app shell. It holds an app bar, a navigation rail, the conte
 Call `Components.Window` with a scope and a table of properties:
 
 ```luau
-C.Window(scope, {
+scope:Window({
 	Size = scope:Value(UDim2.fromOffset(640, 420)), -- (1)!
 	Position = scope:Value(UDim2.fromScale(0.5, 0.5)),
 	AnchorPoint = Vector2.new(0.5, 0.5),
 	Draggable = true,
 	Resizable = true,
-	AppBar = C.AppBar(scope, { Title = "Catalog" }),
-	NavigationRail = C.NavigationRail(scope, { Items = items }),
+	AppBar = scope:AppBar({ Title = "Catalog" }),
+	NavigationRail = scope:NavigationRail({ Items = items }),
 	Overlays = { overlayLayer }, -- (2)!
 	Children = { content },
 })
@@ -35,9 +35,13 @@ With a vertical rail, the rail runs the full height of the window. The app bar s
 
 A window cannot clip to rounded corners, so the app bar and the rail round their own corners to match the window: with a vertical rail the rail takes the two left corners and the app bar the top right.
 
+## Docked drawer
+
+A [NavigationDrawer](./NavigationDrawer.md) with `DockAt` stays open beside the content once the window is wide enough. The window moves its app bar and content over to make room, and moves them back when the drawer floats again. A side rail stays under the drawer.
+
 ## Dragging
 
-The window is dragged by its app bar. `DragBounds` decides how far it may go off screen.
+The window is dragged by its app bar, or by `DragHandle` when there is no app bar. `DragBounds` decides how far it may go off screen.
 
 ## Resizing
 
@@ -55,6 +59,7 @@ Set `Resizable` to add handles on the edges and corners. Use `MinSize`, `MaxSize
 | `Visible` | `UsedAs<boolean>` | :x: | `true` | Whether the component is shown. |
 | `ZIndex` | `UsedAs<number>` | :x: | - | Z index of the component. |
 | `AppBar` | `Instance` | :x: | - | An [AppBar](./AppBar.md) to put at the top. Dragging the window uses it as the handle. |
+| `DragHandle` | `Instance` | :x: | - | What to drag the window by when there is no `AppBar`, such as a strip along the top of your content. |
 | `NavigationRail` | `Instance` | :x: | - | A [NavigationRail](./NavigationRail.md) for the side or the bottom. |
 | `Children` | `any` | :x: | - | Main content. It fills the space beside and below the chrome. |
 | `Overlays` | `{ Instance }` | :x: | - | Layers or panels that float over the content, such as a [NavigationDrawer](./NavigationDrawer.md). They are moved to the overlay layer of the window. |

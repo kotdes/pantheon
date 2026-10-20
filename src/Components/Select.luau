@@ -27,7 +27,7 @@ return function(scope: Types.Scope, props: Types.SelectProps): Instance
 	)
 	local selected = Persist.value(
 		scope,
-		Persist.key("Select", props.Id, typeof(props.Value) == "table"),
+		Persist.key("Select", typeof(props.Value) == "table"),
 		"value",
 		(peek(props.Value) or "") :: string
 	)

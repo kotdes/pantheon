@@ -15,12 +15,12 @@ Call `Components.Radio` with a scope and a table of properties:
 ```luau
 local choice = scope:Value("a")
 
-C.Radio(scope, {
+scope:Radio({
 	Label = "Option A",
 	Checked = scope:Computed(function(use)
 		return use(choice) == "a"
 	end),
-	OnActivated = function()
+	OnClick = function()
 		choice:set("a")
 	end,
 })
@@ -41,7 +41,7 @@ C.Radio(scope, {
 
 | Name | Description |
 | ---- | ----------- |
-| `OnActivated: () -> ()` | Runs when the user presses the button. The component does not choose itself, so update the state you pass to `Checked`. |
+| `OnClick: () -> ()` | Runs when the user presses the button. The component does not choose itself, so update the state you pass to `Checked`. |
 
 ## See also
 

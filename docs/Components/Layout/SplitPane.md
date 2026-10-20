@@ -13,7 +13,7 @@ SplitPane puts several panes next to each other, or one above the other, with a 
 Call `Components.SplitPane` with a scope and a table of properties:
 
 ```luau
-C.SplitPane(scope, {
+scope:SplitPane({
 	Panes = { explorer, viewport, properties }, -- (1)!
 	Ratios = { 1, 3, 1 },
 	MinSize = 120,
@@ -33,7 +33,6 @@ Drag a divider to move it. The panes next to it grow and shrink, and no pane get
 
 | Name | Type | Required | Default | Description |
 | ---- | ---- | -------- | ------- | ----------- |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## See also
 

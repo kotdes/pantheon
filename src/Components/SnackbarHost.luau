@@ -44,7 +44,7 @@ export type ShowOptions = {
 	--- Show a close button.
 	Dismissible: boolean?,
 	--- Called when the toast is dismissed by its close button.
-	OnDismiss: (() -> ())?,
+	OnClose: (() -> ())?,
 }
 
 export type HostApi = {
@@ -95,7 +95,7 @@ return function(scope: Types.Scope, props: Types.SnackbarHostProps?): HostApi
 		Size = scope:Computed(function(use)
 			return UDim2.fromOffset(width, use(stackHeight))
 		end),
-		ZIndex = p.ZIndex or 100,
+		ZIndex = p.ZIndex or 180,
 	}) :: Frame
 
 	Layer.mount(scope, p, host)
@@ -225,9 +225,9 @@ return function(scope: Types.Scope, props: Types.SnackbarHostProps?): HostApi
 			Leading = build(opts.Leading),
 			Trailing = build(opts.Trailing),
 			Dismissible = opts.Dismissible,
-			OnDismiss = function()
-				if opts.OnDismiss then
-					opts.OnDismiss()
+			OnClose = function()
+				if opts.OnClose then
+					opts.OnClose()
 				end
 				dismiss()
 			end,

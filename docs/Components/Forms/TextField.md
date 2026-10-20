@@ -15,7 +15,7 @@ TextField is a text box. Its outline shows when it has focus. It can have a labe
 Call `Components.TextField` with a scope and a table of properties:
 
 ```luau
-C.TextField(scope, {
+scope:TextField({
 	Label = "Email",
 	Placeholder = "you@example.com",
 	Helper = "We never share it.",
@@ -53,7 +53,6 @@ C.TextField(scope, {
 | `Compact` | `boolean` | :x: | `false` | A smaller version for fields inside other widgets. It is 28 pixels tall, with less padding and 13-pixel text. |
 | `Height` | `number` | :x: | `40`, or `28` when compact | Height of the box, in pixels. |
 | `Prefix` | `string` | :x: | - | Fixed text at the start of the box, such as `"#"`. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 

@@ -16,7 +16,7 @@ type Validator = (value: any) -> (boolean, string?)
 ```luau
 local V = Pantheon.Validators
 
-C.TextField(scope, {
+scope:TextField({
 	Label = "Username",
 	Validators = { V.required(), V.minLength(3), V.maxLength(20) },
 })

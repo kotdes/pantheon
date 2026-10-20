@@ -12,7 +12,7 @@ The table that `require(Packages.Pantheon)` returns.
 | Name | Description |
 | ---- | ----------- |
 | `Components` | The components. Each is a function `(scope, props) -> Instance`. |
-| `Game` | The in-game components: `TopBar`, `Hotbar` and `Backpack`. See [Hotbar](../Game/Hotbar.md). |
+| `Game` | The in-game components: `Hotbar` and `Backpack`. See [Hotbar](../Game/Hotbar.md). |
 | `Theme` | Making and providing themes. See [Theme](Theme.md). |
 | `Style` | Reusable defaults for components. See [Style](Style.md). |
 | `Persist` | Keeping component state across rebuilds. See [Persist](Persist.md). |

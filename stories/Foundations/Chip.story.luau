@@ -1,7 +1,7 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C)
+return StoryUtil.story(function(scope)
 	local Children = StoryUtil.Fusion.Children
 	return scope:Frame({
 		BackgroundTransparency = 1,
@@ -14,8 +14,8 @@ return StoryUtil.story(function(scope, C)
 			SortOrder = Enum.SortOrder.LayoutOrder,
 		},
 		[Children] = {
-			C.Chip(scope, { Text = "Chip", Selected = true, LayoutOrder = 1 }),
-			C.Chip(scope, { Text = "Filter", LeadingIcon = "filter", LayoutOrder = 2 }),
+			scope:Chip({ Text = "Chip", Selected = true, LayoutOrder = 1 }),
+			scope:Chip({ Text = "Filter", LeadingIcon = "filter", LayoutOrder = 2 }),
 		},
 	})
 end)

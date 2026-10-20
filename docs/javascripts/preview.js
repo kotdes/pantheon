@@ -42,7 +42,7 @@
 				const lines = [`Text = "${p.Text}",`, `Variant = "${p.Variant}",`];
 				if (p.Color) lines.push(`Color = "${p.Color}",`);
 				if (p.Disabled) lines.push("Disabled = true,");
-				return `C.Button(scope, {\n\t${lines.join("\n\t")}\n})`;
+				return `scope:Button({\n\t${lines.join("\n\t")}\n})`;
 			},
 		},
 		TextField: {
@@ -72,7 +72,7 @@
 				if (p.Text) lines.push(`Text = "${p.Text}",`);
 				if (p.Error) lines.push(`Error = "${p.Error}",`);
 				if (p.Disabled) lines.push("Disabled = true,");
-				return `C.TextField(scope, {\n\t${lines.join("\n\t")}\n})`;
+				return `scope:TextField({\n\t${lines.join("\n\t")}\n})`;
 			},
 		},
 		Slider: {
@@ -92,7 +92,7 @@
 				</svg>`;
 			},
 			luau(p) {
-				return `C.Slider(scope, {\n\tLabel = "${p.Label}",\n\tValue = scope:Value(${(+p.Value).toFixed(2)}),${p.Disabled ? "\n\tDisabled = true," : ""}\n})`;
+				return `scope:Slider({\n\tLabel = "${p.Label}",\n\tValue = scope:Value(${(+p.Value).toFixed(2)}),${p.Disabled ? "\n\tDisabled = true," : ""}\n})`;
 			},
 		},
 		Checkbox: {
@@ -111,7 +111,7 @@
 					<text x="32" y="16" font-size="14" fill="var(--es-on-surface)" font-family="Figtree, sans-serif">${esc(p.Label)}</text></svg>`;
 			},
 			luau(p) {
-				return `C.Checkbox(scope, {\n\tLabel = "${p.Label}",\n\tChecked = scope:Value(${p.Checked}),${p.Disabled ? "\n\tDisabled = true," : ""}\n})`;
+				return `scope:Checkbox({\n\tLabel = "${p.Label}",\n\tChecked = scope:Value(${p.Checked}),${p.Disabled ? "\n\tDisabled = true," : ""}\n})`;
 			},
 		},
 		Tabs: {
@@ -131,7 +131,7 @@
 				return `<svg width="${w * 3}" height="44" viewBox="0 0 ${w * 3} 44"><rect y="42" width="${w * 3}" height="1" fill="var(--es-outline)"/>${tabs}</svg>`;
 			},
 			luau(p) {
-				return `C.Tabs(scope, {\n\tItems = {\n\t\t{ Id = "Overview", Label = "Overview" },\n\t\t{ Id = "Usage", Label = "Usage" },\n\t\t{ Id = "Props", Label = "Props" },\n\t},\n\tSelected = scope:Value("${p.Selected}"),\n})`;
+				return `scope:Tabs({\n\tItems = {\n\t\t{ Id = "Overview", Label = "Overview" },\n\t\t{ Id = "Usage", Label = "Usage" },\n\t\t{ Id = "Props", Label = "Props" },\n\t},\n\tSelected = scope:Value("${p.Selected}"),\n})`;
 			},
 		},
 		Switch: {
@@ -143,7 +143,7 @@
 				</svg>`;
 			},
 			luau(p) {
-				return `C.Switch(scope, {\n\tValue = scope:Value(${p.Value}),\n})`;
+				return `scope:Switch({\n\tValue = scope:Value(${p.Value}),\n})`;
 			},
 		},
 	};

@@ -15,7 +15,7 @@ Slider lets the user choose a number from a range by dragging a handle. The hand
 Call `Components.Slider` with a scope and a table of properties:
 
 ```luau
-C.Slider(scope, {
+scope:Slider({
 	Label = "Volume",
 	Min = 0,
 	Max = 100,
@@ -40,7 +40,6 @@ C.Slider(scope, {
 | `Step` | `number` | :x: | `0.01` | Size of one step. The value snaps to a multiple of it. |
 | `Disabled` | `UsedAs<boolean>` | :x: | `false` | Stops the slider reacting to input. The component reads this once, when it creates the slider. |
 | `Label` | `UsedAs<string>` | :x: | - | Text above the slider. The current value appears after it, in brackets. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 

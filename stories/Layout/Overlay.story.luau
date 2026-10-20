@@ -1,7 +1,7 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C, ctx)
+return StoryUtil.story(function(scope, _, ctx)
 	local Children = StoryUtil.Fusion.Children
 	return scope:Frame({
 		Size = UDim2.new(1, 0, 0, 200),
@@ -9,12 +9,12 @@ return StoryUtil.story(function(scope, C, ctx)
 		ClipsDescendants = true,
 		CornerRadius = ctx.theme.Metrics.RadiusMd,
 		[Children] = {
-			C.Text(scope, {
+			scope:Text({
 				Text = "Content under scrim",
 				Variant = "Body",
 				Position = UDim2.fromOffset(16, 16),
 			}),
-			C.Overlay(scope, {
+			scope:Overlay({
 				Size = UDim2.fromScale(1, 1),
 				OnClick = function() end,
 			}),

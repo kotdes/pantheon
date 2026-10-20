@@ -1,7 +1,8 @@
 --!strict
 --[[
 	Pick where a floating card goes relative to a target: the requested side, or with
-	"Auto" whichever side overflows the viewport least. Shared by Tooltip / Coachmark.
+	"Auto" whichever side overflows the viewport least. A requested side that does not fit
+	flips to the opposite side when that overflows less. Shared by Tooltip / Coachmark / Popover.
 	Returns (position, chosenSide) with the position clamped inside the viewport.
 ]]
 local Types = require(script.Parent.Parent.Types)
@@ -62,6 +63,19 @@ local function place(
 		trySide("Top")
 		trySide("Right")
 		trySide("Left")
+	end
+
+	if placement ~= "Auto" and bestOverflow > 0 then
+		local opposite: Types.TooltipPlacement = if placement == "Bottom"
+			then "Top"
+			elseif placement == "Top" then "Bottom"
+			elseif placement == "Left" then "Right"
+			else "Left"
+		local x, y, overflow = forSide(opposite)
+		if overflow < bestOverflow then
+			bestX, bestY = x, y
+			chosen = opposite
+		end
 	end
 
 	bestX = math.clamp(bestX, 8, math.max(8, viewport.X - tipSize.X - 8))

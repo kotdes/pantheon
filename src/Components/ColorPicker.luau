@@ -70,7 +70,7 @@ return function(scope: Types.Scope, props: Types.ColorPickerProps): Instance
 	local h0, s0, v0 = HSV.fromColor3(initial)
 	-- Colour and view state survive a rebuild when the app provides a Persist store (unless the
 	-- colour is controlled from outside).
-	local persistKey = Persist.key("ColorPicker", props.Id, typeof(props.Value) == "table")
+	local persistKey = Persist.key("ColorPicker", typeof(props.Value) == "table")
 	local h = Persist.value(scope, persistKey, "h", h0)
 	local s = Persist.value(scope, persistKey, "s", s0)
 	local v = Persist.value(scope, persistKey, "v", v0)
@@ -97,9 +97,6 @@ return function(scope: Types.Scope, props: Types.ColorPickerProps): Instance
 		end
 		if props.OnAlphaChanged then
 			props.OnAlphaChanged(peek(alpha))
-		end
-		if props.OnChange then
-			props.OnChange(current, peek(alpha))
 		end
 	end
 

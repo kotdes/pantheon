@@ -13,7 +13,7 @@ StarRating shows a score as stars. The user can change the score, or you can mak
 Call `Components.StarRating` with a scope and a table of properties:
 
 ```luau
-C.StarRating(scope, {
+scope:StarRating({
 	Value = 3,
 	Max = 5,
 	OnChanged = function(stars)
@@ -35,7 +35,6 @@ C.StarRating(scope, {
 | `Max` | `number` | :x: | `5` | Number of stars. |
 | `ReadOnly` | `boolean` | :x: | `false` | Show the score only. The stars do not react to input. |
 | `IconSize` | `number` | :x: | `24` | Size of one star, in pixels. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 

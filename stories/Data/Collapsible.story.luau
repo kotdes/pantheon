@@ -1,11 +1,11 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C)
-	return C.Collapsible(scope, {
+return StoryUtil.story(function(scope)
+	return scope:Collapsible({
 		Title = "Advanced",
 		Children = {
-			C.Text(scope, { Text = "Hidden until expanded.", Variant = "Body" }),
+			scope:Text({ Text = "Hidden until expanded.", Variant = "Body" }),
 		},
 	})
 end)

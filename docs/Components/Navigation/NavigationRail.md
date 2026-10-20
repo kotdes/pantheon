@@ -13,12 +13,12 @@ NavigationRail is a set of destinations along the side of a screen. Set `Orienta
 Call `Components.NavigationRail` with a scope and a table of properties:
 
 ```luau
-C.NavigationRail(scope, {
+scope:NavigationRail({
 	Items = {
 		{ Id = "home", Icon = "home", Label = "Home" },
 		{ Id = "library", Icon = "library", Label = "Library" },
 	},
-	Leading = C.IconButton(scope, { Name = "menu", OnClick = openDrawer }), -- (1)!
+	Leading = scope:IconButton({ Name = "menu", OnClick = openDrawer }), -- (1)!
 	OnChanged = function(id)
 		print("Go to", id)
 	end,
@@ -40,7 +40,6 @@ C.NavigationRail(scope, {
 | `Selected` | `UsedAs<string>` | :x: | The first item | `Id` of the selected destination. A plain value is only the starting destination. A `Value` is followed, and is set when the user picks one. |
 | `Orientation` | `"Vertical" \| "Horizontal"` | :x: | `"Vertical"` | `"Vertical"` for a rail at the side, `"Horizontal"` for a bar along the bottom. |
 | `Shadow` | `boolean` | :x: | `true` | Set `false` to remove the shadow. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 

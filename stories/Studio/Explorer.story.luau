@@ -2,7 +2,7 @@
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
 -- A made-up tree. Filter, click, Shift and Ctrl click, F2 to rename, arrow keys, drag to reparent.
-return StoryUtil.story(function(scope, C)
+return StoryUtil.story(function(scope)
 	local Children = StoryUtil.Fusion.Children
 	local root = Instance.new("Model")
 	root.Name = "Workspace"
@@ -32,15 +32,17 @@ return StoryUtil.story(function(scope, C)
 		Size = UDim2.new(1, 0, 0, 360),
 		Layout = { Kind = "List", Padding = 8 },
 		[Children] = {
-			C.TextField(
-				scope,
-				{ Placeholder = "Filter", Text = filter, LeadingIcon = "search", LayoutOrder = 1 }
-			),
+			scope:TextField({
+				Placeholder = "Filter",
+				Text = filter,
+				LeadingIcon = "search",
+				LayoutOrder = 1,
+			}),
 			scope:Frame({
 				BackgroundTransparency = 1,
 				Size = UDim2.new(1, 0, 1, -48),
 				LayoutOrder = 2,
-				[Children] = C.Explorer(scope, {
+				[Children] = scope:Explorer({
 					Roots = { root },
 					Filter = filter,
 					Selected = picked,

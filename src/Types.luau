@@ -6,6 +6,14 @@
 export type Scope = any
 export type UsedAs<T> = T | any
 
+export type Directive = {
+	type: "Directive",
+	apply: (self: any, scope: Scope, value: any, target: Instance) -> (),
+	around: (
+		(self: any, scope: Scope, value: any, build: () -> Instance, kind: string) -> Instance
+	)?,
+}
+
 export type ThemeMode = "Light" | "Dark"
 
 export type ThemeColors = {
@@ -427,7 +435,7 @@ export type RadioProps = {
 	Layer: Instance?,
 	Checked: UsedAs<boolean>,
 	Label: UsedAs<string>?,
-	OnActivated: (() -> ())?,
+	OnClick: (() -> ())?,
 	Disabled: UsedAs<boolean>?,
 	[string]: any,
 }
@@ -488,22 +496,17 @@ export type MultiSelectProps = {
 	[string]: any,
 }
 
-export type SpinnerProps = {
-	Theme: ThemeRef?,
-	LayoutOrder: UsedAs<number>?,
-	Size: UsedAs<UDim2>?,
-	Visible: UsedAs<boolean>?,
-	ZIndex: UsedAs<number>?,
-	Layer: Instance?,
-	SizePx: number?,
-	--- "Morph" (default) = shape-morphing LoadingIndicator; "Arc" = spinning ring arc.
-	Style: ("Morph" | "Arc")?,
-	--- Arc style only: colour the arc "erases" with. Match the surface behind the spinner.
-	Background: Color3?,
-	--- Draw the shape inside a round PrimaryContainer disc (Material 3 "contained").
-	Contained: boolean?,
-	[string]: any,
-}
+export type LoadingIndicatorKind =
+	"M3Morph"
+	| "M2Spinner"
+	| "Beachball"
+	| "Dots"
+	| "Bars"
+	| "Ripple"
+	| "Orbit"
+	| "Gnome"
+	| "Icon"
+export type LoadingIndicatorMotion = "Spin" | "Pulse" | "Bounce" | "Flip" | "Wiggle"
 
 export type LoadingIndicatorProps = {
 	Theme: ThemeRef?,
@@ -511,34 +514,22 @@ export type LoadingIndicatorProps = {
 	Size: UsedAs<UDim2>?,
 	Visible: UsedAs<boolean>?,
 	ZIndex: UsedAs<number>?,
-	--- Container diameter in px (default 48).
+	--- Which indicator to draw (default "M3Morph").
+	Kind: LoadingIndicatorKind?,
+	--- Square size in px (default 48 for M3Morph, 32 for the other kinds).
 	SizePx: number?,
-	--- Draw the shape inside a round PrimaryContainer disc (Material 3 "contained").
+	--- M3Morph: draw the shape inside a round PrimaryContainer disc (Material 3 "contained").
 	Contained: boolean?,
-	--- Shape names to cycle through (see LoadingIndicator); default is the Material 3 sequence.
+	--- M3Morph: shape names to cycle through; default is the Material 3 sequence.
 	Shapes: { string }?,
-	[string]: any,
-}
-
-export type LoaderKind = "Beachball" | "Dots" | "Bars" | "Ripple" | "Orbit" | "Gnome" | "Icon"
-export type LoaderMotion = "Spin" | "Pulse" | "Bounce" | "Flip" | "Wiggle"
-
-export type LoaderProps = {
-	Theme: ThemeRef?,
-	LayoutOrder: UsedAs<number>?,
-	Size: UsedAs<UDim2>?,
-	Visible: UsedAs<boolean>?,
-	ZIndex: UsedAs<number>?,
-	--- Which loader to draw (default "Dots").
-	Kind: LoaderKind?,
-	--- Square size in px (default 32).
-	SizePx: number?,
-	--- Static colour (default theme Primary). Ignored by Beachball, which is rainbow.
+	--- M2Spinner: colour the arc "erases" with. Match the surface behind the spinner.
+	Background: Color3?,
+	--- Static colour for Dots, Bars, Ripple, Orbit, Gnome and Icon (default theme Primary).
 	Color: Color3?,
-	--- Icon kind: Lucide icon name (default "loader").
+	--- Icon: Lucide icon name (default "loader").
 	Icon: string?,
-	--- Icon kind: motion preset (default "Spin").
-	Motion: LoaderMotion?,
+	--- Icon: motion preset (default "Spin").
+	Motion: LoadingIndicatorMotion?,
 	[string]: any,
 }
 
@@ -598,7 +589,7 @@ export type CoachmarkProps = {
 	--- Action button label (default "Got it"); it also dismisses.
 	ActionText: string?,
 	OnAction: (() -> ())?,
-	OnDismiss: (() -> ())?,
+	OnClose: (() -> ())?,
 	Placement: TooltipPlacement?,
 	--- Dim everything but the target (default true).
 	Spotlight: boolean?,
@@ -683,7 +674,7 @@ export type SnackbarProps = {
 	--- Show a close button at the end.
 	Dismissible: boolean?,
 	--- Called when the close button is pressed.
-	OnDismiss: (() -> ())?,
+	OnClose: (() -> ())?,
 	--- Let the message wrap and fill the width, for a fixed-width card (the host does this).
 	Fill: boolean?,
 	[string]: any,
@@ -833,11 +824,18 @@ export type NavigationDrawerProps = {
 	--- Panel corner radius (px). Window drawers typically use `RadiusPanel + 4`.
 	CornerRadius: number?,
 	--- First MenuPage id when composing `Children`.
-	InitialPage: string?,
+	RootPage: string?,
 	Page: UsedAs<string>?,
-	OnPageChanged: ((string) -> ())?,
+	OnChanged: ((string) -> ())?,
 	--- Cap embedded menu height (px). Omit to fill.
 	MaxHeight: number?,
+	--- Content above the menu, such as window buttons or a profile. Give it a fixed height.
+	Header: Instance?,
+	--- Width of the drawer's parent, in px, from which the drawer stays open beside the content,
+	--- like a sidebar. Below that width it slides in over the content. Omit to never dock.
+	DockAt: number?,
+	--- Runs with `true` when the drawer docks and `false` when it floats again.
+	OnDockChanged: ((boolean) -> ())?,
 	[string]: any,
 }
 
@@ -872,6 +870,9 @@ export type WindowProps = {
 	ZIndex: UsedAs<number>?,
 	Layer: Instance?,
 	AppBar: Instance?,
+	--- What to drag the window by when there is no `AppBar`. It is a part of your content, such
+	--- as a strip along the top.
+	DragHandle: Instance?,
 	NavigationRail: Instance?,
 	--- Main content; fills space beside/above the rail.
 	Children: any?,
@@ -973,6 +974,7 @@ export type MenuItemProps = {
 	Color: UsedAs<ColorInput>?,
 	--- Push this MenuPage id (does not close the menu).
 	Page: string?,
+	Selected: UsedAs<boolean>?,
 	[string]: any,
 }
 
@@ -992,6 +994,10 @@ export type MenuButtonProps = {
 	TrailingIcon: string?,
 	Color: UsedAs<ColorInput>?,
 	Page: string?,
+	--- Fill the row with the primary container, as the current choice. Follows a state.
+	Selected: UsedAs<boolean>?,
+	--- No fill until the row is hovered or pressed, for rows on a surface of their own.
+	Flat: boolean?,
 	--- Compact row (40px). False uses the taller header-menu row (44px). Default true.
 	Compact: boolean?,
 	--- Invoked after `OnClick` (Menu wires this when building from Items/Sections).
@@ -1016,11 +1022,10 @@ export type MenuSectionProps = {
 	Children: any?,
 	--- Category header can collapse/expand its items.
 	Collapsible: boolean?,
-	--- Initial open state when collapsible (default true).
-	DefaultExpanded: boolean?,
-	--- Controlled expanded state.
+	--- Whether a collapsible group is open (default true). A plain boolean is the starting
+	--- state; pass a Value to control it.
 	Expanded: UsedAs<boolean>?,
-	OnExpandedChanged: ((boolean) -> ())?,
+	OnChanged: ((boolean) -> ())?,
 	Compact: boolean?,
 	OnClose: (() -> ())?,
 	[string]: any,
@@ -1059,6 +1064,9 @@ export type MenuProps = {
 	Children: any?,
 	--- Cap list height; scrolls when content exceeds this (px).
 	MaxHeight: number?,
+	--- Size the menu to its content, up to `MaxHeight`, with a spring (default true). A menu with
+	--- pages follows the page that is showing.
+	AutoHeight: boolean?,
 	--- When true, list fills remaining height and scrolls (fixed `Size` required).
 	Fill: boolean?,
 	--- Override panel corner radius (default `RadiusPanel`).
@@ -1068,10 +1076,10 @@ export type MenuProps = {
 	--- When true, skip Layer.mount. The parent owns layering (AvatarMenu, Popover).
 	Embedded: boolean?,
 	--- First MenuPage id (default: first page child).
-	InitialPage: string?,
+	RootPage: string?,
 	--- Controlled page id; Menu pushes/pops to match.
 	Page: UsedAs<string>?,
-	OnPageChanged: ((string) -> ())?,
+	OnChanged: ((string) -> ())?,
 	[string]: any,
 }
 
@@ -1087,12 +1095,18 @@ export type PopoverProps = {
 	--- Anchor to position relative to (screen space).
 	Target: Instance?,
 	--- Preferred placement relative to Target.
-	Placement: ("Bottom" | "Top" | "Left" | "Right")?,
+	Placement: ("Auto" | "Bottom" | "Top" | "Left" | "Right")?,
 	Items: { any }?,
 	Sections: { MenuSectionProps }?,
 	MaxHeight: number?,
 	Children: any?,
 	Width: number?,
+	--- Size the popover to its content, up to `MaxHeight`, with a spring (default true).
+	AutoHeight: boolean?,
+	--- First MenuPage id when the content has pages.
+	RootPage: string?,
+	Page: UsedAs<string>?,
+	OnChanged: ((string) -> ())?,
 	[string]: any,
 }
 
@@ -1169,8 +1183,6 @@ export type ColorPickerProps = {
 	--- Opacity 0–1 (default 1). Pass a Value to keep it controlled.
 	Alpha: UsedAs<number>?,
 	OnAlphaChanged: ((number) -> ())?,
-	--- Colour and opacity together.
-	OnChange: ((Color3, number) -> ())?,
 	--- Show the alpha slider (default true).
 	ShowAlpha: boolean?,
 	--- Tabs, in order: "Grid" (swatches), "Spectrum" (saturation/value + hue) and "Sliders".
@@ -1198,8 +1210,6 @@ export type GradientPickerProps = {
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
-	--- Persist key (with a Persist store provided).
-	Id: string?,
 	--- Where button tooltips are mounted. Without a layer, or one set with Layer.Provide / Layer.bind, there are no tooltips.
 	Layer: Instance?,
 	--- Starting gradient, one stop per keypoint, and its transparency (alpha = 1 - transparency).
@@ -1210,7 +1220,7 @@ export type GradientPickerProps = {
 	ShowAlpha: boolean?,
 	--- Called as stops are added, dragged, recoloured or removed. Feed straight into a
 	--- UIGradient's Color / Transparency / Rotation / Offset.
-	OnGradientChanged: ((ColorSequence, NumberSequence, number, Vector2) -> ())?,
+	OnChanged: ((ColorSequence, NumberSequence, number, Vector2) -> ())?,
 	--- Passed on to the node ColorPicker.
 	Modes: { string }?,
 	Models: { string }?,
@@ -1449,6 +1459,8 @@ export type ScrollAreaProps = {
 	CanvasSize: UsedAs<UDim2>?,
 	ScrollBarRail: boolean?,
 	AutoHideScrollBar: boolean?,
+	--- Draw the scroll bar over the content, so the content keeps its full width.
+	ScrollBarOverlay: boolean?,
 	AutoHideDelay: number?,
 	ScrollButtons: boolean?,
 	ScrollButtonStep: number?,
@@ -1490,7 +1502,6 @@ export type NumberFieldProps = {
 	Size: UsedAs<UDim2>?,
 	Visible: UsedAs<boolean>?,
 	ZIndex: UsedAs<number>?,
-	Id: string?,
 	--- The number. A `Value` is followed and set as the user edits.
 	Value: UsedAs<number>?,
 	Min: number?,
@@ -1516,7 +1527,6 @@ export type SplitPaneProps = {
 	Size: UsedAs<UDim2>?,
 	Visible: UsedAs<boolean>?,
 	ZIndex: UsedAs<number>?,
-	Id: string?,
 	--- The panes, in order. Each is sized to fill its slot.
 	Panes: { Instance },
 	--- `"Horizontal"` puts the panes side by side, `"Vertical"` stacks them (default "Horizontal").
@@ -1546,7 +1556,6 @@ export type DockPanelProps = {
 	Size: UsedAs<UDim2>?,
 	Visible: UsedAs<boolean>?,
 	ZIndex: UsedAs<number>?,
-	Id: string?,
 	--- Text of the header. Ignored when there are `Tabs`.
 	Title: string?,
 	--- Tabs in the header, each with the content it shows.
@@ -1563,7 +1572,7 @@ export type DockPanelProps = {
 	Actions: { Instance }?,
 	--- Shows a close button that calls this.
 	OnClose: (() -> ())?,
-	OnTabChanged: ((id: string) -> ())?,
+	OnChanged: ((id: string) -> ())?,
 	[string]: any,
 }
 
@@ -1639,7 +1648,6 @@ export type CurveEditorProps = {
 	Size: UsedAs<UDim2>?,
 	Visible: UsedAs<boolean>?,
 	ZIndex: UsedAs<number>?,
-	Id: string?,
 	--- The curve. A `Value` is followed and set as the user edits. Default: a line from `Min` to `Max`.
 	Value: UsedAs<NumberSequence>?,
 	--- Lowest and highest value on the plot (default 0 and 1).
@@ -1672,7 +1680,7 @@ export type ExplorerProps = {
 	--- The selected instances. A `Value` is followed and set when the user selects.
 	Selected: UsedAs<{ Instance }>?,
 	--- Open the roots at first (default true).
-	DefaultExpanded: boolean?,
+	ExpandRoots: boolean?,
 	--- Lucide icon for an instance (default: by class).
 	Icon: ((instance: Instance) -> string)?,
 	--- Height of a row in px (default 24).
@@ -1712,7 +1720,6 @@ export type RadialMenuProps = {
 	LayoutOrder: UsedAs<number>?,
 	ZIndex: UsedAs<number>?,
 	Layer: Instance?,
-	Id: string?,
 	--- The choices, placed round the ring clockwise from the top.
 	Items: { RadialItem },
 	--- Whether the ring is shown. A `Value` is followed and set when the ring closes.

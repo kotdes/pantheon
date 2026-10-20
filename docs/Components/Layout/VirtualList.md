@@ -17,12 +17,12 @@ VirtualList shows a long list by building only the rows that are on screen, plus
 Call `Components.VirtualList` with a scope and a table of properties:
 
 ```luau
-C.VirtualList(scope, {
+scope:VirtualList({
 	Size = UDim2.new(1, 0, 0, 240),
 	ItemCount = #names,
 	ItemHeight = 40,
 	RenderItem = function(rowScope, index) -- (1)!
-		return C.ListItem(rowScope, { Title = names[index] })
+		return rowScope:ListItem({ Title = names[index] })
 	end,
 })
 ```

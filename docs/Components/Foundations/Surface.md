@@ -13,7 +13,7 @@ Surface is a rounded frame with a fill. Use it as the background of a panel. [Sh
 Call `Components.Surface` with a scope and a table of properties:
 
 ```luau
-C.Surface(scope, {
+scope:Surface({
 	Size = UDim2.fromOffset(240, 120),
 	Elevated = true,
 })

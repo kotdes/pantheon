@@ -13,7 +13,7 @@ Select shows the chosen option in a field. When the user presses the field, it o
 Call `Components.Select` with a scope and a table of properties:
 
 ```luau
-C.Select(scope, {
+scope:Select({
 	Label = "Country",
 	Options = {
 		{ Value = "ca", Label = "Canada" },
@@ -41,7 +41,6 @@ C.Select(scope, {
 | `Disabled` | `UsedAs<boolean>` | :x: | - | Stops the field opening. The component reads this once, when it creates the field. |
 | `Filterable` | `boolean` | :x: | `false` | Show a search box that filters the list. [Combobox](./Combobox.md) is a Select with this turned on. |
 | `Validators` | `{ Validator }` | :x: | - | Validators to run on the chosen value. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 

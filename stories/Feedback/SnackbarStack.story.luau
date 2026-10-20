@@ -2,15 +2,15 @@
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
 -- Toasts stack, newest in front. Move the pointer over the stack to spread it out.
-return StoryUtil.story(function(scope, C, ctx)
-	local toasts = C.SnackbarHost(scope, { Layer = ctx.overlayLayer })
+return StoryUtil.story(function(scope, _, ctx)
+	local toasts = scope:SnackbarHost({ Layer = ctx.overlayLayer })
 	local count = 0
 	return scope:Frame({
 		BackgroundTransparency = 1,
 		AutomaticSize = Enum.AutomaticSize.XY,
 		Layout = { Kind = "List", FillDirection = Enum.FillDirection.Horizontal, Padding = 8 },
 		[StoryUtil.Fusion.Children] = {
-			C.Button(scope, {
+			scope:Button({
 				Text = "Plain toast",
 				LayoutOrder = 1,
 				OnClick = function()
@@ -18,7 +18,7 @@ return StoryUtil.story(function(scope, C, ctx)
 					toasts.Show(`Saved draft {count}`)
 				end,
 			}),
-			C.Button(scope, {
+			scope:Button({
 				Text = "With action and close",
 				Variant = "Tonal",
 				LayoutOrder = 2,
@@ -31,7 +31,7 @@ return StoryUtil.story(function(scope, C, ctx)
 					})
 				end,
 			}),
-			C.Button(scope, {
+			scope:Button({
 				Text = "Custom element",
 				Variant = "Outlined",
 				LayoutOrder = 3,
@@ -40,7 +40,7 @@ return StoryUtil.story(function(scope, C, ctx)
 						Duration = math.huge,
 						Dismissible = true,
 						Trailing = function(inner)
-							return C.Spinner(inner, { SizePx = 18 })
+							return inner:LoadingIndicator({ SizePx = 18 })
 						end,
 					})
 				end,

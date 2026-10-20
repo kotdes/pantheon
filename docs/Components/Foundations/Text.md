@@ -13,7 +13,7 @@ Text shows text in one of the type scales of the theme. It sizes itself to fit t
 Call `Components.Text` with a scope and a table of properties:
 
 ```luau
-C.Text(scope, {
+scope:Text({
 	Text = "Recent activity",
 	Variant = "Title", -- (1)!
 })

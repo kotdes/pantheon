@@ -13,7 +13,7 @@ EmptyState fills a screen or list that has nothing to show yet. It shows a messa
 Call `Components.EmptyState` with a scope and a table of properties:
 
 ```luau
-C.EmptyState(scope, {
+scope:EmptyState({
 	Title = "No messages",
 	Subtitle = "New messages will show up here.",
 	Action = { Text = "Compose", Variant = "Filled", OnClick = compose }, -- (1)!

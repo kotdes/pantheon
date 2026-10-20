@@ -7,6 +7,7 @@ local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local Color = require(script.Parent.Parent.Internal.Color)
 local MenuNav = require(script.Parent.Parent.Internal.MenuNav)
 local Icon = require(script.Parent.Icon)
+local Tooltip = require(script.Parent.Tooltip)
 local P = require(script.Parent.Parent.Internal.props)
 
 local Children = Fusion.Children
@@ -41,11 +42,33 @@ return function(scope: Types.Scope, props: Types.MenuButtonProps): Instance
 	local role = if props.Color ~= nil
 		then Color.resolve(peek(props.Color) :: Types.ColorInput?, theme, "primary")
 		else nil
-	local fg = if disabled
+	local baseFg = if disabled
 		then theme.Colors.OnSurfaceVariant
 		elseif role then role.Base
 		else theme.Colors.OnSurface
 	local stateColor = if role then role.Base else theme.Colors.OnSurface
+
+	-- A selected row is filled with the primary container and drawn in its on-colour. It
+	-- follows a state, so the row changes as the state does.
+	local selected = props.Selected
+	local fg: any = baseFg
+	local fillBase: any = theme.Colors.Surface
+	if selected ~= nil and not disabled then
+		fg = scope:Computed(function(use)
+			return if use(selected :: any) == true
+				then use(theme.Colors.OnPrimaryContainer :: any)
+				else use(baseFg :: any)
+		end)
+		fillBase = scope:Computed(function(use)
+			return if use(selected :: any) == true
+				then use(theme.Colors.SurfaceContainer :: any)
+				else use(theme.Colors.Surface :: any)
+		end)
+		stateColor = theme.Colors.OnPrimaryContainer
+	end
+
+	-- A flat row has no fill until it is hovered or pressed. A selected row keeps its fill.
+	local flat = props.Flat == true and props.Selected == nil
 
 	local ix = Interaction.bind(scope, theme, {
 		Disabled = not clickable,
@@ -60,7 +83,8 @@ return function(scope: Types.Scope, props: Types.MenuButtonProps): Instance
 		Name = "MenuButton",
 		Text = "",
 		AutoButtonColor = false,
-		BackgroundColor3 = ix.fill(theme.Colors.Surface),
+		BackgroundColor3 = if flat then stateColor else ix.fill(fillBase),
+		BackgroundTransparency = if flat then ix.fillTransparency(1) else nil,
 		Size = props.Size or UDim2.new(1, 0, 0, rowHeight),
 		LayoutOrder = props.LayoutOrder or 0,
 		Visible = props.Visible,
@@ -68,7 +92,12 @@ return function(scope: Types.Scope, props: Types.MenuButtonProps): Instance
 		Active = clickable,
 		ClipsDescendants = true,
 		CornerRadius = theme.Metrics.RadiusPanel - 4,
-		Padding = if trailingName then { vPad, hPad } else { vPad, hPad / 2, vPad, hPad },
+		-- An element at the end, such as a count or a switch, sits as far from the edge as the row
+		-- is from its top and bottom.
+		Padding = if trailingName
+			then { vPad, hPad }
+			elseif trailingInst then { vPad, vPad, vPad, hPad }
+			else { vPad, hPad / 2, vPad, hPad },
 		Layout = {
 			Kind = "List",
 			FillDirection = Enum.FillDirection.Horizontal,
@@ -132,8 +161,12 @@ return function(scope: Types.Scope, props: Types.MenuButtonProps): Instance
 						TextTransparency = if disabled then 0.38 else 0,
 						TextXAlignment = Enum.TextXAlignment.Left,
 						Text = props.Text,
-						AutomaticSize = Enum.AutomaticSize.XY,
+						Name = "Label",
+						-- Takes the width that is left, and ends in an ellipsis when the text is longer.
+						Size = UDim2.new(0, 0, 1, 0),
+						TextTruncate = Enum.TextTruncate.AtEnd,
 						LayoutOrder = 2,
+						[Children] = scope:New("UIFlexItem")({ FlexMode = Enum.UIFlexMode.Fill }),
 					}),
 				},
 			}),
@@ -174,5 +207,32 @@ return function(scope: Types.Scope, props: Types.MenuButtonProps): Instance
 		btn:SetAttribute("PantheonMenuPushPage", props.Page)
 	end
 	ix.wire(btn)
+
+	-- When the label is cut short, hovering the row shows the full text in a tooltip. The tooltip
+	-- is made the first time the label is cut, so rows that fit never pay for one.
+	local label = btn:FindFirstChild("Label", true) :: TextLabel?
+	if label then
+		local truncated = scope:Value(false)
+		local tooltipMade = false
+		local function refresh()
+			local cut = not label.TextFits
+			truncated:set(cut)
+			if cut and not tooltipMade then
+				tooltipMade = true
+				Tooltip(scope, {
+					Theme = theme,
+					Layer = props.Layer,
+					Target = btn,
+					Text = props.Text,
+					Placement = "Right",
+					Enabled = truncated,
+				})
+			end
+		end
+		table.insert(scope, label:GetPropertyChangedSignal("TextFits"):Connect(refresh))
+		table.insert(scope, label:GetPropertyChangedSignal("AbsoluteSize"):Connect(refresh))
+		task.defer(refresh)
+	end
+
 	return btn
 end

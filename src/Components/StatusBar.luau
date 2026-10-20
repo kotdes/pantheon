@@ -10,7 +10,7 @@ local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolve
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local Layer = require(script.Parent.Parent.Internal.Layer)
 local Icon = require(script.Parent.Icon)
-local Spinner = require(script.Parent.Spinner)
+local LoadingIndicator = require(script.Parent.LoadingIndicator)
 local Tooltip = require(script.Parent.Tooltip)
 
 local Children = Fusion.Children
@@ -45,7 +45,9 @@ return function(scope: Types.Scope, props: Types.StatusBarProps): Instance
 		if item.Busy then
 			table.insert(
 				kids,
-				scope:Apply(Spinner(scope, { Theme = theme, SizePx = 14 }))({ LayoutOrder = 1 })
+				scope:Apply(LoadingIndicator(scope, { Theme = theme, SizePx = 14 }))({
+					LayoutOrder = 1,
+				})
 			)
 		elseif item.Icon then
 			table.insert(

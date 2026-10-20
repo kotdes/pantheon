@@ -13,7 +13,7 @@ Toolbar is a bar of tool buttons. A button can be a toggle, show a tooltip with 
 Call `Components.Toolbar` with a scope and a table of properties:
 
 ```luau
-C.Toolbar(scope, {
+scope:Toolbar({
 	Layer = overlayLayer, -- (1)!
 	Items = {
 		{ Id = "select", Icon = "mouse-pointer", Tooltip = "Select", Shortcut = "V", Toggle = true, Toggled = true },

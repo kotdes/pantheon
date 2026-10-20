@@ -19,7 +19,7 @@ Checkbox lets the user turn one option on or off. The check mark is drawn in two
 Call `Components.Checkbox` with a scope and a table of properties:
 
 ```luau
-C.Checkbox(scope, {
+scope:Checkbox({
 	Label = "Remember me",
 	Checked = true,
 	OnChanged = function(checked)
@@ -38,7 +38,6 @@ C.Checkbox(scope, {
 | `Checked` | `UsedAs<boolean>` | :x: | `false` | The value. A plain value is only the starting value. A `Value` stays in step with the control: the user's changes set it, and setting it changes the control. |
 | `Label` | `UsedAs<string>` | :x: | - | Text next to the box. |
 | `Disabled` | `UsedAs<boolean>` | :x: | `false` | Stops the box reacting to input. The component reads this once, when it creates the checkbox. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 

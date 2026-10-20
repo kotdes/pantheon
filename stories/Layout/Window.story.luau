@@ -2,7 +2,7 @@
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 local Children = StoryUtil.Fusion.Children
 
-return StoryUtil.story(function(scope, C, ctx)
+return StoryUtil.story(function(scope, _, ctx)
 	local open = scope:Value(false)
 	local notifyOn = scope:Value(true)
 	local theme = ctx.theme
@@ -10,7 +10,7 @@ return StoryUtil.story(function(scope, C, ctx)
 		open:set(false)
 	end
 
-	local drawer = C.NavigationDrawer(scope, {
+	local drawer = scope:NavigationDrawer({
 		Open = open,
 		Title = "Cadence",
 		Subtitle = "Window shell",
@@ -18,7 +18,7 @@ return StoryUtil.story(function(scope, C, ctx)
 		Inset = 4,
 		CornerRadius = theme.Metrics.RadiusPanel - 3,
 		OnClose = close,
-		InitialPage = "root",
+		RootPage = "root",
 		Sections = {
 			{
 				Items = {
@@ -31,7 +31,7 @@ return StoryUtil.story(function(scope, C, ctx)
 				Title = "Account",
 				Icon = "user",
 				Collapsible = true,
-				DefaultExpanded = true,
+				Expanded = true,
 				Items = {
 					{ Text = "Profile", Leading = "circle-user", OnClick = close },
 					{
@@ -45,24 +45,24 @@ return StoryUtil.story(function(scope, C, ctx)
 			},
 		},
 		Children = {
-			C.MenuPage(scope, {
+			scope:MenuPage({
 				Id = "settings",
 				Title = "Settings",
 				Children = {
-					C.MenuButton(scope, {
+					scope:MenuButton({
 						Text = "Notifications",
 						Leading = "bell",
-						Trailing = C.Switch(scope, { Checked = notifyOn }),
+						Trailing = scope:Switch({ Checked = notifyOn }),
 						LayoutOrder = 1,
 					}),
-					C.MenuButton(scope, {
+					scope:MenuButton({
 						Text = "Appearance",
 						Leading = "moon",
 						Trailing = "chevron-right",
 						Page = "appearance",
 						LayoutOrder = 2,
 					}),
-					C.MenuButton(scope, {
+					scope:MenuButton({
 						Text = "Language",
 						Leading = "globe",
 						Trailing = "chevron-right",
@@ -71,11 +71,11 @@ return StoryUtil.story(function(scope, C, ctx)
 					}),
 				},
 			}),
-			C.MenuPage(scope, {
+			scope:MenuPage({
 				Id = "appearance",
 				Title = "Appearance",
 				Children = {
-					C.RadioGroup(scope, {
+					scope:RadioGroup({
 						Options = {
 							{ Label = "Light", Value = "light" },
 							{ Label = "Dark", Value = "dark" },
@@ -83,11 +83,11 @@ return StoryUtil.story(function(scope, C, ctx)
 					}),
 				},
 			}),
-			C.MenuPage(scope, {
+			scope:MenuPage({
 				Id = "language",
 				Title = "Language",
 				Children = {
-					C.RadioGroup(scope, {
+					scope:RadioGroup({
 						Options = {
 							{ Label = "English", Value = "english" },
 							{ Label = "Spanish", Value = "spanish" },
@@ -104,22 +104,22 @@ return StoryUtil.story(function(scope, C, ctx)
 		},
 	})
 
-	return C.Window(scope, {
+	return scope:Window({
 		Size = UDim2.new(1, 0, 0, 420),
 		RailOrientation = "Horizontal",
-		AppBar = C.AppBar(scope, {
+		AppBar = scope:AppBar({
 			Title = "Window",
-			Leading = C.IconButton(scope, {
+			Leading = scope:IconButton({
 				Name = "menu",
 				OnClick = function()
 					open:set(true)
 				end,
 			}),
 			Actions = {
-				C.IconButton(scope, { Name = "ellipsis" }),
+				scope:IconButton({ Name = "ellipsis" }),
 			},
 		}),
-		NavigationRail = C.NavigationRail(scope, {
+		NavigationRail = scope:NavigationRail({
 			Orientation = "Horizontal",
 			Items = {
 				{ Id = "home", Icon = "home", Label = "Home" },
@@ -139,12 +139,12 @@ return StoryUtil.story(function(scope, C, ctx)
 					SortOrder = Enum.SortOrder.LayoutOrder,
 				},
 				[Children] = {
-					C.Text(scope, {
+					scope:Text({
 						Text = "Rounded Sheet chrome with AppBar, rail, and an inset drawer.",
 						Variant = "Body",
 						LayoutOrder = 1,
 					}),
-					C.Button(scope, {
+					scope:Button({
 						Text = "Open drawer",
 						LeadingIcon = "menu",
 						LayoutOrder = 2,

@@ -1,9 +1,9 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C, ctx)
+return StoryUtil.story(function(scope, _, ctx)
 	local open = scope:Value(false)
-	C.ConfirmDialog(scope, {
+	scope:ConfirmDialog({
 		Layer = ctx.overlayLayer,
 		Title = "Delete item?",
 		Body = "This cannot be undone.",
@@ -17,7 +17,7 @@ return StoryUtil.story(function(scope, C, ctx)
 			open:set(false)
 		end,
 	})
-	return C.Button(scope, {
+	return scope:Button({
 		Text = "Open confirm dialog",
 		Variant = "Outlined",
 		OnClick = function()

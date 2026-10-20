@@ -1,9 +1,9 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C, ctx)
+return StoryUtil.story(function(scope, _, ctx)
 	local open = scope:Value(false)
-	C.Dialog(scope, {
+	scope:Dialog({
 		Layer = ctx.overlayLayer,
 		Title = "Dialog",
 		Body = "Centered modal with actions.",
@@ -27,7 +27,7 @@ return StoryUtil.story(function(scope, C, ctx)
 			},
 		},
 	})
-	return C.Button(scope, {
+	return scope:Button({
 		Text = "Open dialog",
 		OnClick = function()
 			open:set(true)

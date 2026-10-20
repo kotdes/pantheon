@@ -13,12 +13,12 @@ Form puts its children in a column with equal spacing. It can have a title. It g
 Call `Components.Form` with a scope and a table of properties:
 
 ```luau
-C.Form(scope, {
+scope:Form({
 	Title = "Sign in",
 	Children = {
-		C.TextField(scope, { Label = "Email" }),
-		C.TextField(scope, { Label = "Password" }),
-		C.Button(scope, { Text = "Continue", Variant = "Filled" }),
+		scope:TextField({ Label = "Email" }),
+		scope:TextField({ Label = "Password" }),
+		scope:Button({ Text = "Continue", Variant = "Filled" }),
 	},
 })
 ```

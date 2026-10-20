@@ -1,8 +1,8 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C)
-	return C.SettingsList(scope, {
+return StoryUtil.story(function(scope)
+	return scope:SettingsList({
 		Header = "Account",
 		Items = {
 			{
@@ -21,7 +21,7 @@ return StoryUtil.story(function(scope, C)
 				Title = "Dark mode",
 				Subtitle = "Appearance",
 				Icon = "moon",
-				Trailing = C.Switch(scope, { Checked = false }),
+				Trailing = scope:Switch({ Checked = false }),
 				ShowChevron = false,
 			},
 		} :: { any },

@@ -10,7 +10,14 @@
         
         "Pantheon": {
           "$path": "src"
+        },
+        "PantheonRouter": {
+          "$path": "libs/router/src"
         }
+      },
+      "DevPackages": {
+        "$className": "Folder",
+        "$path": "DevPackages"
       },
       "Stories": {
         "$path": "stories"

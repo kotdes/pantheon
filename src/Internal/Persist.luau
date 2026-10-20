@@ -15,17 +15,13 @@
 			end)
 		end
 
-	How a new component finds its old state: by `Id` if you give it one (`Id = "settings.sound"`),
-	otherwise by kind and creation order within the pass (the 3rd Switch is "Switch#3"). A rebuild
-	runs the same code in the same order, so that is stable, but conditional UI that changes
-	the order should use explicit `Id`s.
-
-	A control whose value you pass in as a state (`Checked = someValue`) is left alone: you
-	already own that state.
-
-	Without a store (the default) every call just creates a plain Value.
+	How a new component finds its old state: by id if you give it one
+	(`[Pantheon.Persist.Id] = "settings.sound"`), otherwise by kind and creation order within the
+	pass (the 3rd Switch is "Switch#3"). UI that may be rebuilt in a different order should give ids
+	to its components (such as compute-based ones).
 ]]
 local Types = require(script.Parent.Parent.Types)
+local Directives = require(script.Parent.Directives)
 
 type Store = {
 	scope: Types.Scope,
@@ -34,6 +30,7 @@ type Store = {
 }
 
 local current: Store? = nil
+local pending: { kind: string, id: string }? = nil
 
 local Persist = {}
 
@@ -55,15 +52,34 @@ function Persist.Provide<T...>(store: Store, build: (T...) -> ...any, ...: T...)
 	return table.unpack(results, 2, results.n)
 end
 
+--- Give one component a stable id: `scope:Switch({ [Persist.Id] = "settings.sound" })`. The
+--- state is then found by that id, not by the order the component was created in.
+Persist.Id = Directives.create(nil, function(_scope, value, build, kind)
+	local previous = pending
+	pending = if typeof(value) == "string" then { kind = kind, id = value } else nil
+	local ok, result = pcall(build)
+	pending = previous
+	if not ok then
+		error(result, 0)
+	end
+	return result
+end)
+
 --- A stable key for one component instance, or nil when there is no store or the control is
 --- already controlled by a state the app owns.
-function Persist.key(kind: string, id: string?, controlled: boolean?): string?
+function Persist.key(kind: string, controlled: boolean?): string?
 	local store = current
+	local asked = pending
+	if asked ~= nil and asked.kind == kind then
+		pending = nil
+	else
+		asked = nil
+	end
 	if store == nil or controlled then
 		return nil
 	end
-	if id then
-		return `{kind}:{id}`
+	if asked then
+		return `{kind}:{asked.id}`
 	end
 	local n = (store.counters[kind] or 0) + 1
 	store.counters[kind] = n

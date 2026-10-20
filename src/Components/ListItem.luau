@@ -26,6 +26,8 @@ return function(scope: Types.Scope, props: Types.ListItemProps): Instance
 			TextXAlignment = Enum.TextXAlignment.Left,
 			TextColor3 = theme.Colors.OnSurface,
 			Text = props.Title,
+			-- A title that is too long ends in an ellipsis, so it does not run under the trailing element.
+			TextTruncate = Enum.TextTruncate.AtEnd,
 			Size = UDim2.new(1, 0, 0, 20),
 			LayoutOrder = 1,
 		}),
@@ -40,6 +42,7 @@ return function(scope: Types.Scope, props: Types.ListItemProps): Instance
 				TextXAlignment = Enum.TextXAlignment.Left,
 				TextColor3 = theme.Colors.OnSurfaceVariant,
 				Text = props.Subtitle,
+				TextTruncate = Enum.TextTruncate.AtEnd,
 				Size = UDim2.new(1, 0, 0, 18),
 				LayoutOrder = 2,
 			})

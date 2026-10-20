@@ -1,48 +1,48 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C, ctx)
+return StoryUtil.story(function(scope, _, ctx)
 	local open = scope:Value(false)
 	local notifyOn = scope:Value(true)
 	local function close()
 		open:set(false)
 	end
-	local trigger = C.Button(scope, {
+	local trigger = scope:Button({
 		Text = "Open menu",
 		Variant = "Tonal" :: "Tonal",
 		OnClick = function()
 			open:set(true)
 		end,
 	})
-	C.Menu(scope, {
+	scope:Menu({
 		Layer = ctx.overlayLayer,
 		Open = open,
 		OnClose = close,
 		MaxHeight = 280,
-		InitialPage = "root",
+		RootPage = "root",
 		Children = {
-			C.MenuPage(scope, {
+			scope:MenuPage({
 				Id = "root",
 				LayoutOrder = 1,
 				Children = {
-					C.MenuSection(scope, {
+					scope:MenuSection({
 						Title = "File",
 						Icon = "folder",
 						LayoutOrder = 1,
 						Children = {
-							C.MenuButton(scope, {
+							scope:MenuButton({
 								Text = "New",
 								Leading = "file-plus",
 								OnClose = close,
 								LayoutOrder = 1,
 							}),
-							C.MenuButton(scope, {
+							scope:MenuButton({
 								Text = "Open",
 								Leading = "folder-open",
 								OnClose = close,
 								LayoutOrder = 2,
 							}),
-							C.MenuButton(scope, {
+							scope:MenuButton({
 								Text = "Save",
 								Leading = "save",
 								Trailing = "corner-down-left",
@@ -51,32 +51,32 @@ return StoryUtil.story(function(scope, C, ctx)
 							}),
 						},
 					}),
-					C.MenuSection(scope, {
+					scope:MenuSection({
 						Title = "Edit",
 						Icon = "pencil",
 						Collapsible = true,
-						DefaultExpanded = true,
+						Expanded = true,
 						LayoutOrder = 2,
 						Children = {
-							C.MenuButton(scope, {
+							scope:MenuButton({
 								Text = "Cut",
 								Leading = "scissors",
 								OnClose = close,
 								LayoutOrder = 1,
 							}),
-							C.MenuButton(scope, {
+							scope:MenuButton({
 								Text = "Copy",
 								Leading = "copy",
 								OnClose = close,
 								LayoutOrder = 2,
 							}),
-							C.MenuButton(scope, {
+							scope:MenuButton({
 								Text = "Paste",
 								Leading = "clipboard",
 								OnClose = close,
 								LayoutOrder = 3,
 							}),
-							C.MenuButton(scope, {
+							scope:MenuButton({
 								Text = "Disabled",
 								Leading = "ban",
 								Disabled = true,
@@ -84,19 +84,19 @@ return StoryUtil.story(function(scope, C, ctx)
 							}),
 						},
 					}),
-					C.MenuSection(scope, {
+					scope:MenuSection({
 						Title = "Account",
 						Icon = "user",
 						LayoutOrder = 3,
 						Children = {
-							C.MenuButton(scope, {
+							scope:MenuButton({
 								Text = "Settings",
 								Leading = "settings",
 								Trailing = "chevron-right",
 								Page = "settings",
 								LayoutOrder = 1,
 							}),
-							C.MenuButton(scope, {
+							scope:MenuButton({
 								Text = "Sign out",
 								Leading = "log-out",
 								Color = "error",
@@ -107,18 +107,18 @@ return StoryUtil.story(function(scope, C, ctx)
 					}),
 				},
 			}),
-			C.MenuPage(scope, {
+			scope:MenuPage({
 				Id = "settings",
 				Title = "Settings",
 				LayoutOrder = 2,
 				Children = {
-					C.MenuButton(scope, {
+					scope:MenuButton({
 						Text = "Notifications",
 						Leading = "bell",
-						Trailing = C.Switch(scope, { Checked = notifyOn }),
+						Trailing = scope:Switch({ Checked = notifyOn }),
 						LayoutOrder = 1,
 					}),
-					C.MenuButton(scope, {
+					scope:MenuButton({
 						Text = "Appearance",
 						Leading = "moon",
 						Trailing = "chevron-right",

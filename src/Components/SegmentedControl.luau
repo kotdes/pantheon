@@ -28,7 +28,7 @@ return function(scope: Types.Scope, props: Types.SegmentedControlProps): Instanc
 	local initialId = peek(props.Selected) or (props.Items[1] and props.Items[1].Id) or ""
 	local selected = Persist.value(
 		scope,
-		Persist.key("SegmentedControl", props.Id, typeof(props.Selected) == "table"),
+		Persist.key("SegmentedControl", typeof(props.Selected) == "table"),
 		"selected",
 		initialId
 	)

@@ -1,8 +1,8 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C, ctx)
-	local rail = C.NavigationRail(scope, {
+return StoryUtil.story(function(scope, _, ctx)
+	local rail = scope:NavigationRail({
 		Orientation = "Horizontal",
 		Layer = ctx.overlayLayer,
 		Items = {

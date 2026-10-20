@@ -15,7 +15,7 @@ Call `Components.Chip` with a scope and a table of properties:
 ```luau
 local selected = scope:Value(false)
 
-C.Chip(scope, {
+scope:Chip({
 	Text = "Pinned",
 	Selected = selected,
 	LeadingIcon = "pin",

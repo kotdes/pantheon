@@ -14,7 +14,7 @@ return function(scope: Types.Scope, props: Types.PaginationProps): Instance
 	local theme = resolveTheme(props)
 	local page = Persist.value(
 		scope,
-		Persist.key("Pagination", props.Id, typeof(props.Page) == "table"),
+		Persist.key("Pagination", typeof(props.Page) == "table"),
 		"page",
 		peek(props.Page) or 1
 	)

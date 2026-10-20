@@ -1,8 +1,8 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C)
-	return C.ChoiceGroup(scope, {
+return StoryUtil.story(function(scope)
+	return scope:ChoiceGroup({
 		Label = "Plan",
 		Variant = "Segmented",
 		Options = {

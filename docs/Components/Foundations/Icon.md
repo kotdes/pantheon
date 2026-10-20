@@ -13,7 +13,7 @@ Icon draws a [Lucide](https://lucide.dev/icons) icon or any other image. It is a
 Call `Components.Icon` with a scope and a table of properties:
 
 ```luau
-C.Icon(scope, {
+scope:Icon({
 	Name = "search",
 	IconSize = 24,
 	Color = theme.Colors.OnSurfaceVariant,

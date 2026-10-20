@@ -13,7 +13,7 @@ Combobox is a [Select](./Select.md) with `Filterable` turned on. The user can ty
 Call `Components.Combobox` with a scope and a table of properties:
 
 ```luau
-C.Combobox(scope, {
+scope:Combobox({
 	Label = "Font",
 	Options = {
 		{ Value = "montserrat", Label = "Montserrat" },

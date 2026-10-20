@@ -17,9 +17,9 @@ Tooltip shows a short label when the pointer is over an element. The tip is kept
 Call `Components.Tooltip` with a scope and a table of properties:
 
 ```luau
-local save = C.IconButton(scope, { Name = "save" })
+local save = scope:IconButton({ Name = "save" })
 
-C.Tooltip(scope, {
+scope:Tooltip({
 	Layer = overlayLayer,
 	Target = save,
 	Text = "Save",
@@ -32,11 +32,12 @@ C.Tooltip(scope, {
 | Name | Type | Required | Default | Description |
 | ---- | ---- | -------- | ------- | ----------- |
 | `Theme` | `ThemeRef` | :x: | The contextual theme | Theme to use for this component instead of the one from `Theme.Provide`. |
-| `ZIndex` | `UsedAs<number>` | :x: | `120` | Z index of the component. |
+| `ZIndex` | `UsedAs<number>` | :x: | `160` | Z index of the component. |
 | `Text` | `UsedAs<string>` | :white_check_mark: | - | The label. |
 | `Target` | `Instance` | :x: | - | The element that shows the tooltip when hovered. |
 | `Placement` | `TooltipPlacement` | :x: | `"Auto"` | Preferred side of the target. `"Auto"` picks the side with most room. |
 | `Gap` | `number` | :x: | `8` | Space between the target and the tooltip in pixels. |
+| `Enabled` | `UsedAs<boolean>` | :x: | `true` | Whether hovering the target shows the tooltip. Pass a state to turn it on and off. |
 
 ## See also
 

@@ -13,5 +13,5 @@ Spacer is an empty, transparent frame. Use it to add space between items in a li
 Call `Components.Spacer` with a scope and a table of properties:
 
 ```luau
-C.Spacer(scope, { Size = UDim2.new(1, 0, 0, 24) })
+scope:Spacer({ Size = UDim2.new(1, 0, 0, 24) })
 ```

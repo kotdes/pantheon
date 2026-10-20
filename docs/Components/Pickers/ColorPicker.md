@@ -15,10 +15,10 @@ Call `Components.ColorPicker` with a scope and a table of properties:
 ```luau
 local color = scope:Value(Color3.fromRGB(0, 105, 92))
 
-C.ColorPicker(scope, {
+scope:ColorPicker({
 	Value = color, -- (1)!
-	OnChange = function(newColor, alpha)
-		print(newColor, alpha)
+	OnChanged = function(newColor)
+		print(newColor)
 	end,
 })
 ```
@@ -57,7 +57,6 @@ There is an alpha slider over a checkerboard on every tab. Set `ShowAlpha = fals
 | `Palette` | `{ Color3 }` | :x: | A grey ramp and a grid of hues | Swatches for the Grid tab. |
 | `Footer` | `boolean` | :x: | `true` | Show the swatch, hex field and alpha readout at the bottom. |
 | `Background` | `Color3` | :x: | `Colors.Surface` | Fill colour of the picker. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 
@@ -65,7 +64,6 @@ There is an alpha slider over a checkerboard on every tab. Set `ShowAlpha = fals
 | ---- | ----------- |
 | `OnChanged: (Color3) -> ()` | Runs with the colour when it changes. |
 | `OnAlphaChanged: (number) -> ()` | Runs with the alpha when it changes. |
-| `OnChange: (Color3, number) -> ()` | Runs with the colour and the alpha when either changes. |
 
 ## See also
 

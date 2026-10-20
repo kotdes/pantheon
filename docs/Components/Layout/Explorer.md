@@ -16,7 +16,7 @@ Call `Components.Explorer` with a scope and a table of properties:
 local filter = scope:Value("")
 local picked = scope:Value({})
 
-C.Explorer(scope, {
+scope:Explorer({
 	Roots = { workspace, game:GetService("ReplicatedStorage") },
 	Filter = filter,
 	Selected = picked,

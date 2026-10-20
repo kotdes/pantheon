@@ -13,7 +13,7 @@ StatusBar is a thin bar for the status of a tool: messages, counts and activity.
 Call `Components.StatusBar` with a scope and a table of properties:
 
 ```luau
-C.StatusBar(scope, {
+scope:StatusBar({
 	Layer = overlayLayer,
 	Start = { { Icon = "check", Text = "Ready", Tone = "Success" } },
 	Middle = { { Busy = true, Text = "Saving", Progress = saveProgress } },

@@ -13,7 +13,7 @@ DatePicker is a calendar for choosing a day. The header opens a month picker and
 Call `Components.DatePicker` with a scope and a table of properties:
 
 ```luau
-C.DatePicker(scope, {
+scope:DatePicker({
 	Value = "2026-08-14", -- (1)!
 	OnChanged = function(date)
 		print("Picked", date)
@@ -31,7 +31,6 @@ C.DatePicker(scope, {
 | `LayoutOrder` | `UsedAs<number>` | :x: | `0` | Position in a parent `UIListLayout` or `UIGridLayout`. |
 | `Size` | `UsedAs<UDim2>` | :x: | - | Size of the component. |
 | `Value` | `UsedAs<string>?, -- YYYY-MM-DD` | :white_check_mark: | Today | The date as `YYYY-MM-DD`. A plain value is only the starting date. A `Value` is followed, and is set when the user picks a day. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 

@@ -13,7 +13,7 @@ RangeSlider is one track with two handles. The user chooses a range of values, n
 Call `Components.RangeSlider` with a scope and a table of properties:
 
 ```luau
-C.RangeSlider(scope, {
+scope:RangeSlider({
 	Min = 0,
 	Max = 100,
 	Value = NumberRange.new(20, 60),
@@ -36,7 +36,6 @@ C.RangeSlider(scope, {
 | `Step` | `number` | :x: | `0.01` | Values snap to multiples of this. |
 | `Label` | `UsedAs<string>` | :x: | - | Text above the track, followed by the range. |
 | `Disabled` | `UsedAs<boolean>` | :x: | - | Stops the handles reacting to input. |
-| `Id` | `string` | :x: | - | Key that identifies this component when state is kept across rebuilds. See [Persist](../../Guides/PersistingState.md). |
 
 ## Callbacks
 

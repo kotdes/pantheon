@@ -1,7 +1,7 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope, C)
+return StoryUtil.story(function(scope)
 	local Children = StoryUtil.Fusion.Children
 	return scope:Frame({
 		BackgroundTransparency = 1,
@@ -12,9 +12,9 @@ return StoryUtil.story(function(scope, C)
 			Padding = 8,
 		},
 		[Children] = {
-			C.IconButton(scope, { Name = "menu" }),
-			C.IconButton(scope, { Name = "moon" }),
-			C.IconButton(scope, { Name = "bell" }),
+			scope:IconButton({ Name = "menu" }),
+			scope:IconButton({ Name = "moon" }),
+			scope:IconButton({ Name = "bell" }),
 		},
 	})
 end)

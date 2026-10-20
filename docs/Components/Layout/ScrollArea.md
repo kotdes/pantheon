@@ -13,10 +13,10 @@ ScrollArea is a scrolling container with its own scroll bar. It scrolls with the
 Call `Components.ScrollArea` with a scope and a table of properties:
 
 ```luau
-C.ScrollArea(scope, {
+scope:ScrollArea({
 	Size = UDim2.fromScale(1, 1),
 	Children = {
-		C.Text(scope, { Text = "Long content" }),
+		scope:Text({ Text = "Long content" }),
 	},
 	OnRefresh = function() -- (1)!
 		reload()
@@ -59,6 +59,7 @@ To show a very long list, use [VirtualList](./VirtualList.md), which is built on
 | `CanvasSize` | `UsedAs<UDim2>` | :x: | - | Size of the scrollable area. Use it when `AutoCanvas` is `false`. |
 | `ScrollBarRail` | `boolean` | :x: | `true` | Pressing the line the thumb moves along jumps there. |
 | `AutoHideScrollBar` | `boolean` | :x: | `true` | Fade the scroll bar out when it is not in use. |
+| `ScrollBarOverlay` | `boolean` | :x: | `false` | Draw the scroll bar over the content. By default the content gives up a column of its width to the bar while it scrolls. |
 | `AutoHideDelay` | `number` | :x: | `0.85` | Time in seconds before the scroll bar fades out. |
 | `ScrollButtons` | `boolean` | :x: | `false` | Show buttons at the ends of the scroll bar. |
 | `ScrollButtonStep` | `number` | :x: | `64` | Distance in pixels one press of a scroll button scrolls. |

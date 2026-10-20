@@ -24,10 +24,16 @@ Without a store, every component creates its own plain values, as usual.
 
 A component looks up its state:
 
-- by its `Id`, when it has one: `Id = "settings.sound"`;
+- by its id, when it has one: `[Pantheon.Persist.Id] = "settings.sound"`;
 - otherwise by its kind and the order it was created in during the build: the third `Switch` is `Switch#3`.
 
-A rebuild runs the same code in the same order, so the order is stable. Interface that changes the order, such as a switch that is only built when a condition holds, should have explicit `Id`s.
+A rebuild runs the same code in the same order, so the order is stable. Interface that changes the order, such as a switch that is only built when a condition holds, should have explicit ids:
+
+```luau
+scope:Switch({ [Pantheon.Persist.Id] = "settings.sound" })
+```
+
+`Persist.Id` is a [directive](Directives.md), so it works on every component that keeps state.
 
 ## What is not kept
 

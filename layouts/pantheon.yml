@@ -1,0 +1,92 @@
+# Social card for Pantheon (https://squidfunk.github.io/mkdocs-material/setup/setting-up-social-cards/).
+# 1200 x 630 px. Teal background to match the docs theme, with the page title and description.
+size: { width: 1200, height: 630 }
+
+# API reference pages (Components and Game) get a dark background with a tint of green.
+# Other pages are teal. Each definition is rendered as a template where it is used.
+definitions:
+  - &background_color >-
+    {%- if page.file.src_uri.split("/")[0] in ["Components", "Game"] -%}
+    #0C2623
+    {%- else -%}
+    #00695C
+    {%- endif -%}
+  - &subtitle_color >-
+    {%- if page.file.src_uri.split("/")[0] in ["Components", "Game"] -%}
+    #4DB6AC
+    {%- else -%}
+    #B2DFDB
+    {%- endif -%}
+  - &description_color >-
+    {%- if page.file.src_uri.split("/")[0] in ["Components", "Game"] -%}
+    #9CC4BF
+    {%- else -%}
+    #B2DFDB
+    {%- endif -%}
+
+layers:
+  - background:
+      color: *background_color
+
+  # The Pantheon icon (docs/overrides/.icons/pantheon/icon.svg, cropped from the logo).
+  - size: { width: 98, height: 120 }
+    offset: { x: 1040, y: 64 }
+    icon:
+      value: pantheon/icon
+      color: white
+
+  # The Pantheon wordmark (docs/overrides/.icons/pantheon/wordmark.svg, a copy of the logo).
+  - size: { width: 280, height: 50 }
+    offset: { x: 64, y: 64 }
+    icon:
+      value: pantheon/wordmark
+      color: white
+
+  # What kind of page this is, taken from the first folder of the page path.
+  # Component pages are the API reference.
+  - size: { width: 900, height: 44 }
+    offset: { x: 64, y: 180 }
+    typography:
+      content: >-
+        {{ {
+          "Components": "API reference / UI component",
+          "Game": "API reference / Game component",
+          "Guides": "Guide",
+          "Modules": "Module",
+          "Tutorials": "Tutorial"
+        }.get(page.file.src_uri.split("/")[0], "Documentation") }}
+      align: start
+      color: *subtitle_color
+      font:
+        family: Figtree
+        style: SemiBold
+
+  # Page title
+  - size: { width: 1072, height: 230 }
+    offset: { x: 64, y: 236 }
+    typography:
+      content: "{{ page.meta.get('title') or page.title }}"
+      align: start
+      color: white
+      overflow: shrink
+      line:
+        amount: 3
+        height: 1.2
+      font:
+        family: Figtree
+        style: Bold
+
+  # Description
+  - size: { width: 1072, height: 100 }
+    offset: { x: 64, y: 480 }
+    typography:
+      content: "{{ page.meta.get('description') or config.site_description }}"
+      align: start
+      color: *description_color
+      overflow: truncate
+      line:
+        amount: 2
+        height: 1.3
+      font:
+        family: Figtree
+        style: Regular

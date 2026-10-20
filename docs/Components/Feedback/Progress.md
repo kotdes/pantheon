@@ -15,9 +15,9 @@ Call `Components.Progress` with a scope and a table of properties:
 ```luau
 local done = scope:Value(0.4)
 
-C.Progress(scope, { Value = done }) -- bar
-C.Progress(scope, { Variant = "Circular", Value = done, SizePx = 48 })
-C.Progress(scope, { Variant = "Circular" }) -- (1)!
+scope:Progress({ Value = done }) -- bar
+scope:Progress({ Variant = "Circular", Value = done, SizePx = 48 })
+scope:Progress({ Variant = "Circular" }) -- (1)!
 ```
 
 1.  With no `Value`, a circular progress is the [LoadingIndicator](./LoadingIndicator.md), which changes shape. Set `Indicator` to `"Arc"` for a spinning arc.
@@ -43,5 +43,4 @@ C.Progress(scope, { Variant = "Circular" }) -- (1)!
 
 ## See also
 
-- [Spinner](./Spinner.md)
 - [LoadingIndicator](./LoadingIndicator.md)

@@ -62,6 +62,23 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 	local hasHeader = props.Header ~= nil
 	local fill = props.Fill == true
 	local maxHeight = props.MaxHeight
+	-- The menu is as tall as its content, up to `MaxHeight`, and changes height with a spring.
+	local autoHeight = props.AutoHeight ~= false and not fill
+
+	--- A spring that follows a measured content height, never above `maxHeight`. It gives
+	--- `fallback` until the content has been measured.
+	local function followHeight(natural: any, fallback: number): any
+		local target = scope:Computed(function(use)
+			local measured = use(natural) :: number
+			if measured <= 0 then
+				return fallback
+			end
+			return if maxHeight ~= nil and maxHeight > 0
+				then math.min(measured, maxHeight)
+				else measured
+		end)
+		return scope:Spring(target, theme.Motion.SpringSpeed, theme.Motion.SpringDamping)
+	end
 	local pad = props.Padding or 4
 	local compact = not hasHeader
 	local radius = props.CornerRadius or theme.Metrics.RadiusPanel
@@ -90,14 +107,14 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 				listKids,
 				MenuSection(scope, {
 					Theme = theme,
+					Layer = props.Layer,
 					Title = section.Title,
 					Icon = section.Icon,
 					Items = section.Items,
 					Children = section.Children,
 					Collapsible = section.Collapsible == true,
-					DefaultExpanded = section.DefaultExpanded,
 					Expanded = section.Expanded,
-					OnExpandedChanged = section.OnExpandedChanged,
+					OnChanged = section.OnChanged,
 					Compact = if section.Compact ~= nil then section.Compact else compact,
 					OnClose = props.OnClose,
 					LayoutOrder = sectionIndex,
@@ -139,11 +156,41 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 				[Children] = kids,
 			})
 		end
+		local bodySize: any = if stretch or fill
+			then UDim2.new(1, 0, 0, 0)
+			else UDim2.new(1, 0, 0, maxHeight :: number)
+		local bodyKids = kids
+		if not stretch and not fill and autoHeight then
+			-- Measure the content, and give the scroll area that height, up to `maxHeight`.
+			local natural = scope:Value(0)
+			local content = scope:Frame({
+				Name = "MenuContent",
+				BackgroundTransparency = 1,
+				Size = UDim2.new(1, 0, 0, 0),
+				AutomaticSize = Enum.AutomaticSize.Y,
+				Layout = {
+					Kind = "List",
+					Padding = 6,
+					SortOrder = Enum.SortOrder.LayoutOrder,
+				},
+				[Children] = kids,
+			}) :: GuiObject
+			table.insert(
+				scope,
+				content:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+					-- The scroll area insets its content by 2 px on each side.
+					natural:set(content.AbsoluteSize.Y + 4)
+				end)
+			)
+			local height = followHeight(natural, maxHeight :: number)
+			bodySize = scope:Computed(function(use)
+				return UDim2.new(1, 0, 0, math.floor((use(height) :: number) + 0.5))
+			end)
+			bodyKids = { content }
+		end
 		local body = ScrollArea(scope, {
 			Theme = theme,
-			Size = if stretch or fill
-				then UDim2.new(1, 0, 0, 0)
-				else UDim2.new(1, 0, 0, maxHeight :: number),
+			Size = bodySize,
 			LayoutOrder = order,
 			ContentLayout = "List" :: "List",
 			ContentPadding = 0,
@@ -153,7 +200,7 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 			ScrollBarRailBackground = false,
 			ScrollButtons = false,
 			AutoHideScrollBar = true,
-			Children = kids,
+			Children = bodyKids,
 		})
 		body.Name = "MenuScroll"
 		if stretch or fill then
@@ -175,7 +222,7 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 		end
 
 		if #listKids > 0 then
-			local rootId = props.InitialPage or pageOrder[1] or "root"
+			local rootId = props.RootPage or pageOrder[1] or "root"
 			if not pageById[rootId] then
 				local implicit = scope:Frame({
 					Name = "MenuPage",
@@ -202,7 +249,7 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 			end
 		end
 
-		local initial = props.InitialPage or pageOrder[1]
+		local initial = props.RootPage or pageOrder[1]
 		local stack = scope:Value({ initial } :: { string })
 		local depth = scope:Computed(function(use)
 			return #use(stack)
@@ -223,10 +270,10 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 		end
 
 		local function emitPage()
-			if props.OnPageChanged then
+			if props.OnChanged then
 				local id = currentId()
 				if id then
-					props.OnPageChanged(id)
+					props.OnChanged(id)
 				end
 			end
 		end
@@ -291,6 +338,8 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 		end
 
 		local slides: { any } = {}
+		-- The height each page wants, so the menu can follow the page that is showing.
+		local pageHeights = scope:Value({} :: { [string]: number })
 		for _, pageId in pageOrder do
 			local pageInst = pageById[pageId]
 			local titleAttr = pageInst:GetAttribute(PAGE_TITLE)
@@ -348,6 +397,37 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 				})
 			end
 
+			if autoHeight then
+				local function measure()
+					-- The scroll area insets its content by 2 px on each side.
+					local height = (pageInst :: GuiObject).AbsoluteSize.Y + 4
+					if backBar and (backBar :: GuiObject).Visible then
+						height += (backBar :: GuiObject).AbsoluteSize.Y
+					end
+					local heights = table.clone(peek(pageHeights))
+					heights[pageId] = height
+					pageHeights:set(heights)
+				end
+				table.insert(
+					scope,
+					(pageInst :: GuiObject)
+						:GetPropertyChangedSignal("AbsoluteSize")
+						:Connect(measure)
+				)
+				if backBar then
+					table.insert(
+						scope,
+						(backBar :: GuiObject)
+							:GetPropertyChangedSignal("AbsoluteSize")
+							:Connect(measure)
+					)
+					table.insert(
+						scope,
+						(backBar :: GuiObject):GetPropertyChangedSignal("Visible"):Connect(measure)
+					)
+				end
+			end
+
 			local scrollKids: { any } = { pageInst }
 			if fill then
 				table.insert(
@@ -401,9 +481,21 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 			)
 		end
 
-		local hostHeight = if fill
-			then UDim2.new(1, 0, 0, 0)
-			else UDim2.new(1, 0, 0, maxHeight or 280)
+		local hostHeight: any
+		if fill then
+			hostHeight = UDim2.new(1, 0, 0, 0)
+		elseif autoHeight then
+			local wanted = scope:Computed(function(use)
+				local s = use(stack) :: { string }
+				return (use(pageHeights) :: { [string]: number })[s[#s]] or 0
+			end)
+			local height = followHeight(wanted, maxHeight or 280)
+			hostHeight = scope:Computed(function(use)
+				return UDim2.new(1, 0, 0, math.floor((use(height) :: number) + 0.5))
+			end)
+		else
+			hostHeight = UDim2.new(1, 0, 0, maxHeight or 280)
+		end
 		listBody = scope:Frame({
 			Name = "PageHost",
 			BackgroundTransparency = 1,

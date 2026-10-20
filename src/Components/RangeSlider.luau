@@ -28,7 +28,7 @@ return function(scope: Types.Scope, props: Types.RangeSliderProps): Instance
 	local disabled = peek(props.Disabled) == true
 
 	local initial = peek(props.Value) or NumberRange.new(minBound, maxBound)
-	local persistKey = Persist.key("RangeSlider", props.Id, typeof(props.Value) == "table")
+	local persistKey = Persist.key("RangeSlider", typeof(props.Value) == "table")
 	local lo = Persist.value(scope, persistKey, "lo", initial.Min)
 	local hi = Persist.value(scope, persistKey, "hi", initial.Max)
 	Bind.linkParts(scope, props.Value, { lo, hi }, function(low: number, high: number)

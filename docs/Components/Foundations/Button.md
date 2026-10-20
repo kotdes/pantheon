@@ -15,7 +15,7 @@ Use Button to let the user start an action. It has four styles. You can add an i
 Call `Components.Button` with a scope and a table of properties:
 
 ```luau
-C.Button(scope, {
+scope:Button({
 	Text = "Save",
 	Variant = "Filled", -- (1)!
 	LeadingIcon = "save", -- (2)!
