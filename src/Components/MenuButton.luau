@@ -61,7 +61,7 @@ return function(scope: Types.Scope, props: Types.MenuButtonProps): Instance
 		end)
 		fillBase = scope:Computed(function(use)
 			return if use(selected :: any) == true
-				then use(theme.Colors.PrimaryContainer :: any)
+				then use(theme.Colors.SurfaceContainer :: any)
 				else use(theme.Colors.Surface :: any)
 		end)
 		stateColor = theme.Colors.OnPrimaryContainer
