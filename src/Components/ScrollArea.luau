@@ -40,6 +40,8 @@ return function(scope: Types.Scope, props: Types.ScrollAreaProps): Instance
 		then true
 		else props.ScrollBarRailBackground
 	local autoHide = props.AutoHideScrollBar ~= false
+	-- With an overlay bar the content keeps its full width, and the bar is drawn over it.
+	local overlayBar = props.ScrollBarOverlay == true
 	local hideDelay = props.AutoHideDelay or 0.85
 	local showButtons = props.ScrollButtons == true
 	local buttonStep = props.ScrollButtonStep or 64
@@ -584,7 +586,7 @@ return function(scope: Types.Scope, props: Types.ScrollAreaProps): Instance
 		-- UIListLayout.AbsoluteContentSize, never from Content.AbsoluteSize
 		-- (that collapses to the clipped viewport and kills maxScroll).
 		Size = scope:Computed(function(use)
-			local gutter = use(chromeGutter)
+			local gutter = if overlayBar then 0 else use(chromeGutter)
 			local cs = use(contentSize) :: Vector2
 			if horizontal then
 				if autoCanvas then

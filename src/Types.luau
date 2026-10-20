@@ -1459,6 +1459,8 @@ export type ScrollAreaProps = {
 	CanvasSize: UsedAs<UDim2>?,
 	ScrollBarRail: boolean?,
 	AutoHideScrollBar: boolean?,
+	--- Draw the scroll bar over the content, so the content keeps its full width.
+	ScrollBarOverlay: boolean?,
 	AutoHideDelay: number?,
 	ScrollButtons: boolean?,
 	ScrollButtonStep: number?,
