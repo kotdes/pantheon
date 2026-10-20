@@ -27,6 +27,7 @@ local demos: { Demo } = {
 	require(folder:WaitForChild("Storyboard")) :: any,
 	require(folder:WaitForChild("Tasks")) :: any,
 	require(folder:WaitForChild("Admin")) :: any,
+	require(folder:WaitForChild("Tilly")) :: any,
 }
 
 local playerGui = Players.LocalPlayer:WaitForChild("PlayerGui")

@@ -3,6 +3,8 @@
 /Packages/
 /Packages/**
 /DevPackages/
+# Third-party sources that you put in the demos yourself, such as Tilly
+/demo/vendor/
 
 *.rbxl
 *.rbxlx
