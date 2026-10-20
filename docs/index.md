@@ -98,4 +98,5 @@ end)
 - [Install Pantheon](Tutorials/InstallingPantheon.md) to add the library to a project.
 - [Use Pantheon](Tutorials/UsingPantheon.md) to build a small interface.
 - [Common properties](Guides/CommonProperties.md) lists what every component accepts.
+- [Migrating to 0.2](Guides/Migrating.md) lists what changed since version 0.1.
 - Find a component in the navigation. They are grouped by what they do.

@@ -71,6 +71,7 @@ nav:
       - Installing Pantheon: Tutorials/InstallingPantheon.md
       - Using Pantheon: Tutorials/UsingPantheon.md
   - Guides:
+      - Migrating to 0.2: Guides/Migrating.md
       - Common properties: Guides/CommonProperties.md
       - Theming: Guides/Theming.md
       - Persisting state: Guides/PersistingState.md
