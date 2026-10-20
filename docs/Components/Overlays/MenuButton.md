@@ -39,6 +39,7 @@ scope:MenuButton({
 | `TrailingIcon` | `string` | :x: | - | Same as `Trailing` when it is an icon name. |
 | `Color` | `UsedAs<ColorInput>` | :x: | `Colors.OnSurface` | Tint of the label and the icons, such as `"error"`. |
 | `Page` | `string` | :x: | - | Id of a [MenuPage](./MenuPage.md) to move to when pressed. |
+| `Selected` | `UsedAs<boolean>` | :x: | `false` | Marks the row as the current choice. It is filled with the primary container colour. It follows a state, so the row changes when the state does. |
 | `Compact` | `boolean` | :x: | `true` | Use the 40 px row. Set `false` for the taller 44 px row of a header menu. |
 | `Children` | `any` | :x: | - | Content placed in the row. |
 

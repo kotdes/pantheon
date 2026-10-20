@@ -964,6 +964,7 @@ export type MenuItemProps = {
 	Color: UsedAs<ColorInput>?,
 	--- Push this MenuPage id (does not close the menu).
 	Page: string?,
+	Selected: UsedAs<boolean>?,
 	[string]: any,
 }
 
@@ -983,6 +984,8 @@ export type MenuButtonProps = {
 	TrailingIcon: string?,
 	Color: UsedAs<ColorInput>?,
 	Page: string?,
+	--- Fill the row with the primary container, as the current choice. Follows a state.
+	Selected: UsedAs<boolean>?,
 	--- Compact row (40px). False uses the taller header-menu row (44px). Default true.
 	Compact: boolean?,
 	--- Invoked after `OnClick` (Menu wires this when building from Items/Sections).

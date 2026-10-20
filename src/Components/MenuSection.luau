@@ -203,6 +203,7 @@ return function(scope: Types.Scope, props: Types.MenuSectionProps): Instance
 					TrailingIcon = item.TrailingIcon,
 					Color = item.Color,
 					Page = item.Page,
+					Selected = item.Selected,
 					Compact = compact,
 					OnClose = props.OnClose,
 					LayoutOrder = i,

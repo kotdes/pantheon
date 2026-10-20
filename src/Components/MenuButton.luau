@@ -41,11 +41,30 @@ return function(scope: Types.Scope, props: Types.MenuButtonProps): Instance
 	local role = if props.Color ~= nil
 		then Color.resolve(peek(props.Color) :: Types.ColorInput?, theme, "primary")
 		else nil
-	local fg = if disabled
+	local baseFg = if disabled
 		then theme.Colors.OnSurfaceVariant
 		elseif role then role.Base
 		else theme.Colors.OnSurface
 	local stateColor = if role then role.Base else theme.Colors.OnSurface
+
+	-- A selected row is filled with the primary container and drawn in its on-colour. It
+	-- follows a state, so the row changes as the state does.
+	local selected = props.Selected
+	local fg: any = baseFg
+	local fillBase: any = theme.Colors.Surface
+	if selected ~= nil and not disabled then
+		fg = scope:Computed(function(use)
+			return if use(selected :: any) == true
+				then use(theme.Colors.OnPrimaryContainer :: any)
+				else use(baseFg :: any)
+		end)
+		fillBase = scope:Computed(function(use)
+			return if use(selected :: any) == true
+				then use(theme.Colors.PrimaryContainer :: any)
+				else use(theme.Colors.Surface :: any)
+		end)
+		stateColor = theme.Colors.OnPrimaryContainer
+	end
 
 	local ix = Interaction.bind(scope, theme, {
 		Disabled = not clickable,
@@ -60,7 +79,7 @@ return function(scope: Types.Scope, props: Types.MenuButtonProps): Instance
 		Name = "MenuButton",
 		Text = "",
 		AutoButtonColor = false,
-		BackgroundColor3 = ix.fill(theme.Colors.Surface),
+		BackgroundColor3 = ix.fill(fillBase),
 		Size = props.Size or UDim2.new(1, 0, 0, rowHeight),
 		LayoutOrder = props.LayoutOrder or 0,
 		Visible = props.Visible,
