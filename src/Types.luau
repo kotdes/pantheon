@@ -1098,6 +1098,10 @@ export type PopoverProps = {
 	MaxHeight: number?,
 	Children: any?,
 	Width: number?,
+	--- First MenuPage id when the content has pages.
+	RootPage: string?,
+	Page: UsedAs<string>?,
+	OnChanged: ((string) -> ())?,
 	[string]: any,
 }
 

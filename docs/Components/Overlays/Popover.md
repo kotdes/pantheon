@@ -45,12 +45,15 @@ scope:Popover({
 | `MaxHeight` | `number` | :x: | - | Largest height in pixels of the menu. It scrolls past that. |
 | `Children` | `any` | :x: | - | Menu content built from [MenuSection](./MenuSection.md) and [MenuButton](./MenuButton.md). |
 | `Width` | `number` | :x: | `240` | Width of the popover in pixels. |
+| `RootPage` | `string` | :x: | The first page | Id of the first [MenuPage](./MenuPage.md) when `Children` has pages. Set it to `"root"` to show `Items` or `Sections` first. |
+| `Page` | `UsedAs<string>` | :x: | - | Id of the page to show. The popover moves to it when it changes. |
 
 ## Callbacks
 
 | Name | Description |
 | ---- | ----------- |
 | `OnClose: () -> ()` | Runs when the user presses outside the popover, or an item that closes it. |
+| `OnChanged: (string) -> ()` | Runs with the id of the page when the user moves between pages. |
 
 ## See also
 
