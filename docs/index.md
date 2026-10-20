@@ -52,7 +52,7 @@ Pantheon is a set of user interface components for Roblox. It is built on [Fusio
 
     ---
 
-    A hotbar with an inventory panel, a backpack, a leaderboard and a top bar. They are styled for games and do not use the app theme.
+    A hotbar with an inventory panel, and a backpack that feeds it. They are styled for games and do not use the app theme.
 
     [:octicons-arrow-right-24: Hotbar](Game/Hotbar.md)
 
