@@ -68,6 +68,7 @@ Inside a [Window](./Window.md), the app bar and the content move over to make ro
 | `RootPage` | `string` | :x: | - | Id of the first page when `Children` has several [MenuPage](../Overlays/MenuPage.md)s. |
 | `Page` | `UsedAs<string>` | :x: | - | Id of the page to show. Follows the state you pass. |
 | `MaxHeight` | `number` | :x: | - | Largest height in pixels of the menu. When left out, the menu fills the height of the drawer. |
+| `Header` | `Instance` | :x: | - | Content above the menu, such as window buttons or a profile. Give it a fixed height. When there is a header, the rows are the taller 44 px rows. |
 | `DockAt` | `number` | :x: | - | Width in pixels of the parent from which the drawer stays open beside the content. When left out, the drawer never docks. |
 
 ## Callbacks

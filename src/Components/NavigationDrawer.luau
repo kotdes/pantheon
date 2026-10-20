@@ -90,6 +90,7 @@ return function(scope: Types.Scope, props: Types.NavigationDrawerProps): Instanc
 		Theme = theme,
 		Embedded = true,
 		Open = shown,
+		Header = props.Header,
 		OnClose = close,
 		Sections = props.Sections,
 		Items = flatItems,
