@@ -40,6 +40,7 @@ local function normalizeItems(raw: { any }?): { Types.MenuItemProps }
 				TrailingIcon = item.TrailingIcon,
 				Color = item.Color,
 				Page = item.Page,
+				Selected = item.Selected,
 			})
 		end
 	end
