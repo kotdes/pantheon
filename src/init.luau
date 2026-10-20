@@ -51,7 +51,7 @@ local Pantheon = {
 	Material = require(script.Internal.MaterialColors),
 	Fusion = Fusion,
 	Iona = Iona,
-	Version = { major = 0, minor = 1, isRelease = false },
+	Version = { major = 0, minor = 1, isRelease = true },
 }
 
 -- Fusion's Hydrate is slated for deprecation. Pantheon scopes expose its own
