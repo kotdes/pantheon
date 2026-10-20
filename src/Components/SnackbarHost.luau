@@ -95,7 +95,7 @@ return function(scope: Types.Scope, props: Types.SnackbarHostProps?): HostApi
 		Size = scope:Computed(function(use)
 			return UDim2.fromOffset(width, use(stackHeight))
 		end),
-		ZIndex = p.ZIndex or 100,
+		ZIndex = p.ZIndex or 180,
 	}) :: Frame
 
 	Layer.mount(scope, p, host)

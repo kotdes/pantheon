@@ -188,7 +188,8 @@ return function(scope: Types.Scope, props: Types.DialogProps): Instance
 		},
 	})
 
-	local baseZ = props.ZIndex or 100
+	-- Above sheets (110), so a dialog opened from a sheet is on top of it.
+	local baseZ = props.ZIndex or 140
 	local outlineStroke = scope:New("UIStroke")({
 		Name = "DialogOutlineFlash",
 		Parent = panel,

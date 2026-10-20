@@ -40,7 +40,7 @@ scope:Dialog({
 | `LayoutOrder` | `UsedAs<number>` | :x: | `0` | Position in a parent `UIListLayout` or `UIGridLayout`. |
 | `Size` | `UsedAs<UDim2>` | :x: | - | Size of the component. |
 | `Visible` | `UsedAs<boolean>` | :x: | `true` | Whether the component is shown. |
-| `ZIndex` | `UsedAs<number>` | :x: | - | Z index of the component. |
+| `ZIndex` | `UsedAs<number>` | :x: | `140` | Z index of the component. The default is above sheets, so a dialog opened from a sheet is on top of it. |
 | `Title` | `UsedAs<string>` | :white_check_mark: | - | Heading of the dialog. |
 | `Body` | `UsedAs<string>` | :x: | - | Text under the heading. |
 | `Actions` | `{ DialogAction }` | :x: | - | Buttons at the bottom. Each has a `Text`, and can have a `Variant`, a `Color` and an `OnClick`. They take the same values as [Button](../Foundations/Button.md). |

@@ -32,7 +32,7 @@ scope:Tooltip({
 | Name | Type | Required | Default | Description |
 | ---- | ---- | -------- | ------- | ----------- |
 | `Theme` | `ThemeRef` | :x: | The contextual theme | Theme to use for this component instead of the one from `Theme.Provide`. |
-| `ZIndex` | `UsedAs<number>` | :x: | `120` | Z index of the component. |
+| `ZIndex` | `UsedAs<number>` | :x: | `160` | Z index of the component. |
 | `Text` | `UsedAs<string>` | :white_check_mark: | - | The label. |
 | `Target` | `Instance` | :x: | - | The element that shows the tooltip when hovered. |
 | `Placement` | `TooltipPlacement` | :x: | `"Auto"` | Preferred side of the target. `"Auto"` picks the side with most room. |
