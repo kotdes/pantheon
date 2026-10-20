@@ -39,7 +39,7 @@ scope:Popover({
 | `ZIndex` | `UsedAs<number>` | :x: | - | Z index of the component. |
 | `Open` | `UsedAs<boolean>` | :x: | - | Whether the popover is shown. Follows the state you pass. |
 | `Target` | `Instance` | :x: | - | The element the popover is placed next to. |
-| `Placement` | `"Bottom" \| "Top" \| "Left" \| "Right"` | :x: | `"Bottom"` | Preferred side of the target: `"Bottom"`, `"Top"`, `"Left"` or `"Right"`. |
+| `Placement` | `"Auto" \| "Bottom" \| "Top" \| "Left" \| "Right"` | :x: | `"Bottom"` | Preferred side of the target. If the popover does not fit on that side, it moves to the opposite side, and it always stays inside its layer. `"Auto"` picks the side with the most room. |
 | `Items` | `{ any }` | :x: | - | Menu rows. See [MenuButton](./MenuButton.md). |
 | `Sections` | `{ MenuSectionProps }` | :x: | - | Groups of rows. See [MenuSection](./MenuSection.md). |
 | `MaxHeight` | `number` | :x: | - | Largest height in pixels of the menu. It scrolls past that. |

@@ -9,6 +9,7 @@ local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolve
 local Focus = require(script.Parent.Parent.Internal.Focus)
 local Layer = require(script.Parent.Parent.Internal.Layer)
 local Follow = require(script.Parent.Parent.Internal.Follow)
+local place = require(script.Parent.Parent.Internal.Placement)
 local Overlay = require(script.Parent.Overlay)
 local Menu = require(script.Parent.Menu)
 
@@ -68,32 +69,24 @@ return function(scope: Types.Scope, props: Types.PopoverProps): Instance
 		end)
 	)
 
+	-- Placed with the menu's real size: on the preferred side when it fits, else on the other
+	-- side, and always kept inside the layer.
 	local function updatePosition()
 		local target = Layer.asGui(props.Target)
 		local layer = Layer.resolve(props)
 		if target == nil or layer == nil then
 			return
 		end
-		local gap = 8
-		local tp = target.AbsolutePosition
-		local ts = target.AbsoluteSize
-		local lp = layer.AbsolutePosition
-		local x = tp.X - lp.X
-		local y = tp.Y - lp.Y
-		if placement == "Bottom" then
-			x = x + ts.X * 0.5 - width * 0.5
-			y = y + ts.Y + gap
-		elseif placement == "Top" then
-			x = x + ts.X * 0.5 - width * 0.5
-			y = y - gap - 8
-		elseif placement == "Right" then
-			x = x + ts.X + gap
-			y = y
-		else
-			x = x - width - gap
-			y = y
-		end
-		pos:set(UDim2.fromOffset(math.max(8, x), math.max(8, y)))
+		local origin = layer.AbsolutePosition
+		local at = place(
+			placement,
+			target.AbsolutePosition - origin,
+			target.AbsoluteSize,
+			(menu :: GuiObject).AbsoluteSize,
+			8,
+			layer.AbsoluteSize
+		)
+		pos:set(at)
 	end
 
 	Follow(scope, open, function(v)

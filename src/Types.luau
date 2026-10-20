@@ -1092,7 +1092,7 @@ export type PopoverProps = {
 	--- Anchor to position relative to (screen space).
 	Target: Instance?,
 	--- Preferred placement relative to Target.
-	Placement: ("Bottom" | "Top" | "Left" | "Right")?,
+	Placement: ("Auto" | "Bottom" | "Top" | "Left" | "Right")?,
 	Items: { any }?,
 	Sections: { MenuSectionProps }?,
 	MaxHeight: number?,
