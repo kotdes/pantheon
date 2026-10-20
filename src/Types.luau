@@ -996,6 +996,8 @@ export type MenuButtonProps = {
 	Page: string?,
 	--- Fill the row with the primary container, as the current choice. Follows a state.
 	Selected: UsedAs<boolean>?,
+	--- No fill until the row is hovered or pressed, for rows on a surface of their own.
+	Flat: boolean?,
 	--- Compact row (40px). False uses the taller header-menu row (44px). Default true.
 	Compact: boolean?,
 	--- Invoked after `OnClick` (Menu wires this when building from Items/Sections).

@@ -67,6 +67,9 @@ return function(scope: Types.Scope, props: Types.MenuButtonProps): Instance
 		stateColor = theme.Colors.OnPrimaryContainer
 	end
 
+	-- A flat row has no fill until it is hovered or pressed. A selected row keeps its fill.
+	local flat = props.Flat == true and props.Selected == nil
+
 	local ix = Interaction.bind(scope, theme, {
 		Disabled = not clickable,
 		StateColor = stateColor,
@@ -80,7 +83,8 @@ return function(scope: Types.Scope, props: Types.MenuButtonProps): Instance
 		Name = "MenuButton",
 		Text = "",
 		AutoButtonColor = false,
-		BackgroundColor3 = ix.fill(fillBase),
+		BackgroundColor3 = if flat then stateColor else ix.fill(fillBase),
+		BackgroundTransparency = if flat then ix.fillTransparency(1) else nil,
 		Size = props.Size or UDim2.new(1, 0, 0, rowHeight),
 		LayoutOrder = props.LayoutOrder or 0,
 		Visible = props.Visible,
