@@ -870,6 +870,9 @@ export type WindowProps = {
 	ZIndex: UsedAs<number>?,
 	Layer: Instance?,
 	AppBar: Instance?,
+	--- What to drag the window by when there is no `AppBar`. It is a part of your content, such
+	--- as a strip along the top.
+	DragHandle: Instance?,
 	NavigationRail: Instance?,
 	--- Main content; fills space beside/above the rail.
 	Children: any?,

@@ -235,8 +235,10 @@ return function(scope: Types.Scope, props: Types.WindowProps): Instance
 	-- Let floating UI that fills the window (scrims, sheets) match its rounding.
 	window:SetAttribute(Corners.WindowRadiusAttribute, r)
 
-	if props.Draggable and props.AppBar then
-		local handle = props.AppBar :: GuiObject
+	-- The window is dragged by its app bar, or by `DragHandle` when there is no app bar.
+	local dragHandle = props.DragHandle or props.AppBar
+	if props.Draggable and dragHandle then
+		local handle = dragHandle :: GuiObject
 		local bounds = props.DragBounds or "Titlebar"
 		local keepX = props.DragKeepVisible or 120
 

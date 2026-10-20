@@ -41,7 +41,7 @@ A [NavigationDrawer](./NavigationDrawer.md) with `DockAt` stays open beside the 
 
 ## Dragging
 
-The window is dragged by its app bar. `DragBounds` decides how far it may go off screen.
+The window is dragged by its app bar, or by `DragHandle` when there is no app bar. `DragBounds` decides how far it may go off screen.
 
 ## Resizing
 
@@ -59,6 +59,7 @@ Set `Resizable` to add handles on the edges and corners. Use `MinSize`, `MaxSize
 | `Visible` | `UsedAs<boolean>` | :x: | `true` | Whether the component is shown. |
 | `ZIndex` | `UsedAs<number>` | :x: | - | Z index of the component. |
 | `AppBar` | `Instance` | :x: | - | An [AppBar](./AppBar.md) to put at the top. Dragging the window uses it as the handle. |
+| `DragHandle` | `Instance` | :x: | - | What to drag the window by when there is no `AppBar`, such as a strip along the top of your content. |
 | `NavigationRail` | `Instance` | :x: | - | A [NavigationRail](./NavigationRail.md) for the side or the bottom. |
 | `Children` | `any` | :x: | - | Main content. It fills the space beside and below the chrome. |
 | `Overlays` | `{ Instance }` | :x: | - | Layers or panels that float over the content, such as a [NavigationDrawer](./NavigationDrawer.md). They are moved to the overlay layer of the window. |
