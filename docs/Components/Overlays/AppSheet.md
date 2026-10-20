@@ -24,6 +24,18 @@ scope:AppSheet({
 })
 ```
 
+## Scrolling and dragging
+
+The content stacks in a list and scrolls when it is taller than the sheet.
+
+Drag the grabber or the title bar to change the sheet:
+
+- Drag up to expand it to the full height of its layer.
+- Drag down to collapse an expanded sheet.
+- Drag down far enough from the normal height and the sheet calls `OnClose`.
+
+If `OnClose` does not close the sheet, it springs back. A sheet always opens at its normal height.
+
 ## Properties
 
 | Name | Type | Required | Default | Description |
@@ -35,7 +47,7 @@ scope:AppSheet({
 | `Open` | `UsedAs<boolean>` | :x: | - | Whether the sheet is shown. Follows the state you pass. |
 | `Title` | `UsedAs<string>` | :x: | - | Title at the top of the sheet. |
 | `Children` | `any` | :x: | - | Content of the sheet. |
-| `Detent` | `number` | :x: | `0.92` | Height of the sheet as a fraction, from `0` to `1`, of the layer it is mounted on. |
+| `Detent` | `number` | :x: | `0.92` | Normal height of the sheet as a fraction, from `0` to `1`, of the layer it is mounted on. Dragging up expands it to `1`. |
 | `ShowGrabber` | `boolean` | :x: | `true` | Show the small handle at the top. |
 
 ## Callbacks
