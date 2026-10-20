@@ -45,6 +45,7 @@ return function(scope: Types.Scope, props: Types.PopoverProps): Instance
 		Items = props.Items,
 		Sections = props.Sections,
 		MaxHeight = props.MaxHeight,
+		AutoHeight = props.AutoHeight,
 		Children = props.Children,
 		RootPage = props.RootPage,
 		Page = props.Page,

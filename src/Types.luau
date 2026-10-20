@@ -1064,6 +1064,9 @@ export type MenuProps = {
 	Children: any?,
 	--- Cap list height; scrolls when content exceeds this (px).
 	MaxHeight: number?,
+	--- Size the menu to its content, up to `MaxHeight`, with a spring (default true). A menu with
+	--- pages follows the page that is showing.
+	AutoHeight: boolean?,
 	--- When true, list fills remaining height and scrolls (fixed `Size` required).
 	Fill: boolean?,
 	--- Override panel corner radius (default `RadiusPanel`).
@@ -1098,6 +1101,8 @@ export type PopoverProps = {
 	MaxHeight: number?,
 	Children: any?,
 	Width: number?,
+	--- Size the popover to its content, up to `MaxHeight`, with a spring (default true).
+	AutoHeight: boolean?,
 	--- First MenuPage id when the content has pages.
 	RootPage: string?,
 	Page: UsedAs<string>?,
