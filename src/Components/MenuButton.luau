@@ -92,7 +92,12 @@ return function(scope: Types.Scope, props: Types.MenuButtonProps): Instance
 		Active = clickable,
 		ClipsDescendants = true,
 		CornerRadius = theme.Metrics.RadiusPanel - 4,
-		Padding = if trailingName then { vPad, hPad } else { vPad, hPad / 2, vPad, hPad },
+		-- An element at the end, such as a count or a switch, sits as far from the edge as the row
+		-- is from its top and bottom.
+		Padding = if trailingName
+			then { vPad, hPad }
+			elseif trailingInst then { vPad, vPad, vPad, hPad }
+			else { vPad, hPad / 2, vPad, hPad },
 		Layout = {
 			Kind = "List",
 			FillDirection = Enum.FillDirection.Horizontal,
