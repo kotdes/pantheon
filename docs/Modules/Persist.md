@@ -5,6 +5,11 @@ tags:
 
 # Persist
 
+!!! note "`Persist` is now a directive-based implementation"
+    In V0.2.0, `Persist` is refactored to be a `Directive`-based implementation instead of using regular properties. The `Id` property is removed from all components in this release with no transition period. If you are using `Persist` in your project, please update your code to use the new `Directive`-based implementation.
+    
+    You can bulk-replace `Id` with `[Pantheon.Persist.Id]` (or `[Persist.Id]` if you have `local Persist = Pantheon.Persist`) in your codebase by using the Find and Replace feature in your code editor.
+
 Persist keeps the state of components across rebuilds of an interface. [Persisting state](../Guides/PersistingState.md) explains the idea.
 
 ## Functions
