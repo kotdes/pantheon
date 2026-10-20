@@ -1,5 +1,6 @@
 site_name: Pantheon
 site_url: https://pantheon.7kayoh.net/
+site_description: User interface components for Roblox, built on Fusion.
 repo_name: kotdes/pantheon
 repo_url: https://github.com/kotdes/pantheon
 edit_uri: edit/main/docs/
@@ -40,8 +41,16 @@ theme:
 
   language: en
 
+hooks:
+  - hooks/page_description.py
+
 plugins:
   - search
+  # Social cards need Cairo, so they are off for local builds. Set CARDS=true to build them.
+  - social:
+      enabled: !ENV [CARDS, false]
+      cards_layout_dir: layouts
+      cards_layout: pantheon
   - tags:
       tags_file: Tags.md
   - glightbox
@@ -182,6 +191,9 @@ nav:
   - Tags: Tags.md
 
 extra:
+  version:
+    provider: mike
+    default: latest
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/kotdes/pantheon

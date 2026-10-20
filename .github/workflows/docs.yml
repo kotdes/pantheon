@@ -1,24 +1,51 @@
 name: Docs
 
+# Pushes to main publish the "dev" docs. A version tag such as v0.2.0 publishes the "0.2" docs
+# and makes them "latest", which is the default version of the site.
 on:
   push:
     branches: [main]
-    paths:
-      - docs/**
-      - mkdocs.yml
-      - .github/workflows/docs.yml
+    tags: ["v*"]
   workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: docs
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      CARDS: "true"
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
-      - run: pip install "mkdocs<2" mkdocs-material mkdocs-glightbox
-      - run: mkdocs gh-deploy --force
+      - name: Install Cairo for the social cards
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev zlib1g-dev
+      - run: pip install "mkdocs<2" "mkdocs-material[imaging]" mkdocs-glightbox mike
+      - uses: actions/cache@v4
+        with:
+          path: .cache
+          key: social-cards-${{ hashFiles('mkdocs.yml', 'layouts/**') }}
+      - name: Set the commit author
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Publish the dev docs
+        if: github.ref_type == 'branch'
+        run: mike deploy --push dev
+      - name: Publish a release
+        if: github.ref_type == 'tag'
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          mike deploy --push --update-aliases "${version%.*}" latest
+          mike set-default --push latest

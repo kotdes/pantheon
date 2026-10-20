@@ -12,3 +12,9 @@ sourcemap.json
 
 notes.md
 .cursor
+# MkDocs Material social card cache
+.cache/
+
+# Python bytecode (the MkDocs hooks)
+__pycache__/
+*.pyc
