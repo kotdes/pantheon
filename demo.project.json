@@ -10,6 +10,9 @@
         
         "Pantheon": {
           "$path": "src"
+        },
+        "PantheonRouter": {
+          "$path": "../pantheon-router/src"
         }
       },
       "DevPackages": {
