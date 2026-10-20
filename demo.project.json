@@ -12,6 +12,10 @@
           "$path": "src"
         }
       },
+      "DevPackages": {
+        "$className": "Folder",
+        "$path": "DevPackages"
+      },
       "Stories": {
         "$path": "stories"
       }

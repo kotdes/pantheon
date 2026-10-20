@@ -2,6 +2,7 @@
 /ServerPackages/
 /Packages/
 /Packages/**
+/DevPackages/
 
 *.rbxl
 *.rbxlx
