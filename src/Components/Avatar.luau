@@ -22,6 +22,7 @@ return function(scope: Types.Scope, props: Types.AvatarProps): Instance
 					Image = props.Image,
 					Size = UDim2.fromScale(1, 1),
 					ScaleType = Enum.ScaleType.Crop,
+					CornerRadius = theme.Metrics.RadiusPill,
 				})
 				else scope:TextLabel({
 					BackgroundTransparency = 1,
