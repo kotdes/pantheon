@@ -82,7 +82,6 @@ nav:
   - Guides:
       - Migrating to 0.2: Guides/Migrating.md
       - Common properties: Guides/CommonProperties.md
-      - Theming: Guides/Theming.md
       - Persisting state: Guides/PersistingState.md
       - Directives: Guides/Directives.md
       - Overlay layers: Guides/OverlayLayers.md
@@ -90,6 +89,14 @@ nav:
       - Performance: Guides/Performance.md
       - Customising the HUD: Guides/CustomisingTheHud.md
       - Philosophy: Guides/Philosophy.md
+  - Theming:
+      - Theming/index.md
+      - Design tokens: Theming/DesignTokens.md
+      - Colours: Theming/Colours.md
+      - Typography: Theming/Typography.md
+      - Spacing and sizes: Theming/Spacing.md
+      - Corners: Theming/Corners.md
+      - Motion: Theming/Motion.md
   - Components:
     - Foundations:
         - Components/Foundations/Avatar.md

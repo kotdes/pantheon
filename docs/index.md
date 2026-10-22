@@ -30,7 +30,7 @@ Pantheon is a set of user interface components for Roblox. It is built on [Fusio
 
     Components take their colours, fonts and spacing from a theme. Change the theme and every component changes with it. Light and dark themes are included.
 
-    [:octicons-arrow-right-24: Theming](Guides/Theming.md)
+    [:octicons-arrow-right-24: Theming](Theming/index.md)
 
 -   :material-content-save-outline:{ .lg .middle } __State that survives a rebuild__
 

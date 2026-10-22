@@ -5,7 +5,7 @@ tags:
 
 # Theme
 
-Theme makes the tables that components read their look from, and says which one is current. See [Theming](../Guides/Theming.md) for what a theme holds and how to switch it.
+Theme makes the tables that components read their look from, and says which one is current. See [Theming](../Theming/index.md) for what a theme holds and how to switch it.
 
 ## Functions
 

@@ -2,6 +2,8 @@
 
 A theme is a table with the colours, fonts, type scales, spacing and motion of the interface. Components read from it, so changing the theme changes the whole interface.
 
+See [Design tokens](DesignTokens.md) for every default colour, type scale, spacing value and corner radius.
+
 ## Making a theme
 
 ```luau
@@ -12,7 +14,7 @@ local theme = Pantheon.Theme.create("Light") -- or "Dark"
 
 | Option | Type | Description |
 | ------ | ---- | ----------- |
-| `RespectAccessibility` | `boolean?` | Read the accessibility settings of the player and apply them. `true` by default. See [Accessibility](Accessibility.md). |
+| `RespectAccessibility` | `boolean?` | Read the accessibility settings of the player and apply them. `true` by default. See [Accessibility](../Guides/Accessibility.md). |
 | `Accessibility` | `AccessibilityPrefs?` | Use these settings instead of reading them. Useful for storybooks and tests. |
 | `Controls` | `ThemeControls?` | Settings for controls, such as `SwitchIcons`. |
 | `Overrides` | `{ [string]: any }?` | Values to merge over the finished theme. |
@@ -57,7 +59,7 @@ scope:Button({ Text = "Hello", Theme = darkTheme })
 
 Components read the theme once, when they are built. A theme change therefore needs a rebuild of the interface. To make a rebuild painless:
 
-1. Keep the state that matters outside the view, or give the app a [Persist](PersistingState.md) store, so controls keep their values.
+1. Keep the state that matters outside the view, or give the app a [Persist](../Guides/PersistingState.md) store, so controls keep their values.
 2. Build the new interface under the new theme, fade it in over the old one, and then clean up the old one. The demo storyboard does this.
 
 `Theme.createAnimated` makes a theme state that moves between light and dark with a spring. It is used by the storyboard so that the colours of a new interface start from the old theme and blend over to the new one:

@@ -307,3 +307,75 @@ html {
 	margin: 0;
 	border-top: 1px solid var(--md-default-fg-color--lightest);
 }
+/* Design token previews. */
+.es-swatch {
+	display: inline-block;
+	width: 1.1rem;
+	height: 1.1rem;
+	margin-right: 0.35rem;
+	vertical-align: -0.25em;
+	border-radius: 4px;
+	background: var(--c);
+	box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--md-default-fg-color) 18%, transparent);
+}
+
+.es-types,
+.es-scales,
+.es-radii {
+	margin: 1rem 0;
+}
+
+.es-type {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 0.25rem 1rem;
+	padding: 0.6rem 0;
+	border-bottom: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.es-type code {
+	flex: 0 0 6rem;
+}
+
+.es-scale {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	padding: 0.3rem 0;
+}
+
+.es-scale code {
+	flex: 0 0 6rem;
+}
+
+.es-scale__value {
+	flex: 0 0 2rem;
+	text-align: right;
+}
+
+.es-scale__bar {
+	height: 1rem;
+	border-radius: 2px;
+	background: var(--es-primary);
+}
+
+.es-radii {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+	gap: 1rem;
+}
+
+.es-radius {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.25rem;
+}
+
+.es-radius__box {
+	width: 5rem;
+	height: 5rem;
+	border: 2px solid var(--es-primary);
+	background: var(--es-primary-container);
+}

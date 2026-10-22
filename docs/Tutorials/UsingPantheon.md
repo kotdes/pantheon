@@ -25,7 +25,7 @@ Pantheon.Theme.Provide(theme, function()
 end)
 ```
 
-If you leave this out, creating a component fails with the error `Pantheon.Theme.Provide required`. To give one component its own theme, use its `Theme` property. See [Theming](../Guides/Theming.md).
+If you leave this out, creating a component fails with the error `Pantheon.Theme.Provide required`. To give one component its own theme, use its `Theme` property. See [Theming](../Theming/index.md).
 
 ## A component
 
