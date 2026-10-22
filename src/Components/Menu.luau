@@ -540,9 +540,7 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 		BackgroundColor3 = theme.Colors.Surface,
 		Shadow = {
 			BlurRadius = 8,
-			Transparency = scope:Computed(function(use)
-				return 1 - (use(openS) :: number) * 0.1
-			end),
+			Transparency = 0.9,
 		},
 		Size = props.Size or UDim2.fromOffset(220, 0),
 		AutomaticSize = if fill then Enum.AutomaticSize.None else Enum.AutomaticSize.Y,
