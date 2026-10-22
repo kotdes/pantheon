@@ -337,6 +337,7 @@ function Theme.createAnimated(
 		RespectAccessibility: boolean?,
 		Accessibility: Types.AccessibilityPrefs?,
 		Controls: Types.ThemeControls?,
+		Overrides: { [string]: any }?,
 		Palette: { [string]: Color3 | Types.ThemeColorRole | Types.ColorInput }?,
 		Typography: { [string]: Types.TypeScale }?,
 	}?
@@ -347,6 +348,7 @@ function Theme.createAnimated(
 		RespectAccessibility = respect,
 		Accessibility = if opts then opts.Accessibility else nil,
 		Controls = if opts then opts.Controls else nil,
+		Overrides = if opts then opts.Overrides else nil,
 		Palette = if opts then opts.Palette else nil,
 		Typography = if opts then opts.Typography else nil,
 	}
