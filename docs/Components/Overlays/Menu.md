@@ -47,6 +47,7 @@ To build a submenu, give the menu several [MenuPage](./MenuPage.md)s as `Childre
 | `Sections` | `{ MenuSectionProps }` | :x: | - | Groups of rows with optional titles. See [MenuSection](./MenuSection.md). |
 | `Open` | `UsedAs<boolean>` | :x: | `true` | Whether the menu is shown. It is shown when this is left out. |
 | `Header` | `any` | :x: | - | Content above the list, such as a profile header. |
+| `Footer` | `any` | :x: | - | Content below the list. It keeps its own height, and the list takes the room that is left. |
 | `Children` | `any` | :x: | - | Menu content built from sections, buttons and pages. It is added after `Items` and `Sections`. |
 | `MaxHeight` | `number` | :x: | - | Largest height of the list in pixels. It scrolls past that. |
 | `AutoHeight` | `boolean` | :x: | `true` | Make the menu as tall as its content, up to `MaxHeight`, and change height with a spring. A menu with pages follows the page that is showing. Set `false` for a fixed height of `MaxHeight`, or 280 px for a menu with pages. It has no effect with `Fill`. |

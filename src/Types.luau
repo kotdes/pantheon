@@ -831,6 +831,8 @@ export type NavigationDrawerProps = {
 	MaxHeight: number?,
 	--- Content above the menu, such as window buttons or a profile. Give it a fixed height.
 	Header: Instance?,
+	Footer: Instance?,
+	HideScrollBar: boolean?,
 	--- Width of the drawer's parent, in px, from which the drawer stays open beside the content,
 	--- like a sidebar. Below that width it slides in over the content. Omit to never dock.
 	DockAt: number?,
@@ -1060,6 +1062,8 @@ export type MenuProps = {
 	OnClose: (() -> ())?,
 	--- Optional content above the item list (e.g. AvatarMenu profile header).
 	Header: any?,
+	Footer: any?,
+	HideScrollBar: boolean?,
 	--- Composed MenuSection / MenuButton / MenuPage (also appended after Items/Sections).
 	Children: any?,
 	--- Cap list height; scrolls when content exceeds this (px).

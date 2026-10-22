@@ -93,6 +93,8 @@ return function(scope: Types.Scope, props: Types.NavigationDrawerProps): Instanc
 		Embedded = true,
 		Open = shown,
 		Header = props.Header,
+		Footer = props.Footer,
+		HideScrollBar = props.HideScrollBar,
 		OnClose = close,
 		Sections = props.Sections,
 		Items = flatItems,

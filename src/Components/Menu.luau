@@ -200,6 +200,7 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 			ScrollBarRailBackground = false,
 			ScrollButtons = false,
 			AutoHideScrollBar = true,
+			ScrollBarHidden = props.HideScrollBar,
 			Children = bodyKids,
 		})
 		body.Name = "MenuScroll"
@@ -524,6 +525,13 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 		table.insert(kids, props.Header)
 	end
 	table.insert(kids, listBody)
+	if props.Footer then
+		local flex = Instance.new("UIFlexItem")
+		flex.FlexMode = Enum.UIFlexMode.None
+		flex.Parent = props.Footer;
+		(props.Footer :: any).LayoutOrder = 20
+		table.insert(kids, props.Footer)
+	end
 
 	local menu = scope:TextButton({
 		Name = "Menu",
