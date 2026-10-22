@@ -9,6 +9,7 @@ local Types = require(script.Parent.Parent.Types)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Layer = require(script.Parent.Parent.Internal.Layer)
 local Corners = require(script.Parent.Parent.Internal.Corners)
+local EdgeFade = require(script.Parent.Parent.Internal.EdgeFade)
 local ScrollInput = require(script.Parent.Parent.Internal.ScrollInput)
 local Resize = require(script.Parent.Parent.Internal.Resize)
 local Icon = require(script.Parent.Icon)
@@ -66,9 +67,18 @@ end
 return function(scope: Types.Scope, props: Types.WindowProps): Instance
 	local theme = resolveTheme(props)
 	local verticalRail = isVerticalRail(props.NavigationRail, props.RailOrientation)
-	local hasAppBar = props.AppBar ~= nil
 	local hasRail = props.NavigationRail ~= nil
-	local appBarHeight = if hasAppBar then theme.Metrics.AppBarHeight else 0
+	local function barSize(bar: Instance?, fallback: number): (number, number)
+		if bar == nil then
+			return 0, 0
+		end
+		local height = bar:GetAttribute(EdgeFade.HeightAttribute)
+		local fade = bar:GetAttribute(EdgeFade.FadeAttribute)
+		return if typeof(height) == "number" then height else fallback,
+			if typeof(fade) == "number" then fade else 0
+	end
+	local appBarHeight, appBarFade = barSize(props.AppBar, theme.Metrics.AppBarHeight)
+	local footerHeight, footerFade = barSize(props.Footer, theme.Metrics.AppBarHeight)
 	local railWidth = if hasRail and verticalRail then theme.Metrics.RailWidth else 0
 	local railBottom = if hasRail and not verticalRail then HORIZONTAL_RAIL_HEIGHT else 0
 	local radius = props.CornerRadius or theme.Metrics.RadiusPanel
@@ -104,6 +114,19 @@ return function(scope: Types.Scope, props: Types.WindowProps): Instance
 		})
 	end
 
+	if props.Footer then
+		scope:Apply(props.Footer)({
+			AnchorPoint = Vector2.new(0, 1),
+			Position = scope:Computed(function(use)
+				return UDim2.new(0, use(leftEdge), 1, -railBottom)
+			end),
+			Size = scope:Computed(function(use)
+				return UDim2.new(1, -use(leftEdge), 0, footerHeight)
+			end),
+			ZIndex = 10,
+		})
+	end
+
 	if props.NavigationRail then
 		scope:Apply(props.NavigationRail)({
 			Position = if verticalRail
@@ -121,14 +144,16 @@ return function(scope: Types.Scope, props: Types.WindowProps): Instance
 		})
 	end
 
+	local contentTop = if appBarFade > 0 then 0 else appBarHeight
+	local contentBottom = railBottom + (if footerFade > 0 then 0 else footerHeight)
 	local content = scope:Frame({
 		Name = "Content",
 		BackgroundTransparency = 1,
 		Position = scope:Computed(function(use)
-			return UDim2.fromOffset(use(leftEdge), appBarHeight)
+			return UDim2.fromOffset(use(leftEdge), contentTop)
 		end),
 		Size = scope:Computed(function(use)
-			return UDim2.new(1, -use(leftEdge), 1, -(appBarHeight + railBottom))
+			return UDim2.new(1, -use(leftEdge), 1, -(contentTop + contentBottom))
 		end),
 		ZIndex = 1,
 		ClipsDescendants = true,
@@ -150,6 +175,9 @@ return function(scope: Types.Scope, props: Types.WindowProps): Instance
 	if props.AppBar then
 		table.insert(chrome, 1, props.AppBar)
 	end
+	if props.Footer then
+		table.insert(chrome, props.Footer)
+	end
 	if props.NavigationRail then
 		table.insert(chrome, props.NavigationRail)
 	end
@@ -166,6 +194,7 @@ return function(scope: Types.Scope, props: Types.WindowProps): Instance
 			Transparency = 0.75,
 		},
 		BorderSizePixel = 0,
+		Active = true,
 		SizeConstraint = props.SizeConstraint or nil,
 		AspectRatio = props.AspectRatio or nil,
 		AnchorPoint = props.AnchorPoint or Vector2.new(0, 0),
@@ -185,9 +214,11 @@ return function(scope: Types.Scope, props: Types.WindowProps): Instance
 	local r: number = radius :: any
 	if hasRail and verticalRail then
 		Corners.apply(props.AppBar, 0, r, 0, 0)
+		Corners.apply(props.Footer, 0, 0, 0, r)
 		Corners.apply(props.NavigationRail, r, 0, r, 0)
 	else
 		Corners.apply(props.AppBar, r, r, 0, 0)
+		Corners.apply(props.Footer, 0, 0, if hasRail then 0 else r, if hasRail then 0 else r)
 		Corners.apply(props.NavigationRail, 0, 0, r, r)
 	end
 

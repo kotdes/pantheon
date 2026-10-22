@@ -4,12 +4,16 @@ local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
+local EdgeFade = require(script.Parent.Parent.Internal.EdgeFade)
 
 local Children = Fusion.Children
 
 return function(scope: Types.Scope, props: Types.AppBarProps): Instance
 	local theme = resolveTheme(props)
 	local actions: { Instance } = props.Actions or {}
+	local gradient = props.Variant == "Gradient"
+	local barHeight = theme.Metrics.AppBarHeight
+	local fadeHeight = if gradient then props.FadeHeight or 24 else 0
 
 	-- Raise level, 0..1. With FadeAtTop it follows the scroll offset: at the top the fill is
 	-- FadeTo and the divider and shadow are hidden. Without FadeAtTop it is always 1.
@@ -32,16 +36,18 @@ return function(scope: Types.Scope, props: Types.AppBarProps): Instance
 		return math.clamp(v :: number, 0, 1)
 	end
 
-	return scope:Frame({
+	local bar = scope:Frame({
 		Name = "AppBar",
-		BackgroundColor3 = scope:Computed(function(use)
-			return Interaction.lerpColor(fadeTo, raisedColor, level(use), use)
-		end),
+		BackgroundColor3 = if gradient
+			then fadeTo
+			else scope:Computed(function(use)
+				return Interaction.lerpColor(fadeTo, raisedColor, level(use), use)
+			end),
 		CornerRadius = props.Radius or { theme.Metrics.RadiusPanel, 0 },
-		Size = props.Size or UDim2.new(1, 0, 0, theme.Metrics.AppBarHeight),
+		Size = props.Size or UDim2.new(1, 0, 0, barHeight + fadeHeight),
 		LayoutOrder = props.LayoutOrder or 0,
 		ZIndex = props.ZIndex or 10,
-		Shadow = if props.Shadow == false
+		Shadow = if props.Shadow == false or gradient
 			then nil
 			else {
 				BlurRadius = 14,
@@ -54,6 +60,7 @@ return function(scope: Types.Scope, props: Types.AppBarProps): Instance
 			-- Bottom divider rather than an outline, so it doesn't double up with the Window's border.
 			scope:Frame({
 				Name = "Divider",
+				Visible = not gradient,
 				BackgroundColor3 = theme.Colors.OutlineVariant,
 				BackgroundTransparency = scope:Computed(function(use)
 					return 1 - level(use)
@@ -64,39 +71,55 @@ return function(scope: Types.Scope, props: Types.AppBarProps): Instance
 				Size = UDim2.new(1, 0, 0, 1),
 				ZIndex = 2,
 			}),
-			if props.Leading
-				then scope:Apply(props.Leading)({
-					AnchorPoint = Vector2.new(0, 0.5),
-					Position = UDim2.new(0, 8, 0.5, 0),
-					Size = UDim2.fromOffset(40, 40),
-				})
-				else nil,
-			scope:TextLabel({
-				BackgroundTransparency = 1,
-				FontFace = theme.Fonts.Heading,
-				TextSize = 18,
-				TextColor3 = theme.Colors.OnSurface,
-				TextXAlignment = Enum.TextXAlignment.Left,
-				TextYAlignment = Enum.TextYAlignment.Center,
-				Text = props.Title or "",
-				Position = UDim2.fromOffset(if props.Leading then 56 else 16, 0),
-				Size = UDim2.new(1, -120, 1, 0),
-			}),
+			if gradient then EdgeFade.gradient(scope, 90, barHeight, fadeHeight) else nil,
 			scope:Frame({
+				Name = "Row",
 				BackgroundTransparency = 1,
-				AnchorPoint = Vector2.new(1, 0.5),
-				Position = UDim2.new(1, -8, 0.5, 0),
-				AutomaticSize = Enum.AutomaticSize.X,
-				Size = UDim2.fromOffset(0, 40),
-				Layout = {
-					Kind = "List",
-					FillDirection = Enum.FillDirection.Horizontal,
-					VerticalAlignment = Enum.VerticalAlignment.Center,
-					Padding = 4,
-					HorizontalAlignment = Enum.HorizontalAlignment.Right,
+				Size = if gradient then UDim2.new(1, 0, 0, barHeight) else UDim2.fromScale(1, 1),
+				[Children] = {
+					if props.Leading
+						then scope:Apply(props.Leading)({
+							AnchorPoint = Vector2.new(0, 0.5),
+							Position = UDim2.new(0, 8, 0.5, 0),
+							Size = UDim2.fromOffset(40, 40),
+						})
+						else nil,
+					if props.TitleContent
+						then scope:Apply(props.TitleContent)({
+							AnchorPoint = Vector2.new(0, 0.5),
+							Position = UDim2.new(0, if props.Leading then 56 else 8, 0.5, 0),
+						})
+						else scope:TextLabel({
+							BackgroundTransparency = 1,
+							FontFace = theme.Fonts.Heading,
+							TextSize = 18,
+							TextColor3 = theme.Colors.OnSurface,
+							TextXAlignment = Enum.TextXAlignment.Left,
+							TextYAlignment = Enum.TextYAlignment.Center,
+							Text = props.Title or "",
+							Position = UDim2.fromOffset(if props.Leading then 56 else 16, 0),
+							Size = UDim2.new(1, -120, 1, 0),
+						}),
+					scope:Frame({
+						BackgroundTransparency = 1,
+						AnchorPoint = Vector2.new(1, 0.5),
+						Position = UDim2.new(1, -8, 0.5, 0),
+						AutomaticSize = Enum.AutomaticSize.X,
+						Size = UDim2.fromOffset(0, 40),
+						Layout = {
+							Kind = "List",
+							FillDirection = Enum.FillDirection.Horizontal,
+							VerticalAlignment = Enum.VerticalAlignment.Center,
+							Padding = 4,
+							HorizontalAlignment = Enum.HorizontalAlignment.Right,
+						},
+						[Children] = actions,
+					}),
 				},
-				[Children] = actions,
 			}),
 		},
 	}) :: Frame
+	bar:SetAttribute(EdgeFade.HeightAttribute, barHeight + fadeHeight)
+	bar:SetAttribute(EdgeFade.FadeAttribute, fadeHeight)
+	return bar
 end

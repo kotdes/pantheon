@@ -35,6 +35,7 @@ return {
 	Divider = require(script.Divider),
 	Card = require(script.Card),
 	AppBar = require(script.AppBar),
+	Footer = require(script.Footer),
 	Window = require(script.Window),
 	NavigationDrawer = require(script.NavigationDrawer),
 	NavigationRail = require(script.NavigationRail),

@@ -36,6 +36,9 @@ scope:AppBar({
 | `Title` | `UsedAs<string>` | :x: | - | Text shown in the bar. |
 | `Leading` | `Instance` | :x: | - | Control at the start of the bar, such as a menu button. |
 | `Actions` | `{ Instance }` | :x: | - | Controls at the end of the bar, laid out in a row. |
+| `Variant` | `"Solid" \| "Gradient"` | :x: | `"Solid"` | `"Gradient"` gives a flat fill that fades out below the controls, with no divider or shadow. In a [Window](./Window.md) the content runs behind the bar. |
+| `FadeHeight` | `number` | :x: | `24` | `Gradient` only. Height of the fade below the bar, in pixels. |
+| `TitleContent` | `Instance` | :x: | - | Replaces the title text, for example with a button. |
 | `FadeAtTop` | `boolean` | :x: | - | Start flat and become raised as the content scrolls under the bar. |
 | `ScrollOffset` | `UsedAs<number>` | :x: | - | Scroll position of the content in pixels, as a number or a state. It drives `FadeAtTop`. |
 | `FadeRamp` | `number` | :x: | `24` | Scroll distance in pixels over which the bar goes from flat to raised. |

@@ -799,6 +799,24 @@ export type AppBarProps = {
 	RaisedColor: Color3?,
 	--- false removes the shadow (default on).
 	Shadow: boolean?,
+	Variant: ("Solid" | "Gradient")?,
+	FadeHeight: number?,
+	TitleContent: Instance?,
+	[string]: any,
+}
+
+export type FooterProps = {
+	Theme: ThemeRef?,
+	LayoutOrder: UsedAs<number>?,
+	Size: UsedAs<UDim2>?,
+	Visible: UsedAs<boolean>?,
+	ZIndex: UsedAs<number>?,
+	Radius: any?,
+	Height: number?,
+	Variant: ("Solid" | "Gradient")?,
+	FadeHeight: number?,
+	FadeTo: Color3?,
+	Children: any?,
 	[string]: any,
 }
 
@@ -872,6 +890,7 @@ export type WindowProps = {
 	ZIndex: UsedAs<number>?,
 	Layer: Instance?,
 	AppBar: Instance?,
+	Footer: Instance?,
 	--- What to drag the window by when there is no `AppBar`. It is a part of your content, such
 	--- as a strip along the top.
 	DragHandle: Instance?,

@@ -140,6 +140,7 @@ nav:
         - Components/Feedback/SnackbarHost.md
     - Navigation:
         - Components/Navigation/AppBar.md
+        - Components/Navigation/Footer.md
         - Components/Navigation/Breadcrumbs.md
         - Components/Navigation/NavigationDrawer.md
         - Components/Navigation/NavigationRail.md

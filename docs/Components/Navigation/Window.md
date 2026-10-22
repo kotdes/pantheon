@@ -35,6 +35,10 @@ With a vertical rail, the rail runs the full height of the window. The app bar s
 
 A window cannot clip to rounded corners, so the app bar and the rail round their own corners to match the window: with a vertical rail the rail takes the two left corners and the app bar the top right.
 
+## Gradient bars
+
+An app bar or footer with `Variant = "Gradient"` has a flat fill that fades out beyond the controls. The window then lets the content run behind the bar. Add padding at the top or bottom of the content so the first and last rows are clear of the bar when it is not scrolled.
+
 ## Docked drawer
 
 A [NavigationDrawer](./NavigationDrawer.md) with `DockAt` stays open beside the content once the window is wide enough. The window moves its app bar and content over to make room, and moves them back when the drawer floats again. A side rail stays under the drawer.
@@ -59,6 +63,7 @@ Set `Resizable` to add handles on the edges and corners. Use `MinSize`, `MaxSize
 | `Visible` | `UsedAs<boolean>` | :x: | `true` | Whether the component is shown. |
 | `ZIndex` | `UsedAs<number>` | :x: | - | Z index of the component. |
 | `AppBar` | `Instance` | :x: | - | An [AppBar](./AppBar.md) to put at the top. Dragging the window uses it as the handle. |
+| `Footer` | `Instance` | :x: | - | A [Footer](./Footer.md) to put at the bottom. It sits above a bottom rail. |
 | `DragHandle` | `Instance` | :x: | - | What to drag the window by when there is no `AppBar`, such as a strip along the top of your content. |
 | `NavigationRail` | `Instance` | :x: | - | A [NavigationRail](./NavigationRail.md) for the side or the bottom. |
 | `Children` | `any` | :x: | - | Main content. It fills the space beside and below the chrome. |
