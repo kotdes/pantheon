@@ -213,12 +213,11 @@ return function(scope: Types.Scope, props: Types.AppSheetProps): Instance
 			BackgroundTransparency = 1,
 			Size = UDim2.new(1, 0, 1, -chrome),
 			LayoutOrder = 3,
-			Padding = { 0, theme.Metrics.SpaceMd },
 			[Children] = {
 				ScrollArea(scope, {
 					Theme = theme,
 					Size = UDim2.fromScale(1, 1),
-					ContentPadding = theme.Metrics.SpaceXs,
+					ContentPadding = 0,
 					ListPadding = theme.Metrics.SpaceSm,
 					Children = props.Children,
 				}),
