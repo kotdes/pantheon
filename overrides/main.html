@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block footer %}
+<footer class="pantheon-footer">
+  <div class="pantheon-footer__inner">
+    <div class="pantheon-footer__brand">
+      <img class="pantheon-footer__logo" src="{{ 'assets/branding/pantheon-logo.svg' | url }}" alt="Pantheon">
+      <p class="pantheon-footer__summary">Accessible, themed interface components for Roblox.</p>
+    </div>
+    <nav class="pantheon-footer__links" aria-label="Footer navigation">
+      <div>
+        <p class="pantheon-footer__label">Explore</p>
+        <a href="{{ 'Tutorials/InstallingPantheon/' | url }}">Get started</a>
+        <a href="{{ 'Tutorials/UsingPantheon/' | url }}">Tutorials</a>
+        <a href="{{ 'Components/Foundations/Button/' | url }}">Components</a>
+      </div>
+      <div>
+        <p class="pantheon-footer__label">Learn</p>
+        <a href="{{ 'Guides/Theming/' | url }}">Theming</a>
+        <a href="{{ 'Guides/Accessibility/' | url }}">Accessibility</a>
+        <a href="{{ 'Modules/DevTools/' | url }}">DevTools</a>
+      </div>
+      <div>
+        <p class="pantheon-footer__label">Connect</p>
+        <a href="https://github.com/kotdes/pantheon">GitHub</a>
+        <a href="{{ 'Modules/Pantheon/' | url }}">API reference</a>
+      </div>
+    </nav>
+  </div>
+  <div class="pantheon-footer__bottom">
+    <a href="{{ 'https://kotdes.com' | url }}" target="_blank" rel="noopener noreferrer">
+      <img class="pantheon-footer__mark" src="{{ 'assets/branding/kotdes-mark.svg' | url }}" alt="Kotdes mark">
+    </a>
+    <span>© 2026 KotDes</span>
+  </div>
+</footer>
+{% endblock %}

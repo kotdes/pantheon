@@ -1,0 +1,309 @@
+:root,
+[data-md-color-scheme="default"] {
+	--es-surface: #ffffff;
+	--es-container: #eef1f6;
+	--es-outline: #c4c7cf;
+	--es-primary: #00695c;
+	--es-on-primary: #ffffff;
+	--es-primary-container: #b2dfdb;
+	--es-on-primary-container: #002823;
+	--es-on-surface: #1c1b1f;
+	--es-on-variant: #44474f;
+	--es-error: #d32f2f;
+	--md-primary-fg-color: #00695c;
+	--md-primary-fg-color--light: var(--md-primary-fg-color);
+	--md-primary-fg-color--dark: var(--md-primary-fg-color);
+
+	--md-accent-fg-color: var(--md-primary-fg-color);
+	--md-accent-fg-color--light: var(--md-accent-fg-color);
+	--md-accent-fg-color--dark: var(--md-accent-fg-color);
+}
+
+[data-md-color-scheme="slate"] {
+	--es-surface: #1a1f26;
+	--es-container: #232a33;
+	--es-outline: #343d48;
+	--es-primary: #4db6ac;
+	--es-on-primary: #003731;
+	--es-primary-container: #004d44;
+	--es-on-primary-container: #b2dfdb;
+	--es-on-surface: #e6e8ec;
+	--es-on-variant: #b8bec8;
+	--es-error: #ef5350;
+	--md-primary-fg-color: #4db6ac;
+	--md-primary-fg-color--light: var(--md-primary-fg-color);
+	--md-primary-fg-color--dark: var(--md-primary-fg-color);
+	--md-primary-bg-color: #003731;
+
+	--md-accent-fg-color: var(--md-primary-fg-color);
+	--md-accent-fg-color--light: var(--md-accent-fg-color);
+	--md-accent-fg-color--dark: var(--md-accent-fg-color);
+}
+
+/* Keep the compact mark legible in the Material header. */
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+	width: auto;
+	height: 2rem;
+	max-width: 8rem;
+}
+
+[data-md-color-scheme="slate"] .md-header__button.md-logo img {
+	filter: brightness(0);
+	opacity: 0.72;
+}
+
+/* Landing page. */
+html {
+	scroll-snap-type: y proximity;
+}
+
+.md-main {
+	min-height: 100vh;
+	padding-bottom: 5rem;
+}
+
+.es-hero {
+	padding: 0 0 1.5rem;
+}
+
+.md-content__inner:has(.es-hero-logo) {
+	padding-top: 2.5rem;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.es-hero h1 {
+	font-size: 2.6rem;
+	font-weight: 700;
+	letter-spacing: -0.02em;
+	margin-bottom: 0.4em;
+}
+
+.es-hero-logo {
+	display: block;
+	width: 560px;
+	max-width: 100%;
+	height: auto;
+	margin: 0;
+}
+
+.es-hero>p {
+	margin: 0;
+}
+
+[data-md-color-scheme="default"] .es-hero-logo {
+	filter: brightness(0);
+	opacity: 0.72;
+}
+
+.md-content__inner:has(.es-hero-logo)>h1 {
+	display: none;
+}
+
+.pantheon-footer {
+	display: flex;
+	flex-direction: column;
+	width: 100vw;
+	min-height: 60vh;
+	margin-top: 0;
+	margin-left: calc(50% - 50vw);
+	padding: 5rem 1.5rem 1.5rem;
+	border-top: 1px solid var(--es-outline);
+	background: #1c1b1f;
+	color: #ffffff;
+	scroll-snap-align: start;
+}
+
+.pantheon-footer__inner {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 4rem;
+	max-width: 72rem;
+	margin: 0 auto;
+}
+
+.pantheon-footer__brand {
+	flex: 1 1 18rem;
+}
+
+.pantheon-footer__logo {
+	display: block;
+	width: min(100%, 15rem);
+	height: auto;
+}
+
+.pantheon-footer__mark {
+	display: block;
+	width: 4rem;
+	height: auto;
+}
+
+.pantheon-footer__summary {
+	max-width: 18rem;
+	margin: 1.25rem 0 0;
+	font-size: 0.9rem;
+	line-height: 1.5;
+	opacity: 0.72;
+}
+
+.pantheon-footer__links {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(6rem, 1fr));
+	gap: 3rem;
+}
+
+.pantheon-footer__links>div {
+	display: flex;
+	flex-direction: column;
+	gap: 0.65rem;
+}
+
+.pantheon-footer__links a,
+.pantheon-footer__bottom a {
+	color: inherit;
+	font-size: 0.75rem;
+	text-decoration: none;
+	opacity: 0.72;
+	transition: opacity 0.2s;
+}
+
+.pantheon-footer__links a:hover,
+.pantheon-footer__bottom a:hover {
+	opacity: 1;
+}
+
+.pantheon-footer__label {
+	margin: 0;
+	font-size: 0.5rem;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	opacity: 0.5;
+}
+
+.pantheon-footer__bottom {
+	display: flex;
+	justify-content: space-between;
+	width: 100vw;
+	max-width: none;
+	margin: auto 0 0 calc(50% - 50vw);
+	padding: 1.25rem max(1.5rem, calc((100vw - 72rem) / 2 + 1.5rem)) 0;
+	border-top: 1px solid color-mix(in srgb, var(--es-outline) 15%, transparent);
+	font-size: 0.75rem;
+	opacity: 0.7;
+}
+
+@media (max-width: 48em) {
+	.pantheon-footer__logo {
+		width: min(100%, 100%);
+		padding-bottom: 1.5rem;
+	}
+
+	.pantheon-footer {
+		padding-top: 3rem;
+		padding-bottom: 1rem;
+	}
+
+	.pantheon-footer__inner {
+		flex-direction: column;
+		gap: 1.75rem;
+	}
+
+	.pantheon-footer__links {
+		width: 100%;
+		grid-template-columns: 1fr;
+		gap: 1.5rem;
+	}
+
+	.pantheon-footer__bottom {
+		margin-top: 2rem;
+	}
+}
+
+.es-hero p {
+	max-width: 36rem;
+	font-size: 0.95rem;
+}
+
+.md-typeset .grid.cards>ul>li {
+	border-radius: 12px;
+	transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.md-typeset .grid.cards>ul>li:hover {
+	border-color: var(--md-primary-fg-color);
+	transform: translateY(-2px);
+}
+
+.es-hero-row {
+	display: flex;
+	align-items: center;
+	gap: 2rem;
+}
+
+.es-hero-row .es-hero {
+	flex: 1 1 22rem;
+}
+
+.es-hero-art {
+	flex: 1 1 24rem;
+	min-width: 0;
+	max-width: 640px;
+	height: auto;
+}
+
+@media (max-width: 60em) {
+	.es-hero-row {
+		flex-direction: column;
+		align-items: stretch;
+	}
+}
+
+/* Component previews drawn as SVG. See javascripts/preview.js. */
+.es-preview {
+	border: 1px solid var(--md-default-fg-color--lightest);
+	border-radius: 12px;
+	overflow: hidden;
+	margin: 1em 0;
+}
+
+.es-preview__stage {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 140px;
+	padding: 1.5rem;
+	background: var(--es-container);
+}
+
+.es-preview__controls {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.8rem 1.2rem;
+	padding: 0.7rem 1rem;
+	border-top: 1px solid var(--md-default-fg-color--lightest);
+	font-size: 0.7rem;
+}
+
+.es-preview__controls label {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+}
+
+.es-preview__controls input[type="text"],
+.es-preview__controls select {
+	font: inherit;
+	color: inherit;
+	background: var(--es-container);
+	border: 1px solid var(--es-outline);
+	border-radius: 6px;
+	padding: 0.15rem 0.4rem;
+}
+
+.es-preview pre {
+	margin: 0;
+	border-top: 1px solid var(--md-default-fg-color--lightest);
+}
