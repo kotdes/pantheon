@@ -16,10 +16,6 @@ Pantheon is a set of user interface components for Roblox. It is built on [Fusio
 [Get started](Tutorials/InstallingPantheon.md){ .md-button .md-button--primary }
 [Using Pantheon](Tutorials/UsingPantheon.md){ .md-button }
 
-!!! note
-
-    Pantheon is still being built. It is not on Wally yet, and parts of it will change before version 1.
-
 ## Features
 
 <div class="grid cards" markdown>
