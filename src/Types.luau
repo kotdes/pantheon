@@ -1436,6 +1436,7 @@ export type ChoiceGroupProps = {
 }
 
 export type ScrollAreaProps = {
+	Controller: { [string]: any }?,
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
@@ -1443,8 +1444,9 @@ export type ScrollAreaProps = {
 	ZIndex: UsedAs<number>?,
 	Layer: Instance?,
 	Children: any?,
-	--- Scroll axis. Default "Vertical".
+	ClipsDescendants: boolean?,
 	Orientation: ("Vertical" | "Horizontal")?,
+	CollapseScrollBar: boolean?,
 	ScrollBarThickness: number?,
 	ScrollBarColor: Color3?,
 	ScrollBarActiveColor: Color3?,
@@ -1461,6 +1463,7 @@ export type ScrollAreaProps = {
 	AutoHideScrollBar: boolean?,
 	--- Draw the scroll bar over the content, so the content keeps its full width.
 	ScrollBarOverlay: boolean?,
+	ScrollBarHidden: boolean?,
 	AutoHideDelay: number?,
 	ScrollButtons: boolean?,
 	ScrollButtonStep: number?,

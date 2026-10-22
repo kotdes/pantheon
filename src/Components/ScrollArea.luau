@@ -40,14 +40,16 @@ return function(scope: Types.Scope, props: Types.ScrollAreaProps): Instance
 		then true
 		else props.ScrollBarRailBackground
 	local autoHide = props.AutoHideScrollBar ~= false
+	local collapse = props.CollapseScrollBar == true and autoHide and props.ScrollBarOverlay ~= true
 	-- With an overlay bar the content keeps its full width, and the bar is drawn over it.
 	local overlayBar = props.ScrollBarOverlay == true
 	local hideDelay = props.AutoHideDelay or 0.85
 	local showButtons = props.ScrollButtons == true
 	local buttonStep = props.ScrollButtonStep or 64
-	local thumbThickness = props.ScrollBarThickness or 8
-	local railThickness = props.ScrollBarRailThickness or 2
-	local padX = props.ScrollBarPadding or 6
+	local barHidden = props.ScrollBarHidden == true
+	local thumbThickness = if barHidden then 0 else props.ScrollBarThickness or 8
+	local railThickness = if barHidden then 0 else props.ScrollBarRailThickness or 2
+	local padX = if barHidden then 0 else props.ScrollBarPadding or 6
 	local buttonSize = if showButtons then 20 else 0
 	local chromeInner = math.max(thumbThickness, railThickness, if showButtons then 16 else 0)
 	local chromeCross = chromeInner + padX * 2
@@ -116,6 +118,14 @@ return function(scope: Types.Scope, props: Types.ScrollAreaProps): Instance
 	local needsScroll = scope:Computed(function(use)
 		return axisOf(use(contentSize)) - axisOf(use(viewSize)) > 0.5
 	end)
+	-- 1 while the bar has its room beside the content, and 0 once it has gone to the edge.
+	local gutterShow = scope:Spring(
+		scope:Computed(function(use)
+			return if use(barVisible) > 0.5 then 1 else 0
+		end),
+		theme.Motion.SpringSpeed,
+		theme.Motion.SpringDamping
+	)
 	local chromeHeld = scope:Value(false)
 	local chromeGutter = scope:Computed(function(use)
 		return if use(chromeHeld) then chromeCross else 0
@@ -586,7 +596,10 @@ return function(scope: Types.Scope, props: Types.ScrollAreaProps): Instance
 		-- UIListLayout.AbsoluteContentSize, never from Content.AbsoluteSize
 		-- (that collapses to the clipped viewport and kills maxScroll).
 		Size = scope:Computed(function(use)
-			local gutter = if overlayBar then 0 else use(chromeGutter)
+			local gutter = if overlayBar
+				then 0
+				elseif collapse then use(chromeGutter) * math.clamp(use(gutterShow), 0, 1)
+				else use(chromeGutter)
 			local cs = use(contentSize) :: Vector2
 			if horizontal then
 				if autoCanvas then
@@ -670,12 +683,7 @@ return function(scope: Types.Scope, props: Types.ScrollAreaProps): Instance
 				measured:set(true)
 			end
 			local prev = peek(contentSize)
-			local overflow = axisOf(nextSize) - axisOf(vs)
-			if overflow > 0.5 then
-				chromeHeld:set(true)
-			elseif overflow < -(chromeCross + 1) then
-				chromeHeld:set(false)
-			end
+			chromeHeld:set(axisOf(nextSize) - axisOf(vs) > 0.5)
 			if math.abs(prev.X - nextSize.X) < 0.5 and math.abs(prev.Y - nextSize.Y) < 0.5 then
 				return
 			end
@@ -832,6 +840,7 @@ return function(scope: Types.Scope, props: Types.ScrollAreaProps): Instance
 
 	local track = scope:New("Frame")({
 		Name = "ScrollTrack",
+		Visible = not barHidden,
 		BackgroundTransparency = 1,
 		Size = if horizontal
 			then UDim2.new(1, -buttonSize * 2, 1, 0)
@@ -920,7 +929,12 @@ return function(scope: Types.Scope, props: Types.ScrollAreaProps): Instance
 		BackgroundTransparency = 1,
 		Visible = needsScroll,
 		AnchorPoint = if horizontal then Vector2.new(0, 1) else Vector2.new(1, 0),
-		Position = if horizontal then UDim2.new(0, 0, 1, 0) else UDim2.new(1, 0, 0, 0),
+		Position = if collapse
+			then scope:Computed(function(use)
+				local away = math.max(chromeCross - 4, 0) * (1 - math.clamp(use(gutterShow), 0, 1))
+				return if horizontal then UDim2.new(0, 0, 1, away) else UDim2.new(1, away, 0, 0)
+			end)
+			else if horizontal then UDim2.new(0, 0, 1, 0) else UDim2.new(1, 0, 0, 0),
 		Size = scope:Computed(function(use)
 			local gutter = use(chromeGutter)
 			if horizontal then
@@ -1068,7 +1082,7 @@ return function(scope: Types.Scope, props: Types.ScrollAreaProps): Instance
 	local root = scope:New("Frame")({
 		Name = "ScrollArea",
 		BackgroundTransparency = 1,
-		ClipsDescendants = true,
+		ClipsDescendants = props.ClipsDescendants ~= false,
 		Active = true,
 		Size = props.Size or UDim2.fromScale(1, 1),
 		LayoutOrder = props.LayoutOrder or 0,
@@ -1305,5 +1319,24 @@ return function(scope: Types.Scope, props: Types.ScrollAreaProps): Instance
 	end
 
 	bumpActivity()
+	local controller = props.Controller
+	if controller then
+		controller.ScrollTo = function(y: number)
+			scrollTo(y)
+		end
+		controller.ScrollIntoView = function(item: GuiObject, margin: number?)
+			local space = margin or 8
+			local top = item.AbsolutePosition.Y - content.AbsolutePosition.Y
+			local bottom = top + item.AbsoluteSize.Y
+			local view = peek(viewSize).Y
+			local current = peek(target)
+			if top - space < current then
+				scrollTo(top - space)
+			elseif bottom + space > current + view then
+				scrollTo(bottom + space - view)
+			end
+		end
+	end
+
 	return root
 end

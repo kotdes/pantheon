@@ -73,6 +73,8 @@ To show a very long list, use [VirtualList](./VirtualList.md), which is built on
 | `ReleaseHint` | `string` | :x: | `"Release to continue"` | Hint shown once the pull is past the threshold. |
 | `DragToScroll` | `boolean` | :x: | `touch, or mouse when OnRefresh is set` | Scroll by dragging anywhere in the area. On for touch. With a mouse it is on when `OnRefresh` is set. |
 | `ContentLayout` | `"List" \| "None"` | :x: | `"List"` | `"List"` stacks the children. `"None"` leaves them where you put them. |
+| `ClipsDescendants` | `boolean` | :x: | `true` | Clip the content to the area. Turn it off to let borders, focus rings and shadows at the edge show. The content then also draws outside the area while it scrolls. |
+| `CollapseScrollBar` | `boolean` | :x: | `false` | With `AutoHideScrollBar`, the bar slides to the edge when idle and the content grows to the full width. Both come back when the area scrolls or the pointer is over the bar. Has no effect with `ScrollBarOverlay`. |
 | `ContentPadding` | `number` | :x: | `Metrics.SpaceMd` | Padding around the content in pixels. Use `0` for virtual lists. |
 | `ListPadding` | `number` | :x: | `Metrics.SpaceLg` | Gap between children in pixels. |
 
