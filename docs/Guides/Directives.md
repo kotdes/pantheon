@@ -34,7 +34,16 @@ The value is a string of classes, or a state that holds one. When the state chan
 
 !!! note
 
-    Tilly changes how the instance looks through `StyleRule`s. If a component sets the same property itself, the result depends on the order the engine applies them in.
+    Tilly changes how the instance looks through `StyleRule`s, and the engine always gives a property that is set directly on an instance priority over a `StyleRule`. So a class has no effect on a property that the component sets itself, such as the fill of a `Button`. Use a class for what the component leaves alone, such as its margin or its position, and set a property when you want it to stay.
+
+### Two things to know
+
+- Tilly adds default rules for every `GuiObject`, such as `BackgroundTransparency = 1` and `AutomaticSize = XY`, under the `ScreenGui` that its `StyleSheet` is linked to. Give Tilly its own `ScreenGui` and `StyleLink`, and do not link it to one that holds Pantheon components, unless you have checked what the defaults change.
+- Tilly has no release on Wally. It is MIT licensed, and you install it by copying its `src` folder into your project.
+
+### Try it
+
+The demo launcher has a Tilly demo. It shows a panel styled only with Tilly's classes next to a Pantheon window with a theme built from the same Tilly colour tokens. To run it, put Tilly's `src` folder in `demo/vendor/Tilly`. That folder is ignored by git.
 
 ## Writing your own
 
