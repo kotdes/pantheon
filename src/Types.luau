@@ -1144,6 +1144,8 @@ export type AvatarMenuProps = {
 	OnClose: (() -> ())?,
 	Target: Instance?,
 	Sections: { MenuSectionProps }?,
+	Children: any?,
+	RootPage: string?,
 	MaxHeight: number?,
 	Image: string?,
 	Initials: string?,

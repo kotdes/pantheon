@@ -1,6 +1,6 @@
 --!strict
 --[[
-	Tithe-style avatar account sheet / popover: profile header + Menu actions.
+	Avatar account sheet / popover: profile header + Menu actions.
 ]]
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
@@ -12,6 +12,7 @@ local Follow = require(script.Parent.Parent.Internal.Follow)
 local Overlay = require(script.Parent.Overlay)
 local Avatar = require(script.Parent.Avatar)
 local Menu = require(script.Parent.Menu)
+local GroupFade = require(script.Parent.Parent.Internal.GroupFade)
 
 local Children = Fusion.Children
 local peek = Fusion.peek
@@ -110,14 +111,59 @@ return function(scope: Types.Scope, props: Types.AvatarMenuProps): Instance
 		},
 	})
 
+	-- TODO: When AvatarMenu is nested, the return to main content button in the nested page component may have additional spacing at the top.
+	local onRoot = scope:Value(true)
+	local rootId = props.RootPage or "root"
+	local profileShown = scope:Spring(
+		scope:Computed(function(use)
+			return if use(onRoot) then 1 else 0
+		end),
+		theme.Motion.SpringSpeed,
+		theme.Motion.SpringDamping
+	)
+	local natural = scope:Value(0)
+	local function measure()
+		natural:set(header.AbsoluteSize.Y)
+	end
+	table.insert(scope, header:GetPropertyChangedSignal("AbsoluteSize"):Connect(measure))
+	task.defer(measure)
+	scope:Apply(header)({
+		Position = scope:Computed(function(use)
+			return UDim2.fromScale(-(1 - math.clamp(use(profileShown), 0, 1)), 0)
+		end),
+	})
+	GroupFade.bind(
+		scope,
+		header,
+		scope:Computed(function(use)
+			return math.clamp(use(profileShown), 0, 1)
+		end)
+	)
+	local headerSlot = scope:Frame({
+		Name = "HeaderSlot",
+		BackgroundTransparency = 1,
+		ClipsDescendants = true,
+		LayoutOrder = 1,
+		Size = scope:Computed(function(use)
+			local t = math.clamp(use(profileShown), 0, 1)
+			return UDim2.new(1, 0, 0, math.floor(use(natural) * t + 0.5))
+		end),
+		[Children] = { header },
+	})
+
 	local menu = Menu(scope, {
 		Theme = theme,
 		Embedded = true,
+		OnChanged = function(id: string)
+			onRoot:set(id == rootId)
+		end,
 		Open = open,
 		OnClose = props.OnClose,
 		Items = props.Items or {},
 		Sections = props.Sections,
-		Header = header,
+		Children = props.Children,
+		RootPage = props.RootPage,
+		Header = headerSlot,
 		MaxHeight = props.MaxHeight,
 		Size = UDim2.fromOffset(width, 0),
 		ZIndex = (props.ZIndex or 95) + 1,
