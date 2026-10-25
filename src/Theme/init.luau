@@ -377,6 +377,12 @@ function Theme.Provide<T...>(theme: Types.ThemeRef, callback: (T...) -> ...any, 
 	return themeContext:is(theme):during(callback, ...)
 end
 
+--- Like `Provide`, but it does not become the fallback for UI built later outside any `Provide`.
+--- Use it for a part of the UI that has its own theme, such as a dark HUD.
+function Theme.Scoped<T...>(theme: Types.ThemeRef, callback: (T...) -> ...any, ...: T...): ...any
+	return themeContext:is(theme):during(callback, ...)
+end
+
 function Theme.use(): Types.Theme
 	local ref = themeContext:now() or rootTheme
 	assert(ref ~= nil, "Pantheon.Theme.Provide required, wrap your UI root in Theme.Provide")
