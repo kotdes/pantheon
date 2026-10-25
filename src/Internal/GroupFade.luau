@@ -29,7 +29,22 @@ local TOLERANCE = 0.002
 -- At or above this the group counts as fully shown: restore bases and stop tracking.
 local SETTLED = 0.998
 
-type Entry = { inst: Instance, prop: string, base: number, written: number }
+--- One record for each faded property, shared by every group that fades it. When a group inside
+--- another group fades too, they both use the true base value, and the property gets the product of
+--- their alphas. Without this the inner group would keep the outer group's faded value as its base.
+type Record = { base: number, written: number, alphas: { [number]: number } }
+type Entry = { inst: Instance, prop: string, rec: Record }
+
+local records: { [Instance]: { [string]: Record } } = setmetatable({}, { __mode = "k" }) :: any
+local nextId = 0
+
+local function faded(rec: Record): number
+	local product = 1
+	for _, alpha in rec.alphas do
+		product *= alpha
+	end
+	return 1 - (1 - rec.base) * product
+end
 
 --- Transparency properties to drive, by class.
 local function propsFor(inst: Instance): { string }?
@@ -57,6 +72,8 @@ local GroupFade = {}
 
 --- Fade `root` and everything under it with `alpha` (a state: 0 = invisible, 1 = shown).
 function GroupFade.bind(scope: Types.Scope, root: Instance, alpha: any)
+	nextId += 1
+	local id = nextId
 	local entries: { Entry } = {}
 	local tracked: { [Instance]: boolean } = {}
 	local active = false
@@ -76,7 +93,17 @@ function GroupFade.bind(scope: Types.Scope, root: Instance, alpha: any)
 				return (inst :: any)[prop]
 			end)
 			if ok and typeof(value) == "number" then
-				table.insert(entries, { inst = inst, prop = prop, base = value, written = value })
+				local byProp = records[inst]
+				if byProp == nil then
+					byProp = {}
+					records[inst] = byProp
+				end
+				local rec = (byProp :: any)[prop]
+				if rec == nil then
+					rec = { base = value, written = value, alphas = {} };
+					(byProp :: any)[prop] = rec
+				end
+				table.insert(entries, { inst = inst, prop = prop, rec = rec })
 			end
 		end
 	end
@@ -92,13 +119,24 @@ function GroupFade.bind(scope: Types.Scope, root: Instance, alpha: any)
 
 	local function finish()
 		for _, e in entries do
+			local rec = e.rec
+			rec.alphas[id] = nil
 			local ok, current = pcall(function()
 				return (e.inst :: any)[e.prop]
 			end)
 			if ok then
-				-- Anything we didn't write is the truth; otherwise put the base back.
-				local base = if math.abs(current - e.written) > TOLERANCE then current else e.base;
-				(e.inst :: any)[e.prop] = base
+				if math.abs(current - rec.written) > TOLERANCE then
+					rec.base = current
+				end
+				local value = if next(rec.alphas) == nil then rec.base else faded(rec);
+				(e.inst :: any)[e.prop] = value
+				rec.written = value
+			end
+			if next(rec.alphas) == nil then
+				local byProp = records[e.inst]
+				if byProp then
+					byProp[e.prop] = nil
+				end
 			end
 		end
 		table.clear(entries)
@@ -126,13 +164,15 @@ function GroupFade.bind(scope: Types.Scope, root: Instance, alpha: any)
 		end
 
 		for _, e in entries do
+			local rec = e.rec
 			local current = (e.inst :: any)[e.prop] :: number
-			if math.abs(current - e.written) > TOLERANCE then
-				e.base = current -- changed by someone else (hover, pulse…)
+			if math.abs(current - rec.written) > TOLERANCE then
+				rec.base = current -- changed by someone else (hover, pulse…)
 			end
-			local value = 1 - (1 - e.base) * a;
+			rec.alphas[id] = a
+			local value = faded(rec);
 			(e.inst :: any)[e.prop] = value
-			e.written = value
+			rec.written = value
 		end
 	end
 
