@@ -2,6 +2,7 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Icon = require(script.Parent.Icon)
 
@@ -31,7 +32,7 @@ return function(scope: Types.Scope, props: Types.SnackbarProps): Instance
 	local message = scope:TextLabel({
 		BackgroundTransparency = 1,
 		FontFace = theme.Fonts.Body,
-		TextSize = 14,
+		TextSize = A.size(theme, 14),
 		TextColor3 = theme.Colors.InverseOnSurface,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextWrapped = fill,
@@ -57,7 +58,7 @@ return function(scope: Types.Scope, props: Types.SnackbarProps): Instance
 			AutomaticSize = Enum.AutomaticSize.XY,
 			Size = UDim2.fromOffset(0, 0),
 			FontFace = theme.Typography.Label.Font,
-			TextSize = 14,
+			TextSize = A.size(theme, 14),
 			TextColor3 = theme.Colors.InversePrimary,
 			Text = props.ActionText,
 			[OnEvent("Activated")] = function()

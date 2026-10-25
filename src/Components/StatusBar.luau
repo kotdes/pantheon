@@ -6,6 +6,7 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local Layer = require(script.Parent.Parent.Internal.Layer)
@@ -68,7 +69,7 @@ return function(scope: Types.Scope, props: Types.StatusBarProps): Instance
 					Size = UDim2.fromOffset(0, HEIGHT),
 					LayoutOrder = 2,
 					FontFace = theme.Fonts.Body,
-					TextSize = 12,
+					TextSize = A.size(theme, 12),
 					TextColor3 = color,
 					Text = item.Text,
 				})

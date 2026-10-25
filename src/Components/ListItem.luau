@@ -2,6 +2,7 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local P = require(script.Parent.Parent.Internal.props)
@@ -22,13 +23,14 @@ return function(scope: Types.Scope, props: Types.ListItemProps): Instance
 		scope:TextLabel({
 			BackgroundTransparency = 1,
 			FontFace = theme.Typography.Title.Font,
-			TextSize = 15,
+			TextSize = A.size(theme, 15),
 			TextXAlignment = Enum.TextXAlignment.Left,
 			TextColor3 = theme.Colors.OnSurface,
 			Text = props.Title,
 			-- A title that is too long ends in an ellipsis, so it does not run under the trailing element.
 			TextTruncate = Enum.TextTruncate.AtEnd,
-			Size = UDim2.new(1, 0, 0, 20),
+			Size = UDim2.new(1, 0, 0, 15),
+			AutomaticSize = Enum.AutomaticSize.Y,
 			LayoutOrder = 1,
 		}),
 	}
@@ -38,12 +40,13 @@ return function(scope: Types.Scope, props: Types.ListItemProps): Instance
 			scope:TextLabel({
 				BackgroundTransparency = 1,
 				FontFace = theme.Typography.Body.Font,
-				TextSize = 12,
+				TextSize = A.size(theme, 12),
 				TextXAlignment = Enum.TextXAlignment.Left,
 				TextColor3 = theme.Colors.OnSurfaceVariant,
 				Text = props.Subtitle,
 				TextTruncate = Enum.TextTruncate.AtEnd,
-				Size = UDim2.new(1, 0, 0, 18),
+				Size = UDim2.new(1, 0, 0, 12),
+				AutomaticSize = Enum.AutomaticSize.Y,
 				LayoutOrder = 2,
 			})
 		)
@@ -62,7 +65,6 @@ return function(scope: Types.Scope, props: Types.ListItemProps): Instance
 			Layout = {
 				Kind = "List",
 				VerticalAlignment = Enum.VerticalAlignment.Center,
-				Padding = 2,
 				SortOrder = Enum.SortOrder.LayoutOrder,
 			},
 			[Children] = textCol,

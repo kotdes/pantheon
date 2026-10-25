@@ -6,6 +6,7 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local HSV = require(script.Parent.Parent.Internal.Picker.HSV)
 local ColorSpaces = require(script.Parent.Parent.Internal.Picker.ColorSpaces)
@@ -21,6 +22,8 @@ local Bind = require(script.Parent.Parent.Internal.Bind)
 local Children = Fusion.Children
 local OnEvent = Fusion.OnEvent
 local peek = Fusion.peek
+
+local tr = require(script.Parent.Parent.Internal.Translate).t
 
 local DEFAULT_MODES = { "Grid", "Spectrum", "Sliders" }
 local DEFAULT_MODELS = { "RGB", "HSB", "HSL", "LAB", "Hex" }
@@ -207,7 +210,7 @@ return function(scope: Types.Scope, props: Types.ColorPickerProps): Instance
 			return nil
 		end
 		return channel(sc, {
-			label = "Alpha",
+			label = tr("colorpicker.alpha", "Alpha"),
 			min = 0,
 			max = 100,
 			get = function(use)
@@ -389,7 +392,7 @@ return function(scope: Types.Scope, props: Types.ColorPickerProps): Instance
 		return {
 			area,
 			channel(sc, {
-				label = "Hue",
+				label = tr("colorpicker.hue", "Hue"),
 				min = 0,
 				max = 360,
 				get = function(use)
@@ -518,13 +521,18 @@ return function(scope: Types.Scope, props: Types.ColorPickerProps): Instance
 				order = index,
 			})
 		end
-		return { row(1, "Red"), row(2, "Green"), row(3, "Blue"), alphaChannel(sc, 4) }
+		return {
+			row(1, tr("colorpicker.red", "Red")),
+			row(2, tr("colorpicker.green", "Green")),
+			row(3, tr("colorpicker.blue", "Blue")),
+			alphaChannel(sc, 4),
+		}
 	end
 
 	local function hsbModel(sc: any, brightnessLabel: string): { any }
 		return {
 			channel(sc, {
-				label = "Hue",
+				label = tr("colorpicker.hue", "Hue"),
 				min = 0,
 				max = 360,
 				get = function(use)
@@ -541,7 +549,7 @@ return function(scope: Types.Scope, props: Types.ColorPickerProps): Instance
 				order = 1,
 			}),
 			channel(sc, {
-				label = "Saturation",
+				label = tr("colorpicker.saturation", "Saturation"),
 				min = 0,
 				max = 100,
 				get = function(use)
@@ -588,7 +596,7 @@ return function(scope: Types.Scope, props: Types.ColorPickerProps): Instance
 		end
 		return {
 			channel(sc, {
-				label = "Hue",
+				label = tr("colorpicker.hue", "Hue"),
 				min = 0,
 				max = 360,
 				get = function(use)
@@ -607,7 +615,7 @@ return function(scope: Types.Scope, props: Types.ColorPickerProps): Instance
 				order = 1,
 			}),
 			channel(sc, {
-				label = "Saturation",
+				label = tr("colorpicker.saturation", "Saturation"),
 				min = 0,
 				max = 100,
 				get = function(use)
@@ -625,7 +633,7 @@ return function(scope: Types.Scope, props: Types.ColorPickerProps): Instance
 				order = 2,
 			}),
 			channel(sc, {
-				label = "Lightness",
+				label = tr("colorpicker.lightness", "Lightness"),
 				min = 0,
 				max = 100,
 				get = function(use)
@@ -737,9 +745,9 @@ return function(scope: Types.Scope, props: Types.ColorPickerProps): Instance
 		if name == "RGB" then
 			return rgbModel(sc)
 		elseif name == "HSV" then
-			return hsbModel(sc, "Value")
+			return hsbModel(sc, tr("colorpicker.value", "Value"))
 		elseif name == "HSB" then
-			return hsbModel(sc, "Brightness")
+			return hsbModel(sc, tr("colorpicker.brightness", "Brightness"))
 		elseif name == "HSL" then
 			return hslModel(sc)
 		elseif name == "LAB" then
@@ -870,7 +878,7 @@ return function(scope: Types.Scope, props: Types.ColorPickerProps): Instance
 	-- Tabs, and the model chips that slide in under "Sliders"
 	local tabItems = {}
 	for _, id in modes do
-		table.insert(tabItems, { Id = id, Label = id })
+		table.insert(tabItems, { Id = id, Label = tr("colorpicker." .. string.lower(id), id) })
 	end
 	local tabs = SegmentedControl(scope, {
 		Theme = theme,
@@ -884,7 +892,7 @@ return function(scope: Types.Scope, props: Types.ColorPickerProps): Instance
 
 	local modelItems = {}
 	for _, id in models do
-		table.insert(modelItems, { Id = id, Label = id })
+		table.insert(modelItems, { Id = id, Label = tr("colorpicker." .. string.lower(id), id) })
 	end
 	local chipsReveal = scope:Spring(
 		scope:Computed(function(use)
@@ -968,7 +976,7 @@ return function(scope: Types.Scope, props: Types.ColorPickerProps): Instance
 					Size = UDim2.fromOffset(52, TRACK_HEIGHT),
 					LayoutOrder = 3,
 					FontFace = theme.Fonts.Body,
-					TextSize = 13,
+					TextSize = A.size(theme, 13),
 					TextColor3 = theme.Colors.OnSurfaceVariant,
 					Text = scope:Computed(function(use)
 						return if showAlpha

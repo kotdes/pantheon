@@ -2,6 +2,7 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local Persist = require(script.Parent.Parent.Internal.Persist)
@@ -90,7 +91,7 @@ return function(scope: Types.Scope, props: Types.TextFieldProps): Instance
 		LayoutOrder = 1,
 		-- ClipsDescendants would cut the outline stroke.
 		ClipsDescendants = false,
-		CornerRadius = theme.Metrics.RadiusSm,
+		CornerRadius = if props.Pill then theme.Metrics.RadiusPill else theme.Metrics.RadiusSm,
 		Padding = { padV, padR, padV, padL },
 		Outline = {
 			Color = strokeColor,
@@ -167,8 +168,9 @@ return function(scope: Types.Scope, props: Types.TextFieldProps): Instance
 				IconSize = 18,
 				Color = theme.Colors.OnSurfaceVariant,
 			}))({
-				AnchorPoint = Vector2.new(0, 0.5),
-				Position = UDim2.new(0, 10, 0.5, 0),
+				Position = scope:Computed(function(use)
+					return UDim2.new(0, 10, 0, math.floor((use(height) - 18) / 2))
+				end),
 				ZIndex = 2,
 			})
 		)
@@ -182,8 +184,10 @@ return function(scope: Types.Scope, props: Types.TextFieldProps): Instance
 				IconSize = 18,
 				Color = theme.Colors.OnSurfaceVariant,
 			}))({
-				AnchorPoint = Vector2.new(1, 0.5),
-				Position = UDim2.new(1, -10, 0.5, 0),
+				AnchorPoint = Vector2.new(1, 0),
+				Position = scope:Computed(function(use)
+					return UDim2.new(1, -10, 0, math.floor((use(height) - 18) / 2))
+				end),
 				ZIndex = 2,
 			})
 		)
@@ -330,7 +334,7 @@ return function(scope: Types.Scope, props: Types.TextFieldProps): Instance
 		scope:TextLabel({
 			BackgroundTransparency = 1,
 			FontFace = theme.Typography.Label.Font,
-			TextSize = 11,
+			TextSize = A.size(theme, 11),
 			TextColor3 = scope:Computed(function(use)
 				return if use(hasError)
 					then use(theme.Colors.Error)

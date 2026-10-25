@@ -2,6 +2,7 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Button = require(script.Parent.Button)
 
@@ -39,7 +40,7 @@ return function(scope: Types.Scope, props: Types.EmptyStateProps): Instance
 					scope:TextLabel({
 						BackgroundTransparency = 1,
 						FontFace = theme.Fonts.Heading,
-						TextSize = 18,
+						TextSize = A.size(theme, 18),
 						TextColor3 = theme.Colors.OnSurface,
 						Text = props.Title,
 						AutomaticSize = Enum.AutomaticSize.XY,
@@ -49,7 +50,7 @@ return function(scope: Types.Scope, props: Types.EmptyStateProps): Instance
 						then scope:TextLabel({
 							BackgroundTransparency = 1,
 							FontFace = theme.Fonts.Body,
-							TextSize = 14,
+							TextSize = A.size(theme, 14),
 							TextColor3 = theme.Colors.OnSurfaceVariant,
 							Text = props.Subtitle,
 							AutomaticSize = Enum.AutomaticSize.XY,

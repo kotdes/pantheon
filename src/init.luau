@@ -52,6 +52,7 @@ local Pantheon = {
 	Accessibility = require(script.Internal.Accessibility),
 	Shadow = require(script.Internal.Shadow),
 	GroupFade = require(script.Internal.GroupFade),
+	Translate = require(script.Internal.Translate),
 	Persist = require(script.Internal.Persist),
 	Focus = require(script.Internal.Focus),
 	Style = require(script.Style),

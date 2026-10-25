@@ -6,6 +6,7 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local Persist = require(script.Parent.Parent.Internal.Persist)
@@ -88,7 +89,7 @@ return function(scope: Types.Scope, props: Types.NumberFieldProps): Instance
 		ClearTextOnFocus = false,
 		TextEditable = not disabled,
 		FontFace = theme.Fonts.Body,
-		TextSize = 14,
+		TextSize = A.size(theme, 14),
 		TextColor3 = if disabled then theme.Colors.OnSurfaceVariant else theme.Colors.OnSurface,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		Text = scope:Computed(formatted),
@@ -142,7 +143,7 @@ return function(scope: Types.Scope, props: Types.NumberFieldProps): Instance
 			AutoButtonColor = false,
 			Active = not disabled,
 			FontFace = theme.Typography.Label.Font,
-			TextSize = 13,
+			TextSize = A.size(theme, 13),
 			TextColor3 = scope:Computed(function(use)
 				return Interaction.lerpColor(
 					use(theme.Colors.OnSurfaceVariant),
@@ -262,7 +263,7 @@ return function(scope: Types.Scope, props: Types.NumberFieldProps): Instance
 					Size = UDim2.new(0, 0, 1, 0),
 					AutomaticSize = Enum.AutomaticSize.X,
 					FontFace = theme.Fonts.Body,
-					TextSize = 13,
+					TextSize = A.size(theme, 13),
 					TextColor3 = theme.Colors.OnSurfaceVariant,
 					Text = props.Suffix,
 					LayoutOrder = 3,

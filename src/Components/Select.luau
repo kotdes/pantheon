@@ -2,6 +2,7 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local tr = require(script.Parent.Parent.Internal.Translate).t
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Focus = require(script.Parent.Parent.Internal.Focus)
 local Persist = require(script.Parent.Parent.Internal.Persist)
@@ -43,7 +44,7 @@ return function(scope: Types.Scope, props: Types.SelectProps): Instance
 				return opt.Label
 			end
 		end
-		return peek(props.Placeholder) or "Select…"
+		return peek(props.Placeholder) or tr("select.placeholder", "Select…")
 	end
 
 	local menuChildren = scope:Computed(function(use)
@@ -141,7 +142,9 @@ return function(scope: Types.Scope, props: Types.SelectProps): Instance
 		Name = "Trigger",
 		Text = scope:Computed(function(use)
 			local v = use(selected)
-			return if v ~= "" then labelFor(v) else (peek(props.Placeholder) or "Select…")
+			return if v ~= ""
+				then labelFor(v)
+				else (peek(props.Placeholder) or tr("select.placeholder", "Select…"))
 		end),
 		FontFace = theme.Typography.Body.Font,
 		TextSize = theme.Typography.Body.Size,
@@ -252,8 +255,18 @@ return function(scope: Types.Scope, props: Types.SelectProps): Instance
 			local tp = trigger.AbsolutePosition
 			local ts = trigger.AbsoluteSize
 			local lp = layer.AbsolutePosition
-			chrome.Position = UDim2.fromOffset(tp.X - lp.X, tp.Y - lp.Y + ts.Y + 4)
-			chrome.Size = UDim2.fromOffset(math.max(ts.X, 160), 0)
+			local bounds = layer.AbsoluteSize
+			local width = math.max(ts.X, 160)
+			local height = chrome.AbsoluteSize.Y
+			local gap = 4
+			local below = bounds.Y - (tp.Y - lp.Y + ts.Y + gap)
+			local above = tp.Y - lp.Y - gap
+			local flip = height > below and above > below
+			local x = math.clamp(tp.X - lp.X, 0, math.max(bounds.X - width, 0))
+			chrome.AnchorPoint = Vector2.new(0, if flip then 1 else 0)
+			chrome.Position =
+				UDim2.fromOffset(x, if flip then tp.Y - lp.Y - gap else tp.Y - lp.Y + ts.Y + gap)
+			chrome.Size = UDim2.fromOffset(width, 0)
 		end)
 	end
 

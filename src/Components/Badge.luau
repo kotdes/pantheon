@@ -2,6 +2,7 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 
 local Children = Fusion.Children
@@ -36,7 +37,7 @@ return function(scope: Types.Scope, props: Types.BadgeProps): Instance
 								BackgroundTransparency = 1,
 								Size = UDim2.fromScale(1, 1),
 								FontFace = theme.Fonts.Body,
-								TextSize = 10,
+								TextSize = A.size(theme, 10),
 								TextColor3 = theme.Colors.OnError,
 								Text = tostring(math.min(count :: number, 99)),
 							}),

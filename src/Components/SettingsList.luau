@@ -5,6 +5,7 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local Icon = require(script.Parent.Icon)
@@ -55,7 +56,7 @@ return function(scope: Types.Scope, props: Types.SettingsListProps): Instance
 			scope:TextLabel({
 				BackgroundTransparency = 1,
 				FontFace = theme.Typography.Title.Font,
-				TextSize = 15,
+				TextSize = A.size(theme, 15),
 				TextXAlignment = Enum.TextXAlignment.Left,
 				TextColor3 = theme.Colors.OnSurface,
 				Text = item.Title,
@@ -69,7 +70,7 @@ return function(scope: Types.Scope, props: Types.SettingsListProps): Instance
 				scope:TextLabel({
 					BackgroundTransparency = 1,
 					FontFace = theme.Typography.Body.Font,
-					TextSize = 12,
+					TextSize = A.size(theme, 12),
 					TextXAlignment = Enum.TextXAlignment.Left,
 					TextColor3 = theme.Colors.OnSurfaceVariant,
 					Text = item.Subtitle,

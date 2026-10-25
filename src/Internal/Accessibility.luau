@@ -133,6 +133,19 @@ function Accessibility.apply(theme: any, prefs: Prefs?): any
 	return out
 end
 
+--- The multiplier for text, from the text size the player prefers. 1 for the default size.
+function Accessibility.textScale(theme: any): number
+	local prefs = theme and theme.Accessibility
+	local name = prefs and prefs.PreferredTextSize
+	return (name and TEXT_SCALE[name]) or 1
+end
+
+--- `base` text size scaled by the text size the player prefers. Use it for sizes that do not come
+--- from `theme.Typography`.
+function Accessibility.size(theme: any, base: number): number
+	return math.round(base * Accessibility.textScale(theme))
+end
+
 function Accessibility.motionSpeed(theme: any, multiplier: number?): number
 	local m = multiplier or 1
 	if theme.Accessibility and theme.Accessibility.ReduceMotion then

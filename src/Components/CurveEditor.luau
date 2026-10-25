@@ -6,6 +6,7 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Persist = require(script.Parent.Parent.Internal.Persist)
 local Bind = require(script.Parent.Parent.Internal.Bind)
@@ -302,7 +303,7 @@ return function(scope: Types.Scope, props: Types.CurveEditorProps): Instance
 			Size = UDim2.fromOffset(40, 12),
 			TextXAlignment = Enum.TextXAlignment.Left,
 			FontFace = theme.Fonts.Mono,
-			TextSize = 10,
+			TextSize = A.size(theme, 10),
 			TextColor3 = theme.Colors.OnSurfaceVariant,
 			Text = tostring(label[1]),
 		})

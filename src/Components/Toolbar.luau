@@ -5,6 +5,7 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local Bind = require(script.Parent.Parent.Internal.Bind)
@@ -128,7 +129,7 @@ return function(scope: Types.Scope, props: Types.ToolbarProps): Instance
 						Size = UDim2.fromOffset(0, BUTTON),
 						LayoutOrder = 2,
 						FontFace = theme.Typography.Label.Font,
-						TextSize = 13,
+						TextSize = A.size(theme, 13),
 						TextColor3 = ink,
 						TextTransparency = if disabled then 0.55 else 0,
 						Text = item.Text,

@@ -6,6 +6,7 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local Persist = require(script.Parent.Parent.Internal.Persist)
@@ -128,7 +129,7 @@ return function(scope: Types.Scope, props: Types.DockPanelProps): Instance
 				Size = UDim2.new(0, 0, 1, 0),
 				LayoutOrder = index,
 				FontFace = theme.Typography.Label.Font,
-				TextSize = 13,
+				TextSize = A.size(theme, 13),
 				TextColor3 = scope:Computed(function(use)
 					local on = if use(selected) == tab.Id then 1 else 0
 					return Interaction.lerpColor(
@@ -187,7 +188,7 @@ return function(scope: Types.Scope, props: Types.DockPanelProps): Instance
 				TextXAlignment = Enum.TextXAlignment.Left,
 				TextTruncate = Enum.TextTruncate.AtEnd,
 				FontFace = theme.Typography.Label.Font,
-				TextSize = 13,
+				TextSize = A.size(theme, 13),
 				TextColor3 = theme.Colors.OnSurface,
 				Text = props.Title or "",
 				[Children] = scope:New("UIFlexItem")({ FlexMode = Enum.UIFlexMode.Fill }),

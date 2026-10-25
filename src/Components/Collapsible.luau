@@ -2,6 +2,7 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Persist = require(script.Parent.Parent.Internal.Persist)
 local Bind = require(script.Parent.Parent.Internal.Bind)
@@ -92,7 +93,7 @@ return function(scope: Types.Scope, props: Types.CollapsibleProps): Instance
 			scope:TextLabel({
 				BackgroundTransparency = 1,
 				FontFace = theme.Typography.Title.Font,
-				TextSize = 15,
+				TextSize = A.size(theme, 15),
 				TextColor3 = theme.Colors.OnSurface,
 				TextXAlignment = Enum.TextXAlignment.Left,
 				Text = props.Title,

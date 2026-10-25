@@ -6,7 +6,8 @@
 	module then gives them:
 
 	  - a focus ring around the control that has focus, drawn by us instead of Roblox's white box;
-	  - Tab and Shift+Tab to move between controls, in reading order;
+	  - Tab and Shift+Tab to move between controls, in reading order, once focus is in one of
+	    ours (otherwise Tab stays with Roblox, which uses it for the leaderboard);
 	  - Enter and Space to activate the focused control;
 	  - Escape and gamepad B to close the open overlay;
 	  - `trap`, which keeps focus inside a modal while it is open and puts it back afterwards.
@@ -23,6 +24,7 @@ local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
 
 local GuiService = game:GetService("GuiService")
+local ContextActionService = game:GetService("ContextActionService")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 
@@ -110,7 +112,15 @@ local function ensureRing(theme: Types.Theme): Frame
 	return ring :: Frame
 end
 
-local RING_GAP = 3
+local RING_GAP = 2
+
+--- Like `:focus-visible` on the web: the ring shows when the keyboard or a gamepad moved focus,
+--- and not when a pointer or a touch did, or when a dialog took focus on its own.
+local function keyboardDriven(): boolean
+	local last = UserInputService:GetLastInputType()
+	return last == Enum.UserInputType.Keyboard
+		or string.find(tostring(last), "Gamepad", 1, true) ~= nil
+end
 
 local function showRing(target: GuiObject, info: Info)
 	local layer = layerOf(target)
@@ -145,7 +155,7 @@ end
 local function refreshRing()
 	local selected = GuiService.SelectedObject
 	local info = if selected and selected:IsA("GuiObject") then managed[selected] else nil
-	if selected and info then
+	if selected and info and (info.textBox or keyboardDriven()) then
 		showRing(selected :: GuiObject, info)
 	else
 		hideRing()
@@ -205,6 +215,37 @@ local function move(step: number)
 	Focus.select(list[nextIndex])
 end
 
+local TAB_ACTION = "PantheonFocusTab"
+
+--- Tab belongs to us only while focus is in our controls. Anywhere else it stays with Roblox,
+--- which uses it for the leaderboard.
+local function ownsTab(): boolean
+	local typing = UserInputService:GetFocusedTextBox()
+	if typing then
+		return managed[typing] ~= nil and typing:GetAttribute("KeepTab") ~= true
+	end
+	if #traps > 0 then
+		return true
+	end
+	local selected = GuiService.SelectedObject
+	return selected ~= nil and managed[selected] ~= nil
+end
+
+local function onTab(_: string, state: Enum.UserInputState): Enum.ContextActionResult
+	if state ~= Enum.UserInputState.Begin or not ownsTab() then
+		return Enum.ContextActionResult.Pass
+	end
+	local typing = UserInputService:GetFocusedTextBox()
+	if typing and typing.MultiLine then
+		return Enum.ContextActionResult.Pass
+	end
+	if typing then
+		typing:ReleaseFocus()
+	end
+	move(if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then -1 else 1)
+	return Enum.ContextActionResult.Sink
+end
+
 local function onInput(input: InputObject, processed: boolean)
 	local code = input.KeyCode
 	if code == Enum.KeyCode.Escape or code == Enum.KeyCode.ButtonB then
@@ -215,18 +256,6 @@ local function onInput(input: InputObject, processed: boolean)
 		return
 	end
 	local typing = UserInputService:GetFocusedTextBox()
-	if code == Enum.KeyCode.Tab then
-		if processed and typing == nil then
-			return
-		end
-		if typing and not typing.MultiLine then
-			typing:ReleaseFocus()
-		elseif typing then
-			return
-		end
-		move(if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then -1 else 1)
-		return
-	end
 	if processed or typing then
 		return
 	end
@@ -253,7 +282,15 @@ local function start()
 	started = true
 	hookActivated()
 	GuiService:GetPropertyChangedSignal("SelectedObject"):Connect(refreshRing)
+	UserInputService.LastInputTypeChanged:Connect(refreshRing)
 	UserInputService.InputBegan:Connect(onInput)
+	ContextActionService:BindActionAtPriority(
+		TAB_ACTION,
+		onTab,
+		false,
+		Enum.ContextActionPriority.High.Value,
+		Enum.KeyCode.Tab
+	)
 end
 
 -- public

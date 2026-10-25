@@ -6,6 +6,7 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local Bind = require(script.Parent.Parent.Internal.Bind)
@@ -469,7 +470,7 @@ return function(scope: Types.Scope, props: Types.ExplorerProps): Instance
 			TextXAlignment = Enum.TextXAlignment.Left,
 			TextTruncate = Enum.TextTruncate.AtEnd,
 			FontFace = theme.Fonts.Body,
-			TextSize = 13,
+			TextSize = A.size(theme, 13),
 			TextColor3 = sc:Computed(function(use)
 				return if use(isSelected)
 					then use(theme.Colors.OnPrimaryContainer)
@@ -495,7 +496,7 @@ return function(scope: Types.Scope, props: Types.ExplorerProps): Instance
 			ClearTextOnFocus = false,
 			TextXAlignment = Enum.TextXAlignment.Left,
 			FontFace = theme.Fonts.Body,
-			TextSize = 13,
+			TextSize = A.size(theme, 13),
 			TextColor3 = theme.Colors.OnSurface,
 			Visible = sc:Computed(function(use)
 				local current = use(row) :: Row?

@@ -6,6 +6,7 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local Persist = require(script.Parent.Parent.Internal.Persist)
@@ -115,7 +116,7 @@ return function(scope: Types.Scope, props: Types.RadialMenuProps): Instance
 		Position = ring.Position,
 		Size = UDim2.fromOffset(radius * DEAD_ZONE * 2, 40),
 		FontFace = theme.Typography.Label.Font,
-		TextSize = 14,
+		TextSize = A.size(theme, 14),
 		TextWrapped = true,
 		TextColor3 = theme.Colors.OnSurface,
 		TextTransparency = scope:Computed(function(use)
@@ -211,7 +212,7 @@ return function(scope: Types.Scope, props: Types.RadialMenuProps): Instance
 						BackgroundTransparency = 1,
 						Size = UDim2.fromScale(1, 1),
 						FontFace = theme.Typography.Label.Font,
-						TextSize = 13,
+						TextSize = A.size(theme, 13),
 						TextColor3 = theme.Colors.OnSurface,
 						Text = item.Text or item.Id,
 					}),

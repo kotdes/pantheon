@@ -32,6 +32,7 @@ scope:Switch({
 | `LayoutOrder` | `UsedAs<number>` | :x: | `0` | Position in a parent `UIListLayout` or `UIGridLayout`. |
 | `Checked` | `UsedAs<boolean>` | :x: | `false` | The value. A plain value is only the starting value. A `Value` stays in step with the control: the user's changes set it, and setting it changes the control. |
 | `Label` | `UsedAs<string>` | :x: | - | Text next to the switch. |
+| `Fill` | `boolean` | :x: | `false` | Make the switch as wide as its parent. The label sits at the far left and the switch at the far right. |
 | `Disabled` | `UsedAs<boolean>` | :x: | `false` | Stops the switch reacting to input. The component reads this once, when it creates the switch. |
 | `Icons` | `boolean` | :x: | `theme.Controls.SwitchIcons` | Show the I and O marks on the track. Overrides `theme.Controls.SwitchIcons`. |
 

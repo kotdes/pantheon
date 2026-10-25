@@ -2,6 +2,7 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Persist = require(script.Parent.Parent.Internal.Persist)
 local Bind = require(script.Parent.Parent.Internal.Bind)
@@ -111,7 +112,7 @@ return function(scope: Types.Scope, props: Types.SwitchProps): Instance
 				BackgroundTransparency = 1,
 				Text = "I",
 				FontFace = theme.Fonts.Heading,
-				TextSize = 12,
+				TextSize = A.size(theme, 12),
 				TextColor3 = theme.Colors.OnPrimary,
 				TextTransparency = scope:Computed(function(use)
 					local t = use(checkedS)
@@ -133,7 +134,7 @@ return function(scope: Types.Scope, props: Types.SwitchProps): Instance
 				BackgroundTransparency = 1,
 				Text = "O",
 				FontFace = theme.Fonts.Heading,
-				TextSize = 11,
+				TextSize = A.size(theme, 11),
 				TextColor3 = theme.Colors.OnSurfaceVariant,
 				TextTransparency = scope:Computed(function(use)
 					local t = use(checkedS) :: number
@@ -198,10 +199,27 @@ return function(scope: Types.Scope, props: Types.SwitchProps): Instance
 	}))
 	ix.wire(track)
 
+	local fill = props.Fill == true and props.Label ~= nil
+	local label = if props.Label
+		then scope:TextLabel({
+			BackgroundTransparency = 1,
+			FontFace = theme.Typography.Body.Font,
+			TextSize = theme.Typography.Body.Size,
+			TextColor3 = if disabled then theme.Colors.OnSurfaceVariant else theme.Colors.OnSurface,
+			TextTransparency = if disabled then 0.35 else 0,
+			Text = props.Label,
+			TextXAlignment = if fill then Enum.TextXAlignment.Left else nil,
+			TextWrapped = fill,
+			Size = if fill then UDim2.new(1, -(TRACK_W + 12), 0, 0) else nil,
+			AutomaticSize = if fill then Enum.AutomaticSize.Y else Enum.AutomaticSize.XY,
+		})
+		else nil
+
 	return scope:Frame({
 		Name = "Switch",
 		BackgroundTransparency = 1,
-		AutomaticSize = Enum.AutomaticSize.XY,
+		Size = if fill then UDim2.fromScale(1, 0) else nil,
+		AutomaticSize = if fill then Enum.AutomaticSize.Y else Enum.AutomaticSize.XY,
 		LayoutOrder = props.LayoutOrder or 0,
 		Layout = {
 			Kind = "List",
@@ -210,20 +228,8 @@ return function(scope: Types.Scope, props: Types.SwitchProps): Instance
 			Padding = theme.Metrics.SpaceXs,
 		},
 		[Children] = {
-			track,
-			if props.Label
-				then scope:TextLabel({
-					BackgroundTransparency = 1,
-					FontFace = theme.Typography.Body.Font,
-					TextSize = theme.Typography.Body.Size,
-					TextColor3 = if disabled
-						then theme.Colors.OnSurfaceVariant
-						else theme.Colors.OnSurface,
-					TextTransparency = if disabled then 0.35 else 0,
-					Text = props.Label,
-					AutomaticSize = Enum.AutomaticSize.XY,
-				})
-				else nil,
+			if fill then label else track,
+			if fill then track else label,
 		},
 	}) :: Frame
 end
