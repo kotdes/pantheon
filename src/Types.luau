@@ -229,6 +229,8 @@ export type TextFieldProps = {
 	ValidateOnBlur: boolean?,
 	--- Small variant for in-widget fields: 28px tall, tighter padding, 13px text.
 	Compact: boolean?,
+	--- Fully rounded ends, for a search field.
+	Pill: boolean?,
 	--- Input height in px (default 40, or 28 when `Compact`).
 	Height: number?,
 	--- Static text shown inside the left edge, e.g. "#".
@@ -414,6 +416,8 @@ export type SwitchProps = {
 	Layer: Instance?,
 	Checked: UsedAs<boolean>?,
 	Label: UsedAs<string>?,
+	--- Fill the width: label on the left, switch on the right.
+	Fill: boolean?,
 	OnChanged: ((boolean) -> ())?,
 	Disabled: UsedAs<boolean>?,
 	--- Override Theme.Controls.SwitchIcons for this switch.
@@ -579,15 +583,15 @@ export type CoachmarkProps = {
 	ZIndex: UsedAs<number>?,
 	Layer: Instance?,
 	--- The element to point at.
-	Target: Instance,
+	Target: UsedAs<Instance>,
 	--- Shown while true. Pass a Value so the card can close itself.
 	Open: UsedAs<boolean>?,
-	Title: string?,
-	Text: string?,
+	Title: UsedAs<string>?,
+	Text: UsedAs<string>?,
 	--- Small caption above the title, e.g. "1 of 3".
-	Step: string?,
+	Step: UsedAs<string>?,
 	--- Action button label (default "Got it"); it also dismisses.
-	ActionText: string?,
+	ActionText: UsedAs<string>?,
 	OnAction: (() -> ())?,
 	OnClose: (() -> ())?,
 	Placement: TooltipPlacement?,

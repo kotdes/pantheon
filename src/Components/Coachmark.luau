@@ -20,6 +20,7 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local CanvasFade = require(script.Parent.Parent.Internal.CanvasFade)
 local Layer = require(script.Parent.Parent.Internal.Layer)
@@ -110,13 +111,10 @@ return function(scope: Types.Scope, props: Types.CoachmarkProps): Instance
 	}) :: Frame
 
 	-- Card
-	local function label(
-		text: string,
-		size: number,
-		font: Font,
-		transparency: number,
-		order: number
-	)
+	-- Changing the target dips the card's text for a moment, so the new text fades in.
+	local dip = scope:Value(0)
+	local dipS = scope:Spring(dip, theme.Motion.SpringSpeed * 1.5, 1)
+	local function label(text: any, size: number, font: Font, transparency: number, order: number)
 		return scope:New("TextLabel")({
 			BackgroundTransparency = 1,
 			AutomaticSize = Enum.AutomaticSize.Y,
@@ -126,7 +124,9 @@ return function(scope: Types.Scope, props: Types.CoachmarkProps): Instance
 			FontFace = font,
 			TextSize = size,
 			TextColor3 = onCard,
-			TextTransparency = transparency,
+			TextTransparency = scope:Computed(function(use)
+				return 1 - (1 - transparency) * (1 - math.clamp(use(dipS) :: number, 0, 1))
+			end),
 			Text = text,
 			LayoutOrder = order,
 		})
@@ -153,14 +153,16 @@ return function(scope: Types.Scope, props: Types.CoachmarkProps): Instance
 			AutomaticSize = Enum.AutomaticSize.XY,
 			Size = UDim2.fromOffset(0, 0),
 			FontFace = theme.Typography.Label.Font,
-			TextSize = 14,
+			TextSize = A.size(theme, 14),
 			TextColor3 = onCard,
 			Text = props.ActionText or "Got it",
 			[Fusion.OnEvent("Activated")] = function()
 				if props.OnAction then
 					props.OnAction()
 				end
-				dismiss()
+				if not props.KeepOpen then
+					dismiss()
+				end
 			end,
 			[Children] = {
 				scope:New("UICorner")({ CornerRadius = UDim.new(1, 0) }),
@@ -238,13 +240,19 @@ return function(scope: Types.Scope, props: Types.CoachmarkProps): Instance
 	end
 
 	local clock = 0
+	local shown: { X: number, Y: number, W: number, H: number, CX: number, CY: number }? = nil
+	local lastTarget: GuiObject? = nil
 
 	local function update(dt: number)
-		local target = Layer.asGui(props.Target)
+		local target = Layer.asGui(peek(props.Target :: any))
 		local layer = Layer.resolve(props)
 		if target == nil or layer == nil then
 			return
 		end
+		if lastTarget ~= nil and target ~= lastTarget then
+			dipS:setPosition(1)
+		end
+		lastTarget = target
 		clock += dt
 		local origin = layer.AbsolutePosition
 		local W, H = layer.AbsoluteSize.X, layer.AbsoluteSize.Y
@@ -252,8 +260,20 @@ return function(scope: Types.Scope, props: Types.CoachmarkProps): Instance
 		-- Target bounds in layer space, padded.
 		local tp = target.AbsolutePosition - origin - Vector2.new(pad, pad)
 		local ts = target.AbsoluteSize + Vector2.new(pad * 2, pad * 2)
-		local tx, ty = math.max(tp.X, 0), math.max(tp.Y, 0)
-		local tw, th = math.min(ts.X, W - tx), math.min(ts.Y, H - ty)
+		local wantX, wantY = math.max(tp.X, 0), math.max(tp.Y, 0)
+		local wantW, wantH = math.min(ts.X, W - wantX), math.min(ts.Y, H - wantY)
+		local ease = 1 - math.exp(-math.min(dt, 0.1) * 14)
+		if shown == nil then
+			shown = { X = wantX, Y = wantY, W = wantW, H = wantH, CX = 0, CY = 0 }
+		else
+			shown.X += (wantX - shown.X) * ease
+			shown.Y += (wantY - shown.Y) * ease
+			shown.W += (wantW - shown.W) * ease
+			shown.H += (wantH - shown.H) * ease
+		end
+		local tx, ty, tw, th = shown.X, shown.Y, shown.W, shown.H
+		tp = Vector2.new(tx, ty)
+		ts = Vector2.new(tw, th)
 
 		scrimTop.Position, scrimTop.Size = UDim2.fromOffset(0, 0), UDim2.fromOffset(W, ty)
 		scrimBottom.Position = UDim2.fromOffset(0, ty + th)
@@ -272,7 +292,14 @@ return function(scope: Types.Scope, props: Types.CoachmarkProps): Instance
 		-- Card + arrow. Placed and clamped in the layer's own space, so inside a Window the
 		-- card stays within the window (not just within the screen).
 		local pos, side = place(placement, tp, ts, cardHost.AbsoluteSize, gap, layer.AbsoluteSize)
-		local cx, cy = pos.X.Offset, pos.Y.Offset
+		local wantCX, wantCY = pos.X.Offset, pos.Y.Offset
+		if shown.CX == 0 and shown.CY == 0 then
+			shown.CX, shown.CY = wantCX, wantCY
+		else
+			shown.CX += (wantCX - shown.CX) * ease
+			shown.CY += (wantCY - shown.CY) * ease
+		end
+		local cx, cy = shown.CX, shown.CY
 		local rise = (1 - math.clamp(peek(openS) :: number, 0, 1)) * 10
 		cardHost.Position = UDim2.fromOffset(cx, cy + rise)
 
