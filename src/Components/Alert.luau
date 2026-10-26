@@ -4,6 +4,7 @@ local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
 local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
+local Corners = require(script.Parent.Parent.Internal.Corners)
 
 local Children = Fusion.Children
 
@@ -22,14 +23,14 @@ return function(scope: Types.Scope, props: Types.AlertProps): Instance
 	local theme = resolveTheme(props)
 	local tone: Types.AlertTone = props.Tone or "Info"
 	local bg, fg = toneColors(theme, tone)
-	return scope:Frame({
+	local alert = scope:Frame({
 		Name = "Alert",
 		BackgroundColor3 = bg,
 		Size = props.Size or UDim2.new(1, 0, 0, 0),
 		AutomaticSize = Enum.AutomaticSize.Y,
 		LayoutOrder = props.LayoutOrder or 0,
 		Visible = props.Visible,
-		CornerRadius = theme.Metrics.RadiusSm,
+		CornerRadius = props.CornerRadius or theme.Metrics.RadiusSm,
 		Padding = { theme.Metrics.SpaceSm },
 		Layout = {
 			Kind = "List",
@@ -63,4 +64,6 @@ return function(scope: Types.Scope, props: Types.AlertProps): Instance
 			}),
 		},
 	}) :: Frame
+	Corners.auto(alert, props.CornerRadius, theme.Metrics.RadiusSm)
+	return alert
 end

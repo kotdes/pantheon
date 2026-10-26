@@ -8,6 +8,8 @@ tags:
 
 Dialog is a modal panel on a scrim. It asks the user for a decision or shows something that needs attention. Two actions sit side by side. Three or more are stacked.
 
+The icon, the title and the body are centred. The panel has 16 pixels of padding, and the icon and the text each have 8 pixels of their own. The corners use `Radius3xl` (32 pixels) from the theme.
+
 ## Usage
 
 Call `Components.Dialog` with a scope and a table of properties:
@@ -49,6 +51,7 @@ scope:Dialog({
 | `Icon` | `string` | :x: | - | Lucide icon above the title. |
 | `IconColor` | `UsedAs<Color3>` | :x: | `Colors.OnSurfaceVariant` | Colour of the icon. |
 | `IconSize` | `number` | :x: | `28` | Size of the icon in pixels. |
+| `CornerRadius` | `number` | :x: | `Radius3xl` | Corner radius in pixels. A dialog is not concentric with its container, because it sits far from the edges and the corners would be nearly square. |
 
 ## Callbacks
 

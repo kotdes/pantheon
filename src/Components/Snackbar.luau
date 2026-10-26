@@ -4,6 +4,7 @@ local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
 local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
+local Corners = require(script.Parent.Parent.Internal.Corners)
 local Icon = require(script.Parent.Icon)
 
 local Children = Fusion.Children
@@ -113,7 +114,7 @@ return function(scope: Types.Scope, props: Types.SnackbarProps): Instance
 		})
 	end
 
-	return scope:Frame({
+	local snackbar = scope:Frame({
 		Name = "Snackbar",
 		-- Contrasting surface: dark in light mode, light in dark mode.
 		BackgroundColor3 = theme.Colors.InverseSurface,
@@ -122,7 +123,7 @@ return function(scope: Types.Scope, props: Types.SnackbarProps): Instance
 		LayoutOrder = props.LayoutOrder or 0,
 		Visible = props.Visible,
 		ZIndex = props.ZIndex or 90,
-		CornerRadius = theme.Metrics.RadiusPanel,
+		CornerRadius = props.CornerRadius or theme.Metrics.RadiusPanel,
 		Shadow = {
 			BlurRadius = 20,
 			Offset = UDim2.fromOffset(0, 6),
@@ -138,4 +139,6 @@ return function(scope: Types.Scope, props: Types.SnackbarProps): Instance
 		},
 		[Children] = { leading, message, action, trailing, dismiss } :: any,
 	}) :: Frame
+	Corners.auto(snackbar, props.CornerRadius, theme.Metrics.RadiusPanel, { Container = true })
+	return snackbar
 end

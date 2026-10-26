@@ -3,12 +3,12 @@
 	Cadence dialog: scrim + centered surface.
 	Actions: 2 → full-width horizontal; 3+ → stacked vertical.
 	Pass Layer (top UI frame) so the modal does not shift content layout.
-	Optional Icon appears above the title (alerts / confirms).
 ]]
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
+local Corners = require(script.Parent.Parent.Internal.Corners)
 local Focus = require(script.Parent.Parent.Internal.Focus)
 local CanvasFade = require(script.Parent.Parent.Internal.CanvasFade)
 local Layer = require(script.Parent.Parent.Internal.Layer)
@@ -72,7 +72,8 @@ return function(scope: Types.Scope, props: Types.DialogProps): Instance
 
 	local hasIcon = props.Icon ~= nil and props.Icon ~= ""
 	local iconSize = props.IconSize or 28
-	local titleAlign = Enum.TextXAlignment.Left
+	local titleAlign = Enum.TextXAlignment.Center
+	local radius = props.CornerRadius or theme.Metrics.Radius3xl
 
 	-- TextButton sinks Overlay Activated; Frame.Active alone does not.
 	local panel = scope:TextButton({
@@ -85,7 +86,7 @@ return function(scope: Types.Scope, props: Types.DialogProps): Instance
 		BorderSizePixel = 0,
 		Active = true,
 		LayoutOrder = 2,
-		CornerRadius = theme.Metrics.RadiusPanel,
+		CornerRadius = radius,
 		Outline = {
 			Color = theme.Colors.OutlineVariant,
 			Thickness = 1,
@@ -97,7 +98,7 @@ return function(scope: Types.Scope, props: Types.DialogProps): Instance
 				return 1 - (use(openS) :: number) * 0.15
 			end),
 		},
-		Padding = { theme.Metrics.SpaceLg },
+		Padding = { theme.Metrics.SpaceMd },
 		Layout = {
 			Kind = "List",
 			SortOrder = Enum.SortOrder.LayoutOrder,
@@ -107,13 +108,14 @@ return function(scope: Types.Scope, props: Types.DialogProps): Instance
 				then scope:Frame({
 					Name = "IconWell",
 					BackgroundTransparency = 1,
-					Size = UDim2.new(1, 0, 0, iconSize + 12),
+					Size = UDim2.new(1, 0, 0, iconSize + theme.Metrics.SpaceXs * 2),
 					LayoutOrder = 0,
+					Padding = { theme.Metrics.SpaceXs },
 					Layout = {
 						Kind = "List",
 						FillDirection = Enum.FillDirection.Horizontal,
-						HorizontalAlignment = Enum.HorizontalAlignment.Left,
-						VerticalAlignment = Enum.VerticalAlignment.Top,
+						HorizontalAlignment = Enum.HorizontalAlignment.Center,
+						VerticalAlignment = Enum.VerticalAlignment.Center,
 					},
 					[Children] = {
 						Icon(scope, {
@@ -131,11 +133,12 @@ return function(scope: Types.Scope, props: Types.DialogProps): Instance
 				Size = UDim2.new(1, 0, 0, 0),
 				AutomaticSize = Enum.AutomaticSize.Y,
 				LayoutOrder = 1,
-				Padding = { theme.Metrics.SpaceXs, 0, 0, 0 },
+				Padding = { theme.Metrics.SpaceXs },
 				Layout = {
 					Kind = "List",
 					Padding = theme.Metrics.Space2xs,
 					FillDirection = Enum.FillDirection.Vertical,
+					HorizontalAlignment = Enum.HorizontalAlignment.Center,
 				},
 				[Children] = {
 					scope:TextLabel({
@@ -256,6 +259,7 @@ return function(scope: Types.Scope, props: Types.DialogProps): Instance
 		},
 	}) :: Frame
 
+	Corners.setContainer(panel, radius)
 	Layer.mount(scope, props, root)
 	Focus.trap(scope, root, open)
 	Focus.escape(scope, open, Focus.closer(props))

@@ -50,6 +50,7 @@ local Pantheon = {
 	CanvasFade = require(script.Internal.CanvasFade),
 	Validators = require(script.Internal.Validators),
 	Accessibility = require(script.Internal.Accessibility),
+	Corners = require(script.Internal.Corners),
 	Shadow = require(script.Internal.Shadow),
 	GroupFade = require(script.Internal.GroupFade),
 	Translate = require(script.Internal.Translate),

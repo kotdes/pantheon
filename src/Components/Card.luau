@@ -4,19 +4,20 @@ local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
 local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
+local Corners = require(script.Parent.Parent.Internal.Corners)
 
 local Children = Fusion.Children
 
 return function(scope: Types.Scope, props: Types.CardProps): Instance
 	local theme = resolveTheme(props)
-	return scope:Frame({
+	local card = scope:Frame({
 		Name = "Card",
 		BackgroundColor3 = theme.Colors.SurfaceContainer,
 		Size = props.Size or UDim2.new(1, 0, 0, 0),
 		AutomaticSize = Enum.AutomaticSize.Y,
 		LayoutOrder = props.LayoutOrder or 0,
 		Visible = props.Visible,
-		CornerRadius = theme.Metrics.RadiusPanel,
+		CornerRadius = props.CornerRadius or theme.Metrics.RadiusPanel,
 		Padding = { theme.Metrics.SpaceMd },
 		Layout = {
 			Kind = "List",
@@ -51,4 +52,6 @@ return function(scope: Types.Scope, props: Types.CardProps): Instance
 			props.Children,
 		},
 	}) :: Frame
+	Corners.auto(card, props.CornerRadius, theme.Metrics.RadiusPanel, { Container = true })
+	return card
 end

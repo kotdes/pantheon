@@ -39,6 +39,7 @@ scope:ConfirmDialog({
 | `Icon` | `string` | :x: | - | Lucide icon above the title. |
 | `IconColor` | `UsedAs<Color3>` | :x: | - | Colour of the icon. It is red by default when an icon is set. |
 | `IconSize` | `number` | :x: | - | Size of the icon in pixels. |
+| `CornerRadius` | `number` | :x: | `Radius3xl` | Corner radius in pixels. A dialog is not concentric with its container, because it sits far from the edges and the corners would be nearly square. |
 
 ## Callbacks
 

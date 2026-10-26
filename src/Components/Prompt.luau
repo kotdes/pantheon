@@ -37,6 +37,7 @@ return function(scope: Types.Scope, props: Types.PromptProps): Instance
 		Open = props.Open,
 		LayoutOrder = props.LayoutOrder,
 		Size = props.Size,
+		CornerRadius = props.CornerRadius,
 		Visible = props.Visible,
 		ZIndex = props.ZIndex,
 		Layer = props.Layer,

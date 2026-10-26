@@ -4,6 +4,7 @@ local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
 local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
+local Corners = require(script.Parent.Parent.Internal.Corners)
 local Persist = require(script.Parent.Parent.Internal.Persist)
 local Bind = require(script.Parent.Parent.Internal.Bind)
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
@@ -43,7 +44,7 @@ return function(scope: Types.Scope, props: Types.CollapsibleProps): Instance
 		Size = UDim2.new(1, 0, 0, 44),
 		LayoutOrder = 1,
 		ClipsDescendants = false,
-		CornerRadius = theme.Metrics.RadiusSm,
+		CornerRadius = props.CornerRadius or theme.Metrics.RadiusSm,
 		Padding = { theme.Metrics.SpaceXs, theme.Metrics.SpaceMd },
 		Layout = {
 			Kind = "List",
@@ -103,6 +104,7 @@ return function(scope: Types.Scope, props: Types.CollapsibleProps): Instance
 		},
 	})) :: TextButton
 	ix.wire(header)
+	Corners.auto(header, props.CornerRadius, theme.Metrics.RadiusSm)
 
 	local titleLabel = header:FindFirstChildWhichIsA("TextLabel")
 	if titleLabel then

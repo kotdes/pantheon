@@ -3,6 +3,7 @@ local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
+local Corners = require(script.Parent.Parent.Internal.Corners)
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local Color = require(script.Parent.Parent.Internal.Color)
 local MenuNav = require(script.Parent.Parent.Internal.MenuNav)
@@ -91,7 +92,7 @@ return function(scope: Types.Scope, props: Types.MenuButtonProps): Instance
 		ZIndex = props.ZIndex,
 		Active = clickable,
 		ClipsDescendants = true,
-		CornerRadius = theme.Metrics.RadiusPanel - 4,
+		CornerRadius = props.CornerRadius or theme.Metrics.RadiusPanel - 4,
 		-- An element at the end, such as a count or a switch, sits as far from the edge as the row
 		-- is from its top and bottom.
 		Padding = if trailingName
@@ -234,5 +235,6 @@ return function(scope: Types.Scope, props: Types.MenuButtonProps): Instance
 		task.defer(refresh)
 	end
 
+	Corners.auto(btn, props.CornerRadius, theme.Metrics.RadiusPanel - 4)
 	return btn
 end

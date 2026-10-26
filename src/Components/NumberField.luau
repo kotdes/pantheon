@@ -8,6 +8,7 @@ local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
 local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
+local Corners = require(script.Parent.Parent.Internal.Corners)
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local Persist = require(script.Parent.Parent.Internal.Persist)
 local Bind = require(script.Parent.Parent.Internal.Bind)
@@ -239,7 +240,7 @@ return function(scope: Types.Scope, props: Types.NumberFieldProps): Instance
 		Visible = props.Visible,
 		ZIndex = props.ZIndex,
 		ClipsDescendants = true,
-		CornerRadius = theme.Metrics.RadiusSm,
+		CornerRadius = props.CornerRadius or theme.Metrics.RadiusSm,
 		Outline = {
 			Color = strokeColor,
 			Thickness = scope:Computed(function(use)
@@ -272,6 +273,7 @@ return function(scope: Types.Scope, props: Types.NumberFieldProps): Instance
 				else nil,
 		} :: any,
 	}) :: Frame
+	Corners.auto(field, props.CornerRadius, theme.Metrics.RadiusSm)
 	Focus.manage(box, theme, true)
 	return field
 end

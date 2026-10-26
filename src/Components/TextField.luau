@@ -4,6 +4,7 @@ local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
 local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
+local Corners = require(script.Parent.Parent.Internal.Corners)
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local Persist = require(script.Parent.Parent.Internal.Persist)
 local Bind = require(script.Parent.Parent.Internal.Bind)
@@ -91,7 +92,8 @@ return function(scope: Types.Scope, props: Types.TextFieldProps): Instance
 		LayoutOrder = 1,
 		-- ClipsDescendants would cut the outline stroke.
 		ClipsDescendants = false,
-		CornerRadius = if props.Pill then theme.Metrics.RadiusPill else theme.Metrics.RadiusSm,
+		CornerRadius = props.CornerRadius
+			or if props.Pill then theme.Metrics.RadiusPill else theme.Metrics.RadiusSm,
 		Padding = { padV, padR, padV, padL },
 		Outline = {
 			Color = strokeColor,
@@ -99,6 +101,9 @@ return function(scope: Types.Scope, props: Types.TextFieldProps): Instance
 			Mode = Enum.ApplyStrokeMode.Border,
 		},
 	}) :: TextBox
+	if not props.Pill then
+		Corners.auto(box, props.CornerRadius, theme.Metrics.RadiusSm)
+	end
 	Focus.manage(box, theme, true)
 
 	local function runValidation()
