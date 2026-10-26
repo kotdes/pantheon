@@ -56,3 +56,39 @@ local theme = Pantheon.Theme.create("Light", {
 	},
 })
 ```
+
+## Concentric corners
+
+A shape inside a rounded container has corners that share a centre with the container. The inner radius is the container radius minus the gap to the container edge. This is the same rule as concentric corners in SwiftUI.
+
+`Window`, `Card`, `Surface`, `Dialog` and `Snackbar` are containers. These components round themselves to fit the nearest container:
+
+- `Alert`
+- `Collapsible`
+- `ListItem`
+- `MenuButton`
+- `NumberField`
+- `TextField`
+
+Pantheon measures the gap on each side, so a shape that touches one edge of the container gets a larger radius on that side. The radius is never more than the radius the component has on its own, and never less than 4.
+
+Outside a container, a component keeps its normal radius.
+
+`Dialog`, `Prompt` and `ConfirmDialog` are containers, but they are not concentric with the container around them. A dialog sits far from the edges, so a concentric radius would be nearly square. They use `Radius3xl` instead.
+
+To turn this off for one component, set `CornerRadius`. The component keeps that radius and ignores the container.
+
+```luau
+scope:ListItem({ Title = "Square row", CornerRadius = 0 })
+```
+
+### In your own components
+
+`Pantheon.Corners.auto` gives any frame the same behaviour. Pass the frame, the `CornerRadius` the caller supplied (or `nil`), and the radius the frame has on its own. Add `Container = true` to make the frame a container for what is inside it.
+
+```luau
+local row = scope:Frame({ Size = UDim2.new(1, 0, 0, 36), CornerRadius = 8 })
+Pantheon.Corners.auto(row, props.CornerRadius, 8)
+```
+
+A [NavigationDrawer](../Components/Navigation/NavigationDrawer.md) with `Sidebar` is a container. Its own corners are concentric with the window, and the rows you put in it can use `Corners.auto` to be concentric with the drawer.
