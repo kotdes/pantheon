@@ -40,7 +40,7 @@ scope:Button({
 | `Text` | `UsedAs<string>` | :x: | `"Button"` | Label of the button. |
 | `Variant` | `ButtonVariant \| string` | :x: | `"Text"` | Style of the button: `"Filled"`, `"Tonal"`, `"Outlined"` or `"Text"`. `"Primary"` and `"Destructive"` are older names for a filled button in the `primary` or `error` colour. |
 | `Color` | `UsedAs<ColorInput>` | :x: | `"primary"` | Colour of the button. Use a palette name such as `"primary"` or `"error"`, a `Color3`, a hex string, an RGB table or a `ThemeColorRole`. |
-| `Disabled` | `UsedAs<boolean>` | :x: | `false` | Stops the button reacting to input and dims it. The component reads this once, when it creates the button. |
+| `Disabled` | `UsedAs<boolean>` | :x: | `false` | Stops the button reacting to input. A disabled button has a fill that is darker than the surface and a label at 38%, whatever its variant. The component reads this once, when it creates the button. |
 | `Icon` | `string` | :x: | - | Same as `LeadingIcon`. |
 | `LeadingIcon` | `string` | :x: | - | Lucide icon shown before the label. |
 | `TrailingIcon` | `string` | :x: | - | Lucide icon shown after the label. |

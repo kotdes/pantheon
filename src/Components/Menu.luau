@@ -537,7 +537,7 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 		Name = "Menu",
 		Text = "",
 		AutoButtonColor = false,
-		BackgroundColor3 = theme.Colors.Surface,
+		BackgroundColor3 = props.Background or theme.Colors.Surface,
 		Shadow = {
 			BlurRadius = 8,
 			Transparency = 0.9,
@@ -553,7 +553,8 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 		-- `Corners` lets docked panels round only some corners ({tl, tr, bl, br}).
 		CornerRadius = props.Corners or radius,
 		Outline = {
-			Color = if hasHeader then theme.Colors.OutlineVariant else theme.Colors.Outline,
+			Color = props.BorderColor
+				or (if hasHeader then theme.Colors.OutlineVariant else theme.Colors.Outline),
 			Thickness = 1,
 			Mode = Enum.ApplyStrokeMode.Border,
 		},

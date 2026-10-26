@@ -65,12 +65,12 @@ return function(scope: Types.Scope, props: Types.ButtonProps): Instance
 		StateColor = stateColor,
 	})
 
-	-- MD3 disabled: on-surface @ 12% container, label @ 38%
+	-- Disabled: a darker fill than the surface and the label at 38%, for every variant.
 	local disabledBg = scope:Computed(function(use)
 		return Interaction.lerpColor(
 			use(theme.Colors.Surface),
 			use(theme.Colors.OnSurface),
-			0.12,
+			0.16,
 			use
 		)
 	end)
