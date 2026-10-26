@@ -18,11 +18,10 @@ Pantheon is a modern and slick Fusion 0.3+ components library for Roblox, with a
 
 ## Installation
 
-Add Pantheon to your `wally.toml`, then run `wally install`:
+Add Pantheon with pesde:
 
-```toml
-[dependencies]
-Pantheon = "koterahq/pantheon@0.1.0"
+```sh
+pesde add kotdes/pantheon --alias Pantheon
 ```
 
 For more information, please refer to the documentation at [https://pantheon.7kayoh.net](https://pantheon.7kayoh.net) or [./docs](./docs/Tutorials/InstallingPantheon.md).

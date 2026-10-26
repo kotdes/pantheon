@@ -6,11 +6,10 @@ It works with any Fusion scope. It is made for [Pantheon](https://github.com/kot
 
 ## Install
 
-Start by adding Pantheon Router to `wally.toml`:
+Start by adding Pantheon Router with pesde:
 
-```toml
-[dependencies]
-PantheonRouter = "koterahq/pantheon-router@0.1.0"
+```sh
+pesde add kotdes/pantheon_router --alias PantheonRouter
 ```
 
 ### Source

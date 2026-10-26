@@ -4,14 +4,13 @@ description: How to add Pantheon to a Roblox project with Wally.
 
 # Installing Pantheon
 
-Pantheon is on Wally. Add it to your `wally.toml` and run `wally install`:
+Pantheon is on pesde. Add it to your project:
 
-```toml
-[dependencies]
-Pantheon = "koterahq/pantheon@0.1.0"
+```sh
+pesde add kotdes/pantheon --alias Pantheon
 ```
 
-Wally installs the libraries Pantheon needs too. To run the demo, or to work on Pantheon itself, install it from the repository as below.
+pesde installs the libraries Pantheon needs too. To run the demo, or to work on Pantheon itself, install it from the repository as below.
 
 ## What you need
 
@@ -20,7 +19,7 @@ Pantheon needs these libraries. Wally installs them.
 | Library | Version | Used for |
 | ------- | ------- | -------- |
 | [Fusion](https://elttob.uk/Fusion/0.3/) | 0.3.0 | State and instances |
-| Iona (`koterahq/iona`) | 0.3.0 | Short forms for properties such as `CornerRadius` and `Layout` |
+| Iona (`kotdes/iona`) | 0.3.0 | Short forms for properties such as `CornerRadius` and `Layout` |
 | [Lucide icons](https://github.com/latte-soft/lucide-icons) | 0.1.3 | The icons of `Icon`, `IconButton` and others |
 | [Snapdragon](https://github.com/vorlias/snapdragon) | 2.0.0 | Dragging |
 

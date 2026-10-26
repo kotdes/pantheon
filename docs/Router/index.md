@@ -32,11 +32,10 @@ Pantheon Router works with any Fusion scope. It is made for [Pantheon](https://g
 
 ## Install
 
-Add Pantheon Router to `wally.toml`:
+Add Pantheon Router with pesde:
 
-```toml
-[dependencies]
-PantheonRouter = "koterahq/pantheon-router@0.1.0"
+```sh
+pesde add kotdes/pantheon_router --alias PantheonRouter
 ```
 
 The source is in the Pantheon repository, in [`libs/router`](https://github.com/kotdes/pantheon/tree/main/libs/router).

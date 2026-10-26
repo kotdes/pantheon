@@ -10,6 +10,6 @@ The version picker at the top of the site lists Pantheon versions, not Pantheon 
 
 ## What each row means
 
-- **Pantheon Router** is the version in `wally.toml` of the package. `0.1` stands for every `0.1.x` release.
+- **Pantheon Router** is the version in `pesde.toml` of the package. `0.1` stands for every `0.1.x` release.
 - **Pantheon documentation** is the version in the picker that has the Router pages for that version. When the Router changes in a way that breaks your code, its old pages stay in the older Pantheon documentation versions, and this table points to them.
 - A row for a Pantheon Router version that is not released yet points to `dev`, which always has the latest pages.

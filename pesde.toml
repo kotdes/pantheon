@@ -1,0 +1,27 @@
+name = "kotdes/pantheon"
+version = "0.1.0"
+description = "Pantheon is a modern and slick Fusion 0.3+ components library for Roblox, with a focus on accessibility, theming, and performance."
+license = "MIT"
+authors = ["7kayoh"]
+repository = "https://github.com/kotdes/pantheon"
+includes = ["pesde.toml", "README.md", "LICENSE", "src/**/*.luau"]
+
+[target]
+environment = "roblox"
+lib = "src/init.luau"
+build_files = ["src"]
+
+[indices]
+default = "https://github.com/pesde-pkg/index"
+
+[wally_indices]
+default = "https://github.com/UpliftGames/wally-index"
+
+[dependencies]
+Fusion = { wally = "elttob/fusion", version = "0.3.0" }
+Lucide = { wally = "latte-soft/lucide-icons", version = "0.1.3" }
+Iona = { name = "kotdes/iona", version = "^0.3.0" }
+Snapdragon = { wally = "vorlias/snapdragon", version = "2.0.0" }
+
+[dev_dependencies]
+TopbarPlus = { wally = "legitatx/topbarplus", version = "3.0.5" }

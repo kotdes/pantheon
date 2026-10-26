@@ -1,0 +1,24 @@
+name = "kotdes/pantheon_router"
+version = "0.1.0"
+description = "Pantheon Router is a router for Fusion 0.3+ development."
+license = "MIT"
+authors = ["7kayoh", "kitsuu-ne"]
+repository = "https://github.com/kotdes/pantheon"
+includes = ["pesde.toml", "README.md", "LICENSE", "src/**/*.luau"]
+
+[target]
+environment = "roblox"
+lib = "src/init.luau"
+build_files = ["src"]
+
+[indices]
+default = "https://github.com/pesde-pkg/index"
+
+[wally_indices]
+default = "https://github.com/UpliftGames/wally-index"
+
+[dependencies]
+Fusion = { wally = "elttob/fusion", version = "0.3.0" }
+
+[dev_dependencies]
+TestEZ = { wally = "roblox/testez", version = "0.4.1" }
