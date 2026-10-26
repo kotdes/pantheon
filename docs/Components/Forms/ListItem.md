@@ -23,6 +23,22 @@ scope:ListItem({
 })
 ```
 
+## A row of your own
+
+If a row needs more than `ListItem` offers, such as controls under the text, build it yourself and read the same style so it looks the same. `Pantheon.ListItemStyle(theme)` gives the fonts, sizes, padding, radius and heights of a `ListItem`. `Pantheon.Interaction.bind` gives the hover and press states.
+
+```luau
+local style = Pantheon.ListItemStyle(theme)
+local ix = Pantheon.Interaction.bind(scope, theme, { StateColor = theme.Colors.OnSurface })
+
+local row = scope:TextButton({
+	BackgroundColor3 = ix.fill(theme.Colors.Surface),
+	Padding = { style.PaddingY, style.PaddingX },
+	CornerRadius = style.Radius,
+})
+ix.wire(row)
+```
+
 ## Properties
 
 | Name | Type | Required | Default | Description |
