@@ -51,6 +51,9 @@ local function lightColors(): Types.ThemeColors
 		InversePrimary = Color3.fromRGB(77, 182, 172),
 		Info = Color3.fromRGB(1, 115, 180),
 		OnInfo = Color3.fromRGB(255, 255, 255),
+		Sidebar = Color3.fromRGB(255, 255, 255),
+		OnSidebar = Color3.fromRGB(28, 27, 31),
+		SidebarSelected = Color3.fromRGB(238, 241, 246),
 	}
 end
 
@@ -82,6 +85,9 @@ local function darkColors(): Types.ThemeColors
 		InversePrimary = Color3.fromRGB(0, 105, 92),
 		Info = Color3.fromRGB(79, 195, 247),
 		OnInfo = Color3.fromRGB(26, 31, 38),
+		Sidebar = Color3.fromRGB(26, 31, 38),
+		OnSidebar = Color3.fromRGB(230, 232, 236),
+		SidebarSelected = Color3.fromRGB(35, 42, 51),
 	}
 end
 
@@ -154,6 +160,7 @@ local defaultMetrics: Types.ThemeMetrics = {
 	RadiusPill = 999,
 	AppBarHeight = 64,
 	DrawerWidth = 280,
+	SidebarInset = 4,
 	RailWidth = 72,
 	ButtonPadX = 20,
 	ButtonPadY = 4,
@@ -171,6 +178,21 @@ local function typography(): Types.ThemeTypography
 		Caption = { Font = MontserratSemi, Size = 12, LineHeight = 1.3 },
 		Mono = { Font = Mono, Size = 13, LineHeight = 1.35 },
 	}
+end
+
+--- A theme that sets `Surface`, `OnSurface` or `SurfaceContainer` but not the sidebar roles gets a
+--- sidebar that follows them, so only a theme that wants a different sidebar needs to name it.
+local function followSurface(colors: Types.ThemeColors, given: { [string]: any }?)
+	local set = given or {}
+	if set.Sidebar == nil then
+		colors.Sidebar = colors.Surface
+	end
+	if set.OnSidebar == nil then
+		colors.OnSidebar = colors.OnSurface
+	end
+	if set.SidebarSelected == nil then
+		colors.SidebarSelected = colors.SurfaceContainer
+	end
 end
 
 local function lerpColor(a: Color3, b: Color3, t: number): Color3
@@ -307,6 +329,7 @@ function Theme.create(mode: Types.ThemeMode?, opts: ThemeCreateOpts?): Types.The
 	if opts and opts.Overrides then
 		theme = deepMerge(theme, opts.Overrides) :: Types.Theme
 		theme.Mode = resolved
+		followSurface(theme.Colors, opts.Overrides.Colors)
 	end
 	if opts and opts.Palette then
 		theme.Palette = Color.normalizePalette(opts.Palette, resolved, theme.Palette)

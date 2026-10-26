@@ -99,6 +99,9 @@ function Accessibility.apply(theme: any, prefs: Prefs?): any
 	end
 
 	if resolved.HighContrast == true then
+		local colors = theme.Colors
+		local followsSurface = colors.Sidebar == colors.Surface
+		local followsInk = colors.OnSidebar == colors.OnSurface
 		if out.Mode == "Dark" then
 			out.Colors.Background = Color3.new(0, 0, 0)
 			out.Colors.Surface = Color3.fromRGB(12, 12, 14)
@@ -113,6 +116,21 @@ function Accessibility.apply(theme: any, prefs: Prefs?): any
 			out.Colors.OnSurfaceVariant = Color3.fromRGB(30, 30, 35)
 			out.Colors.Outline = Color3.fromRGB(40, 40, 45)
 			out.Colors.OutlineVariant = Color3.fromRGB(80, 80, 90)
+		end
+		-- A sidebar that follows the surface follows it here too. A sidebar of its own colour keeps
+		-- that colour, and its ink goes to white or black, whichever reads better on it.
+		if followsSurface then
+			out.Colors.Sidebar = out.Colors.Surface
+		end
+		if followsInk then
+			out.Colors.OnSidebar = out.Colors.OnSurface
+		else
+			local white, black = Color3.new(1, 1, 1), Color3.new(0, 0, 0)
+			local fill = out.Colors.Sidebar :: Color3
+			out.Colors.OnSidebar = if Accessibility.contrast(white, fill)
+					>= Accessibility.contrast(black, fill)
+				then white
+				else black
 		end
 	end
 
@@ -191,6 +209,8 @@ local TEXT_PAIRS = {
 	{ "OnSurface", "SurfaceContainerHigh" },
 	{ "OnSurfaceVariant", "Surface" },
 	{ "OnSurfaceVariant", "SurfaceContainer" },
+	{ "OnSidebar", "Sidebar" },
+	{ "OnSidebar", "SidebarSelected" },
 }
 local GRAPHIC_PAIRS = {
 	{ "Primary", "Surface" },

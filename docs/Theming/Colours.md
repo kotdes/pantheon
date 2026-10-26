@@ -66,6 +66,16 @@ These are the keys of `theme.Colors`. Hover over a swatch to see its value.
 | `Info` | <span class="es-swatch" style="--c:#0173b4" title="#0173b4"></span> `#0173b4` | <span class="es-swatch" style="--c:#4fc3f7" title="#4fc3f7"></span> `#4fc3f7` | Information. |
 | `OnInfo` | <span class="es-swatch" style="--c:#ffffff" title="#ffffff"></span> `#ffffff` | <span class="es-swatch" style="--c:#1a1f26" title="#1a1f26"></span> `#1a1f26` | Content on `Info`. |
 
+### Sidebar
+
+A sidebar is a navigation drawer with the `Sidebar` prop. A theme can give it a fill of its own, as in a chat app with a coloured sidebar. A theme that leaves these three out gets a sidebar that follows `Surface`, `OnSurface` and `SurfaceContainer`.
+
+| Name | Light | Dark | Use |
+| ---- | ----- | ---- | --- |
+| `Sidebar` | <span class="es-swatch" style="--c:#ffffff" title="#ffffff"></span> `#ffffff` | <span class="es-swatch" style="--c:#1a1f26" title="#1a1f26"></span> `#1a1f26` | Fill of the sidebar. Follows `Surface`. |
+| `OnSidebar` | <span class="es-swatch" style="--c:#1c1b1f" title="#1c1b1f"></span> `#1c1b1f` | <span class="es-swatch" style="--c:#e6e8ec" title="#e6e8ec"></span> `#e6e8ec` | Icons and text on `Sidebar`. Follows `OnSurface`. |
+| `SidebarSelected` | <span class="es-swatch" style="--c:#eef1f6" title="#eef1f6"></span> `#eef1f6` | <span class="es-swatch" style="--c:#232a33" title="#232a33"></span> `#232a33` | Selected and hovered row of the sidebar. Follows `SurfaceContainer`. |
+
 ### Overlays and inverse
 
 | Name | Light | Dark | Use |

@@ -44,6 +44,9 @@ export type ThemeColors = {
 	InversePrimary: Color3,
 	Info: Color3,
 	OnInfo: Color3,
+	Sidebar: Color3,
+	OnSidebar: Color3,
+	SidebarSelected: Color3,
 }
 
 export type ThemeFonts = {
@@ -75,6 +78,8 @@ export type ThemeMetrics = {
 	RadiusPill: number,
 	AppBarHeight: number,
 	DrawerWidth: number,
+	--- Gap in px between a sidebar and the edges of its window. 0 puts the sidebar flush with them.
+	SidebarInset: number,
 	RailWidth: number,
 	ButtonPadX: number,
 	ButtonPadY: number,
@@ -239,6 +244,7 @@ export type TextFieldProps = {
 	--- so the caller can commit the value or restore the old text.
 	OnSubmit: ((text: string, box: TextBox) -> ())?,
 	[string]: any,
+	CornerRadius: number?,
 }
 
 export type TextProps = {
@@ -268,6 +274,112 @@ export type ListItemProps = {
 	OnClick: (() -> ())?,
 	Leading: Instance?,
 	Trailing: Instance?,
+	Disabled: UsedAs<boolean>?,
+	[string]: any,
+	CornerRadius: number?,
+}
+
+export type DataListProps = {
+	Theme: ThemeRef?,
+	LayoutOrder: UsedAs<number>?,
+	Size: UsedAs<UDim2>?,
+	Visible: UsedAs<boolean>?,
+	ZIndex: UsedAs<number>?,
+	--- Name of the group, shown over the card.
+	Heading: UsedAs<string>?,
+	--- The rows: `DataRow`, `DataToggle`, `DataLink`, `DataSlider`, `DataSegmented` or `ListItem`.
+	Children: { Instance }?,
+	--- Radius of the card in px (default `RadiusMd`).
+	CornerRadius: number?,
+	[string]: any,
+}
+
+export type DataRowProps = {
+	Theme: ThemeRef?,
+	LayoutOrder: UsedAs<number>?,
+	Size: UsedAs<UDim2>?,
+	Visible: UsedAs<boolean>?,
+	ZIndex: UsedAs<number>?,
+	Icon: string?,
+	Title: UsedAs<string>,
+	Summary: UsedAs<string>?,
+	--- An element at the end of the row, such as a switch.
+	Trailing: Instance?,
+	--- A control under the text, such as a slider or a segmented choice.
+	Below: Instance?,
+	OnClick: (() -> ())?,
+	Disabled: UsedAs<boolean>?,
+	--- Corner radius in px. Leave it out and the corners are concentric with the card.
+	CornerRadius: number?,
+	[string]: any,
+}
+
+export type DataToggleProps = {
+	Theme: ThemeRef?,
+	LayoutOrder: UsedAs<number>?,
+	Size: UsedAs<UDim2>?,
+	Visible: UsedAs<boolean>?,
+	ZIndex: UsedAs<number>?,
+	Icon: string?,
+	Title: UsedAs<string>,
+	Summary: UsedAs<string>?,
+	--- A Value state is set when the switch changes.
+	Value: UsedAs<boolean>,
+	OnChanged: ((boolean) -> ())?,
+	Disabled: UsedAs<boolean>?,
+	[string]: any,
+}
+
+export type DataLinkProps = {
+	Theme: ThemeRef?,
+	LayoutOrder: UsedAs<number>?,
+	Size: UsedAs<UDim2>?,
+	Visible: UsedAs<boolean>?,
+	ZIndex: UsedAs<number>?,
+	Icon: string?,
+	Title: UsedAs<string>,
+	Summary: UsedAs<string>?,
+	--- Text before the chevron, such as the current choice.
+	Value: UsedAs<string>?,
+	Trailing: Instance?,
+	OnClick: (() -> ())?,
+	Disabled: UsedAs<boolean>?,
+	[string]: any,
+}
+
+export type DataSliderProps = {
+	Theme: ThemeRef?,
+	LayoutOrder: UsedAs<number>?,
+	Size: UsedAs<UDim2>?,
+	Visible: UsedAs<boolean>?,
+	ZIndex: UsedAs<number>?,
+	Title: UsedAs<string>,
+	--- A Value state is set as the slider moves.
+	Value: UsedAs<number>,
+	Min: number?,
+	Max: number?,
+	Step: number?,
+	--- Text for the value at the end of the row. A range of 0 to 1 shows a percentage.
+	Format: ((number) -> string)?,
+	--- Width of the name in px (default 112). Give a group of sliders the same width.
+	LabelWidth: number?,
+	OnChanged: ((number) -> ())?,
+	Disabled: UsedAs<boolean>?,
+	[string]: any,
+}
+
+export type DataSegmentedProps = {
+	Theme: ThemeRef?,
+	LayoutOrder: UsedAs<number>?,
+	Size: UsedAs<UDim2>?,
+	Visible: UsedAs<boolean>?,
+	ZIndex: UsedAs<number>?,
+	Icon: string?,
+	Title: UsedAs<string>,
+	Summary: UsedAs<string>?,
+	Value: UsedAs<string>,
+	Options: { { Value: string, Label: string } },
+	OnChanged: ((string) -> ())?,
 	Disabled: UsedAs<boolean>?,
 	[string]: any,
 }
@@ -314,6 +426,7 @@ export type DialogProps = {
 	IconColor: UsedAs<Color3>?,
 	IconSize: number?,
 	[string]: any,
+	CornerRadius: number?,
 }
 
 export type PromptProps = {
@@ -337,6 +450,7 @@ export type PromptProps = {
 	CancelText: string?,
 	Destructive: boolean?,
 	[string]: any,
+	CornerRadius: number?,
 }
 
 export type ConfirmDialogProps = PromptProps
@@ -351,6 +465,7 @@ export type SurfaceProps = {
 	Name: string?,
 	Elevated: boolean?,
 	[string]: any,
+	CornerRadius: number?,
 }
 
 export type OverlayProps = {
@@ -657,6 +772,7 @@ export type AlertProps = {
 	Text: UsedAs<string>,
 	Tone: AlertTone?,
 	[string]: any,
+	CornerRadius: number?,
 }
 
 export type SnackbarProps = {
@@ -682,6 +798,7 @@ export type SnackbarProps = {
 	--- Let the message wrap and fill the width, for a fixed-width card (the host does this).
 	Fill: boolean?,
 	[string]: any,
+	CornerRadius: number?,
 }
 
 export type SnackbarHostProps = {
@@ -776,6 +893,7 @@ export type CardProps = {
 	Subtitle: UsedAs<string>?,
 	Children: any?,
 	[string]: any,
+	CornerRadius: number?,
 }
 
 export type AppBarProps = {
@@ -841,7 +959,6 @@ export type NavigationDrawerProps = {
 	Sections: { MenuSectionProps }?,
 	OnClose: (() -> ())?,
 	Children: any?,
-	--- Gap in px from the parent edges. Use `4` inside a Window.
 	Inset: number?,
 	--- Panel corner radius (px). Window drawers typically use `RadiusPanel + 4`.
 	CornerRadius: number?,
@@ -855,11 +972,11 @@ export type NavigationDrawerProps = {
 	Header: Instance?,
 	Footer: Instance?,
 	HideScrollBar: boolean?,
-	--- Width of the drawer's parent, in px, from which the drawer stays open beside the content,
-	--- like a sidebar. Below that width it slides in over the content. Omit to never dock.
-	DockAt: number?,
+	DockAt: UsedAs<number>?,
+	Width: UsedAs<number>?,
 	--- Runs with `true` when the drawer docks and `false` when it floats again.
 	OnDockChanged: ((boolean) -> ())?,
+	Sidebar: boolean?,
 	[string]: any,
 }
 
@@ -1029,6 +1146,7 @@ export type MenuButtonProps = {
 	OnClose: (() -> ())?,
 	Children: any?,
 	[string]: any,
+	CornerRadius: number?,
 }
 
 export type MenuSectionProps = {
@@ -1100,6 +1218,8 @@ export type MenuProps = {
 	CornerRadius: number?,
 	--- Outer padding (default 4).
 	Padding: number?,
+	Background: UsedAs<Color3>?,
+	BorderColor: UsedAs<Color3>?,
 	--- When true, skip Layer.mount. The parent owns layering (AvatarMenu, Popover).
 	Embedded: boolean?,
 	--- First MenuPage id (default: first page child).
@@ -1438,6 +1558,7 @@ export type CollapsibleProps = {
 	OnChanged: ((boolean) -> ())?,
 	Children: any?,
 	[string]: any,
+	CornerRadius: number?,
 }
 
 export type ChoiceGroupOption = {
@@ -1551,6 +1672,7 @@ export type NumberFieldProps = {
 	Disabled: UsedAs<boolean>?,
 	OnChanged: ((number) -> ())?,
 	[string]: any,
+	CornerRadius: number?,
 }
 
 export type SplitPaneProps = {
