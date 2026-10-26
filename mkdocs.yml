@@ -131,6 +131,9 @@ nav:
         - Components/Forms/StarRating.md
         - Components/Forms/Switch.md
         - Components/Forms/TextField.md
+    - Data:
+        - Components/Data/DataList.md
+        - Components/Data/DataRow.md
     - Feedback:
         - Components/Feedback/Alert.md
         - Components/Feedback/EmptyState.md

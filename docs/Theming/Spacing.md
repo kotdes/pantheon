@@ -44,6 +44,7 @@ There is no `SpaceNone` or `Space2xl`. Use `0`, or a multiple of a token such as
 | ---- | ------ | --- |
 | `AppBarHeight` | 64 | Height of an [AppBar](../Components/Navigation/AppBar.md). |
 | `DrawerWidth` | 280 | Width of a [NavigationDrawer](../Components/Navigation/NavigationDrawer.md). |
+| `SidebarInset` | 4 | Gap between a sidebar and the edges of its window. Use 0 for a sidebar that is flush with them. |
 | `RailWidth` | 72 | Width of a [NavigationRail](../Components/Navigation/NavigationRail.md). |
 | `ButtonPadX` | 20 | Horizontal padding inside a [Button](../Components/Foundations/Button.md). |
 | `ButtonPadY` | 4 | Vertical padding inside a Button, on top of the line height. |
