@@ -10,7 +10,8 @@ local peek = Fusion.peek
 
 local playerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
 
-local function start(): () -> ()
+--- Builds the storyboard. `blueprint` is the look of its theme, or nil for the default one.
+local function startWith(blueprint: any): () -> ()
 	local rootScope = Pantheon.scoped()
 
 	-- Dev tools: F8 opens the panel. The pointer button picks an element on screen.
@@ -24,7 +25,8 @@ local function start(): () -> ()
 
 	-- The theme as a state, for Flags.ReactiveTheme. Set the flag to false to go back to rebuilding.
 	Pantheon.Flags.ReactiveTheme = true
-	local sharedTheme = Pantheon.Theme.createAnimated(rootScope, mode, { Animate = true })
+	local sharedTheme =
+		Pantheon.Theme.createAnimated(rootScope, mode, { Animate = true, Blueprint = blueprint })
 	local scrollY = rootScope:Value(0)
 	local railOrientation = rootScope:Value("Horizontal" :: "Vertical" | "Horizontal")
 	local animateTheme = rootScope:Value(true)
@@ -118,9 +120,16 @@ local function start(): () -> ()
 		local themeSource: any = if reactive
 			then sharedTheme
 			elseif peek(animateTheme) then peek(
-				Pantheon.Theme.createAnimated(scope, mode, { Animate = true }) :: any
+				Pantheon.Theme.createAnimated(
+					scope,
+					mode,
+					{ Animate = true, Blueprint = blueprint }
+				) :: any
 			)
-			else Pantheon.Theme.create(peek(mode), { RespectAccessibility = true })
+			else Pantheon.Theme.create(
+				peek(mode),
+				{ RespectAccessibility = true, Blueprint = blueprint }
+			)
 		local theme = if reactive then Pantheon.Theme.reactive(themeSource) else themeSource
 
 		Pantheon.Persist.Provide(persistStore, Pantheon.Theme.Provide, themeSource, function()
@@ -1259,7 +1268,7 @@ local function start(): () -> ()
 			Size = UDim2.fromScale(1, 1),
 			ZIndex = 50,
 		})
-		Pantheon.Theme.Provide(Pantheon.Theme.create("Dark"), function()
+		Pantheon.Theme.Provide(Pantheon.Theme.create("Dark", { Blueprint = blueprint }), function()
 			rootScope:RadialMenu({
 				Layer = hudLayer,
 				Hotkey = Enum.KeyCode.Q,
@@ -1337,5 +1346,8 @@ return {
 	Name = "Storyboard",
 	Description = "Every component, in light and dark",
 	Icon = "layout-grid",
-	start = start,
+	start = function()
+		return startWith(nil)
+	end,
+	startWith = startWith,
 }

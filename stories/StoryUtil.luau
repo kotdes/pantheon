@@ -54,6 +54,8 @@ end
 function StoryUtil.story(build: BuildFn, extraControls: { [string]: any }?): any
 	local controls: { [string]: any } = {
 		Dark = false,
+		-- Materia | Pantheon (see Theme.Blueprints)
+		Blueprint = "Materia",
 		ReduceMotion = false,
 		HighContrast = false,
 		-- 0 = prefer opaque chrome, 1 = transparency ok (matches GuiService.PreferredTransparency)
@@ -87,6 +89,7 @@ function StoryUtil.story(build: BuildFn, extraControls: { [string]: any }?): any
 				-- Components bake colors at mount; rebuild applies mode + a11y prefs explicitly.
 				local theme = Pantheon.Theme.create(mode, {
 					RespectAccessibility = false,
+					Blueprint = Pantheon.Theme.Blueprints[tostring(peek(props.controls.Blueprint))],
 				})
 				theme = Pantheon.Accessibility.apply(theme, prefs)
 

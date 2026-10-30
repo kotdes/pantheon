@@ -5,6 +5,7 @@ local Types = require(script.Parent.Types)
 local Accessibility = require(script.Parent.Internal.Accessibility)
 local Color = require(script.Parent.Internal.Color)
 local Flags = require(script.Parent.Internal.Flags)
+local Blueprints = require(script.Blueprints)
 
 local peek = Fusion.peek
 
@@ -161,9 +162,18 @@ local defaultMetrics: Types.ThemeMetrics = {
 	AppBarHeight = 64,
 	DrawerWidth = 280,
 	SidebarInset = 4,
+	SidebarItemRadius = 8,
 	RailWidth = 72,
 	ButtonPadX = 20,
 	ButtonPadY = 4,
+	ControlHeight = 40,
+	ControlHeightCompact = 28,
+	ControlHeightLarge = 48,
+	FieldLabelHeight = 20,
+	IconSm = 16,
+	IconMd = 18,
+	IconLg = 20,
+	IconXl = 24,
 }
 
 local function typography(): Types.ThemeTypography
@@ -254,6 +264,8 @@ export type ThemeCreateOpts = {
 	--- Explicit prefs override (storybooks / tests). Takes priority over system read.
 	Accessibility: Types.AccessibilityPrefs?,
 	Controls: Types.ThemeControls?,
+	--- A preset for the theme. `Blueprints.Materia` when you do not name one.
+	Blueprint: Types.Blueprint?,
 	Overrides: { [string]: any }?,
 	--- Extra / override named colors (seed Color3, hex, or full ThemeColorRole)
 	Palette: { [string]: Color3 | Types.ThemeColorRole | Types.ColorInput }?,
@@ -321,11 +333,48 @@ function Theme.create(mode: Types.ThemeMode?, opts: ThemeCreateOpts?): Types.The
 			SpringSpeed = 640,
 			SpringDamping = 20,
 			PressScale = 1,
+			Springs = {
+				Snappy = { Speed = 640, Damping = 20 },
+				Smooth = { Speed = 640, Damping = 20 },
+				Soft = { Speed = 640, Damping = 20 },
+				Bouncy = { Speed = 640, Damping = 20 },
+				Gentle = { Speed = 640, Damping = 20 },
+				LiquidMove = { Speed = 640, Damping = 20 },
+				LiquidWidth = { Speed = 640, Damping = 20 },
+				LiquidHeight = { Speed = 640, Damping = 20 },
+				LiquidShape = { Speed = 640, Damping = 20 },
+			},
+			Stagger = 0,
+			Presence = { ScaleFrom = 0.92, FromOrigin = false },
 		},
 		Controls = {
 			SwitchIcons = switchIcons,
 		},
 	}
+	local blueprint = Blueprints.resolve((opts and opts.Blueprint) or Blueprints.Materia)
+	theme.Defaults = blueprint.Defaults or {}
+	if blueprint.Metrics then
+		theme.Metrics = deepMerge(theme.Metrics, blueprint.Metrics)
+	end
+	if blueprint.Typography then
+		theme.Typography = deepMerge(theme.Typography, blueprint.Typography)
+	end
+	if blueprint.Motion then
+		theme.Motion = deepMerge(theme.Motion, blueprint.Motion)
+	end
+	local modeColors = if resolved == "Dark" then blueprint.DarkColors else blueprint.LightColors
+	local recoloured = false
+	for _, tweaks in { blueprint.Colors, modeColors } do
+		if tweaks then
+			theme.Colors = deepMerge(theme.Colors, tweaks)
+			followSurface(theme.Colors, tweaks)
+			recoloured = true
+		end
+	end
+	if recoloured then
+		-- The named colours (primary, secondary, ...) come from the theme colours.
+		theme.Palette = defaultPalette(theme.Colors, resolved)
+	end
 	if opts and opts.Overrides then
 		theme = deepMerge(theme, opts.Overrides) :: Types.Theme
 		theme.Mode = resolved
@@ -357,6 +406,7 @@ function Theme.createAnimated(
 	mode: any,
 	opts: {
 		Animate: boolean?,
+		Blueprint: Types.Blueprint?,
 		RespectAccessibility: boolean?,
 		Accessibility: Types.AccessibilityPrefs?,
 		Controls: Types.ThemeControls?,
@@ -369,6 +419,7 @@ function Theme.createAnimated(
 	local respect = if opts and opts.RespectAccessibility == false then false else true
 	local createOpts: ThemeCreateOpts = {
 		RespectAccessibility = respect,
+		Blueprint = if opts then opts.Blueprint else nil,
 		Accessibility = if opts then opts.Accessibility else nil,
 		Controls = if opts then opts.Controls else nil,
 		Overrides = if opts then opts.Overrides else nil,
@@ -492,5 +543,6 @@ Theme.Color = Color
 Theme.Material = Color.Material
 Theme.blend = blendThemes
 Theme.deepMerge = deepMerge
+Theme.Blueprints = Blueprints
 
 return Theme

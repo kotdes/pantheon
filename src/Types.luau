@@ -80,9 +80,23 @@ export type ThemeMetrics = {
 	DrawerWidth: number,
 	--- Gap in px between a sidebar and the edges of its window. 0 puts the sidebar flush with them.
 	SidebarInset: number,
+	--- Corner radius of a row in a sidebar, such as the selected page (px)
+	SidebarItemRadius: number,
 	RailWidth: number,
 	ButtonPadX: number,
 	ButtonPadY: number,
+	--- Height of a field or a button-sized control, and of its compact variant (px)
+	ControlHeight: number,
+	ControlHeightCompact: number,
+	--- Height of a large, full-width action such as a Continue button (px)
+	ControlHeightLarge: number,
+	--- Height of the label above a field (px)
+	FieldLabelHeight: number,
+	--- Icon sizes (px)
+	IconSm: number,
+	IconMd: number,
+	IconLg: number,
+	IconXl: number,
 }
 
 export type TypeScale = {
@@ -97,6 +111,7 @@ export type ThemeTypography = {
 	Title: TypeScale,
 	Button: TypeScale,
 	Body: TypeScale,
+	Caption: TypeScale,
 	Label: TypeScale,
 	Mono: TypeScale,
 	[string]: TypeScale,
@@ -115,10 +130,31 @@ export type ThemePalette = { [string]: ThemeColorRole }
 --- Color3 | hex | RGB {r,g,b} | palette name | Material swatch ("Blue 500") | { Blue = 500 } | role
 export type ColorInput = Color3 | string | { number } | { [string]: number | string } | ThemeColorRole
 
+--- The speed and damping ratio of a Fusion spring.
+export type SpringTuning = {
+	Speed: number,
+	Damping: number,
+}
+
 export type ThemeMotion = {
 	SpringSpeed: number,
 	SpringDamping: number,
 	PressScale: number,
+	--- Springs by role: `Snappy` for small controls, `Smooth` for layout, `Soft` for large
+	--- surfaces and `Bouncy` for things that arrive. A role that is missing uses `SpringSpeed`
+	--- and `SpringDamping`.
+	Springs: { [string]: SpringTuning }?,
+	--- Milliseconds between the items of a list or menu as they come in. 0 for no stagger.
+	Stagger: number?,
+	--- How an overlay (a popover, a menu) comes in and goes out.
+	Presence: ThemePresence?,
+}
+
+export type ThemePresence = {
+	--- The scale that an overlay starts from and ends at. 1 for no scaling.
+	ScaleFrom: number?,
+	--- Scale from the control that opened the overlay, and not from the middle of the overlay.
+	FromOrigin: boolean?,
 }
 
 export type PreferredTextSizeName = "Medium" | "Large" | "Larger" | "Largest"
@@ -139,6 +175,30 @@ export type ThemeControls = {
 export type ThemeIcons = { [string]: string }
 export type ThemeAudio = { [string]: string }
 
+--- Default props for components, by component name, such as `{ TextField = { Variant = "Filled" } }`.
+--- A prop that you set on the component always wins.
+export type ThemeDefaults = { [string]: { [string]: any } }
+
+--- A preset for a theme. It sets metrics, type, colours and the default props of components.
+export type Blueprint = {
+	Name: string,
+	--- Another blueprint to start from. This one only has to name what differs.
+	Extends: Blueprint?,
+	--- Merged over the default metrics.
+	Metrics: { [string]: number }?,
+	--- Merged over the default type scale.
+	Typography: { [string]: TypeScale }?,
+	--- Merged over the default motion.
+	Motion: { [string]: any }?,
+	--- Merged over the colours of both light and dark themes.
+	Colors: { [string]: any }?,
+	--- Merged over the colours of the light theme only, after `Colors`.
+	LightColors: { [string]: any }?,
+	--- Merged over the colours of the dark theme only, after `Colors`.
+	DarkColors: { [string]: any }?,
+	Defaults: ThemeDefaults?,
+}
+
 export type Theme = {
 	Mode: ThemeMode,
 	Colors: ThemeColors,
@@ -151,6 +211,8 @@ export type Theme = {
 	Icons: ThemeIcons,
 	Audio: ThemeAudio,
 	Controls: ThemeControls,
+	--- Default props of components, from the blueprint.
+	Defaults: ThemeDefaults?,
 	Accessibility: AccessibilityPrefs?,
 }
 
@@ -179,7 +241,11 @@ export type BaseProps = {
 	[string]: any,
 }
 
+export type ButtonScale = "Small" | "Medium" | "Large"
+
 export type ButtonProps = {
+	--- Height: `Small` (ControlHeightCompact), `Medium` (ControlHeight) or `Large` (ControlHeightLarge). The blueprint decides when you do not set it. `Size` wins over it.
+	Scale: ButtonScale?,
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
@@ -204,6 +270,8 @@ export type ButtonProps = {
 	[string]: any,
 }
 
+--- `Outlined` has a recessed fill and a 1px stroke. `Filled` has a stronger tonal fill and no stroke until it has focus or an error.
+export type TextFieldVariant = "Outlined" | "Filled"
 export type TextFieldResize = "None" | "Y" | "X" | "Both"
 
 export type Validator = (value: any) -> (boolean, string?)
@@ -228,13 +296,17 @@ export type TextFieldProps = {
 	Resize: TextFieldResize?,
 	Disabled: UsedAs<boolean>?,
 	LeadingIcon: string?,
+	--- A control inside the box, such as a button: at the end of a one-line field, or in the bottom right corner of a multi-line one. It makes room for itself and takes the place of the resize handle. Make it 32 pixels square.
+	Action: Instance?,
 	TrailingIcon: string?,
 	Validators: { Validator }?,
 	--- Validate on focus lost (default true when Validators set)
 	ValidateOnBlur: boolean?,
 	--- Small variant for in-widget fields: 28px tall, tighter padding, 13px text.
 	Compact: boolean?,
-	--- Fully rounded ends, for a search field.
+	--- `Outlined` (default) or `Filled`.
+	Variant: TextFieldVariant?,
+	--- Fully rounded ends, for a search field or a field that sits next to pill-shaped controls.
 	Pill: boolean?,
 	--- Input height in px (default 40, or 28 when `Compact`).
 	Height: number?,
@@ -263,6 +335,14 @@ export type TextProps = {
 }
 
 export type ListItemProps = {
+	--- Space at the left and right of the row, in pixels. Default `SpaceMd`, or `SpaceSm` when flat.
+	PaddingX: number?,
+	--- A borderless row with no fill at rest, a bold name and a round leading image. The blueprint decides when you do not set it.
+	Flat: boolean?,
+	--- Text at the end of the row, right-aligned, such as an amount.
+	Value: UsedAs<string>?,
+	--- Muted line under `Value`, such as a change.
+	ValueSubtitle: UsedAs<string>?,
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
@@ -275,6 +355,7 @@ export type ListItemProps = {
 	Leading: Instance?,
 	Trailing: Instance?,
 	Disabled: UsedAs<boolean>?,
+	Selected: UsedAs<boolean>?,
 	[string]: any,
 	CornerRadius: number?,
 }
@@ -408,6 +489,8 @@ export type DialogAction = {
 }
 
 export type DialogProps = {
+	--- Draw the outline when at rest. The blueprint decides when you do not set it.
+	Outlined: boolean?,
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
@@ -475,6 +558,7 @@ export type OverlayProps = {
 	Visible: UsedAs<boolean>?,
 	ZIndex: UsedAs<number>?,
 	Layer: Instance?,
+	Transparency: number?,
 	OnClick: (() -> ())?,
 	[string]: any,
 }
@@ -495,6 +579,10 @@ export type IconProps = {
 }
 
 export type IconButtonProps = {
+	--- For a button that is one of a set, such as a category tab. The icon is in the primary colour when it is selected and muted when it is not.
+	Selected: UsedAs<boolean>?,
+	--- Width divided by height. 1 is a square (a circle, with the pill radius), 1.25 a pill. The blueprint decides when you do not set it. `Size` wins over it.
+	AspectRatio: number?,
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
@@ -509,6 +597,8 @@ export type IconButtonProps = {
 }
 
 export type CheckboxProps = {
+	--- Draw a 1.5 pixel outline around the box. The blueprint decides when you do not.
+	Outlined: boolean?,
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
@@ -523,6 +613,8 @@ export type CheckboxProps = {
 }
 
 export type SwitchProps = {
+	--- Draw the outline when at rest. The blueprint decides when you do not set it.
+	Outlined: boolean?,
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
@@ -546,6 +638,8 @@ export type RadioOption = {
 }
 
 export type RadioProps = {
+	--- Draw the outline when at rest. The blueprint decides when you do not set it.
+	Outlined: boolean?,
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
@@ -579,6 +673,8 @@ export type SelectOption = {
 }
 
 export type SelectProps = {
+	--- Draw the outline when at rest. The blueprint decides when you do not set it.
+	Outlined: boolean?,
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
@@ -597,6 +693,8 @@ export type SelectProps = {
 }
 
 export type MultiSelectProps = {
+	--- Draw the outline when at rest. The blueprint decides when you do not set it.
+	Outlined: boolean?,
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
@@ -695,6 +793,7 @@ export type NumberSpinnerProps = {
 
 export type CoachmarkProps = {
 	Theme: ThemeRef?,
+	ScrimRadius: number?,
 	ZIndex: UsedAs<number>?,
 	Layer: Instance?,
 	--- The element to point at.
@@ -727,6 +826,12 @@ export type CoachmarkProps = {
 }
 
 export type SliderProps = {
+	--- Size of the thumb in pixels. Default 16, or the blueprint's.
+	ThumbSize: number?,
+	--- Thickness of the rail in pixels. Default 4, or the blueprint's.
+	Thickness: number?,
+	--- Height of the touch area in pixels. Default 40, or the thumb plus 24 when that is more.
+	Height: number?,
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
@@ -744,6 +849,12 @@ export type SliderProps = {
 }
 
 export type RangeSliderProps = {
+	--- Size of the thumb in pixels. Default 16, or the blueprint's.
+	ThumbSize: number?,
+	--- Thickness of the rail in pixels. Default 4, or the blueprint's.
+	Thickness: number?,
+	--- Height of the touch area in pixels. Default 40, or the thumb plus 24 when that is more.
+	Height: number?,
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
@@ -943,11 +1054,15 @@ export type FooterProps = {
 }
 
 export type NavigationDrawerProps = {
+	--- Space around the rows, in pixels. Default 4, or the blueprint's.
+	Padding: number?,
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
 	Visible: UsedAs<boolean>?,
 	ZIndex: UsedAs<number>?,
+	--- Transparency of the fill, from 0 (opaque, the default) to 1. The outline and the content stay opaque.
+	BackgroundTransparency: UsedAs<number>?,
 	Layer: Instance?,
 	Open: UsedAs<boolean>?,
 	Title: UsedAs<string>?,
@@ -1009,6 +1124,8 @@ export type WindowProps = {
 	AnchorPoint: UsedAs<Vector2>?,
 	Visible: UsedAs<boolean>?,
 	ZIndex: UsedAs<number>?,
+	--- Transparency of the fill, from 0 (opaque, the default) to 1. The outline and the content stay opaque.
+	BackgroundTransparency: UsedAs<number>?,
 	Layer: Instance?,
 	AppBar: Instance?,
 	Footer: Instance?,
@@ -1121,6 +1238,8 @@ export type MenuItemProps = {
 }
 
 export type MenuButtonProps = {
+	--- 0 to 1: how far the row has come in. Set by a menu with a stagger. The label and icons fade with it.
+	Reveal: UsedAs<number>?,
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
@@ -1150,6 +1269,10 @@ export type MenuButtonProps = {
 }
 
 export type MenuSectionProps = {
+	--- 0 to 1: how far the menu has come in. With a stagger in the theme, each row follows it a little later than the one before.
+	Progress: UsedAs<number>?,
+	--- The number of rows in the sections before this one, so the stagger runs across the whole menu.
+	StaggerFrom: number?,
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
@@ -1189,11 +1312,15 @@ export type MenuPageProps = {
 }
 
 export type MenuProps = {
+	--- Draw the outline when at rest. The blueprint decides when you do not set it.
+	Outlined: boolean?,
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
 	Visible: UsedAs<boolean>?,
 	ZIndex: UsedAs<number>?,
+	--- Transparency of the fill, from 0 (opaque, the default) to 1. The outline and the content stay opaque.
+	BackgroundTransparency: UsedAs<number>?,
 	Layer: Instance?,
 	--- Flat item list (used when `Sections` is nil). Prefer composing MenuButton.
 	Items: { any }?,
@@ -1231,6 +1358,8 @@ export type MenuProps = {
 }
 
 export type PopoverProps = {
+	--- The element that the shape grows out of when the theme morphs (`FromOrigin`). It defaults to `Target`; set it to grow out of some other element.
+	MorphTarget: Instance?,
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
@@ -1258,6 +1387,8 @@ export type PopoverProps = {
 }
 
 export type AvatarMenuProps = {
+	--- The element that the shape grows out of when the theme morphs (`FromOrigin`). It defaults to `Target`; set it to grow out of some other element.
+	MorphTarget: Instance?,
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
@@ -1282,6 +1413,10 @@ export type AvatarMenuProps = {
 export type TooltipPlacement = "Top" | "Bottom" | "Left" | "Right" | "Auto"
 
 export type TooltipProps = {
+	--- Draw a tail on the edge that faces the target, and glide from one tooltip to the next when the pointer moves between targets. The blueprint decides when you do not set it.
+	Tail: boolean?,
+	--- Colour of a tooltip with a tail: a palette name, a Color3, or a role. By default it is the inverse of the surface. When the next tooltip has a different colour, the shape changes colour on the way.
+	Color: UsedAs<ColorInput>?,
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
@@ -1487,11 +1622,41 @@ export type AppSheetProps = {
 	Layer: Instance?,
 	Open: UsedAs<boolean>?,
 	Title: UsedAs<string>?,
+	--- Replaces the title text, for example with a button.
+	TitleContent: Instance?,
 	OnClose: (() -> ())?,
+	ConfirmWhen: UsedAs<boolean>?,
+	OnConfirm: (() -> ())?,
 	Children: any?,
 	--- Detent height scale 0–1 of host. Default 0.92
 	Detent: number?,
 	ShowGrabber: boolean?,
+	[string]: any,
+}
+
+export type EmojiPickerProps = {
+	--- With the popover variant, the picker is a sheet when its layer is narrower than this many pixels (default 560), or too short for the popover. It follows the size of the layer.
+	SheetBelow: number?,
+	Theme: ThemeRef?,
+	ZIndex: UsedAs<number>?,
+	Layer: Instance?,
+	Open: UsedAs<boolean>?,
+	--- `"Sheet"` (default) opens an AppSheet. `"Popover"` opens a Popover next to `Target`.
+	Variant: ("Sheet" | "Popover")?,
+	--- Element the popover is placed next to. Only for the `"Popover"` variant.
+	Target: Instance?,
+	Placement: ("Auto" | "Bottom" | "Top" | "Left" | "Right")?,
+	--- Width of the popover in pixels. Default 328.
+	Width: number?,
+	--- Height of the popover in pixels. Default 360.
+	Height: number?,
+	--- Height of the sheet, from 0 to 1. Default 0.6.
+	Detent: number?,
+	Title: UsedAs<string>?,
+	--- Close the picker after an emoji is chosen (default true).
+	CloseOnPick: boolean?,
+	OnPick: ((emoji: string) -> ())?,
+	OnClose: (() -> ())?,
 	[string]: any,
 }
 
@@ -1511,6 +1676,8 @@ export type StarRatingProps = {
 }
 
 export type SegmentedControlProps = {
+	--- Draw the outline when at rest. The blueprint decides when you do not set it.
+	Outlined: boolean?,
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
@@ -1568,6 +1735,8 @@ export type ChoiceGroupOption = {
 }
 
 export type ChoiceGroupProps = {
+	--- Draw the outline when at rest. The blueprint decides when you do not set it.
+	Outlined: boolean?,
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
@@ -1650,6 +1819,8 @@ export type ScrollAreaProps = {
 }
 
 export type NumberFieldProps = {
+	--- Draw the outline when at rest. The blueprint decides when you do not set it.
+	Outlined: boolean?,
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
@@ -1705,6 +1876,8 @@ export type DockTab = {
 }
 
 export type DockPanelProps = {
+	--- Draw the outline when at rest. The blueprint decides when you do not set it.
+	Outlined: boolean?,
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
@@ -1870,6 +2043,10 @@ export type RadialItem = {
 }
 
 export type RadialMenuProps = {
+	--- The element that the shape grows out of when the theme morphs (`FromOrigin`). It defaults to `Target`; set it to grow out of some other element.
+	MorphTarget: Instance?,
+	--- Draw an outline around the ring. The blueprint decides when you do not set it.
+	Outlined: boolean?,
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	ZIndex: UsedAs<number>?,

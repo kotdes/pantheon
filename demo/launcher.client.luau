@@ -25,6 +25,7 @@ type Demo = {
 local folder = script.Parent:WaitForChild("Demos")
 local demos: { Demo } = {
 	require(folder:WaitForChild("Storyboard")) :: any,
+	require(folder:WaitForChild("StoryboardPantheon")) :: any,
 	require(folder:WaitForChild("Tasks")) :: any,
 	require(folder:WaitForChild("Admin")) :: any,
 	require(folder:WaitForChild("Tilly")) :: any,
