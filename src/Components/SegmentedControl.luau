@@ -6,6 +6,8 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local Defaults = require(script.Parent.Parent.Internal.Defaults)
+local Motion = require(script.Parent.Parent.Internal.Motion)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Persist = require(script.Parent.Parent.Internal.Persist)
 local Bind = require(script.Parent.Parent.Internal.Bind)
@@ -24,6 +26,7 @@ local INSET = 3
 
 return function(scope: Types.Scope, props: Types.SegmentedControlProps): Instance
 	local theme = resolveTheme(props)
+	local outlined = Defaults.outlined(theme, "SegmentedControl", props.Outlined)
 	local disabled = peek(props.Disabled) == true
 	local initialId = peek(props.Selected) or (props.Items[1] and props.Items[1].Id) or ""
 	local selected = Persist.value(
@@ -37,10 +40,9 @@ return function(scope: Types.Scope, props: Types.SegmentedControlProps): Instanc
 	local indicatorX = scope:Value(0)
 	local indicatorW = scope:Value(0)
 	local stretch = scope:Value(0)
-	local stretchS =
-		scope:Spring(stretch, theme.Motion.SpringSpeed * 1.55, theme.Motion.SpringDamping)
-	local xS = scope:Spring(indicatorX, theme.Motion.SpringSpeed * 0.8, theme.Motion.SpringDamping)
-	local wS = scope:Spring(indicatorW, theme.Motion.SpringSpeed * 0.8, theme.Motion.SpringDamping)
+	local stretchS = Motion.spring(scope, stretch, theme, "Snappy", 1.55)
+	local xS = Motion.spring(scope, indicatorX, theme, "Snappy", 0.8)
+	local wS = Motion.spring(scope, indicatorW, theme, "Snappy", 0.8)
 	local dragging = scope:Value(0)
 	local draggingS =
 		scope:Spring(dragging, theme.Motion.SpringSpeed, theme.Motion.SpringDamping * 0.8)
@@ -190,12 +192,13 @@ return function(scope: Types.Scope, props: Types.SegmentedControlProps): Instanc
 		local isOn = scope:Computed(function(use)
 			return use(selected) == item.Id
 		end)
-		local selectedS = scope:Spring(
+		local selectedS = Motion.spring(
+			scope,
 			scope:Computed(function(use)
 				return if use(isOn) then 1 else 0
 			end),
-			theme.Motion.SpringSpeed,
-			theme.Motion.SpringDamping
+			theme,
+			"Snappy"
 		)
 
 		local ix = Interaction.bind(scope, theme, {
@@ -210,7 +213,7 @@ return function(scope: Types.Scope, props: Types.SegmentedControlProps): Instanc
 				scope:Apply(Icon(scope, {
 					Theme = theme,
 					Name = item.Icon,
-					IconSize = 16,
+					IconSize = theme.Metrics.IconSm,
 					Color = scope:Computed(function(use)
 						return Interaction.lerpColor(
 							use(theme.Colors.OnSurfaceVariant),
@@ -352,16 +355,18 @@ return function(scope: Types.Scope, props: Types.SegmentedControlProps): Instanc
 								return 1 - (use(draggingS) :: number) * 0.2
 							end),
 						},
-						Outline = {
-							Color = theme.Colors.Outline,
-							Thickness = scope:Computed(function(use)
-								return 2 - (use(draggingS) :: number) * 2
-							end),
-							Transparency = scope:Computed(function(use)
-								return (use(draggingS) :: number) * 0.1
-							end),
-							Mode = Enum.ApplyStrokeMode.Border,
-						},
+						Outline = if outlined
+							then {
+								Color = theme.Colors.Outline,
+								Thickness = scope:Computed(function(use)
+									return 2 - (use(draggingS) :: number) * 2
+								end),
+								Transparency = scope:Computed(function(use)
+									return (use(draggingS) :: number) * 0.1
+								end),
+								Mode = Enum.ApplyStrokeMode.Border,
+							}
+							else nil,
 					}),
 				},
 			}),

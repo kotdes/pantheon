@@ -48,10 +48,14 @@ scope:TextField({
 | `Disabled` | `UsedAs<boolean>` | :x: | `false` | Stops the user editing the box. The component reads this once, when it creates the field. |
 | `LeadingIcon` | `string` | :x: | - | Lucide icon at the start of the box. |
 | `TrailingIcon` | `string` | :x: | - | Lucide icon at the end of the box. |
+| `Action` | `Instance` | :x: | - | A control inside the box, such as an `IconButton` that is 32 pixels square. It sits at the end of a one-line box, and in the bottom right corner of a multi-line box. The box makes room for it. A multi-line box with an `Action` has no resize handle. |
 | `Validators` | `{ Validator }` | :x: | - | Validators to run on the text. The component checks them in order. |
 | `ValidateOnBlur` | `boolean` | :x: | `true` | Run the validators when the box loses focus. Set it to `false` to use `Error` only. |
-| `Compact` | `boolean` | :x: | `false` | A smaller version for fields inside other widgets. It is 28 pixels tall, with less padding and 13-pixel text. |
+| `Compact` | `boolean` | :x: | `false` | A smaller version for fields inside other widgets. It is 28 pixels tall, with less padding and 14-pixel text. |
 | `Height` | `number` | :x: | `40`, or `28` when compact | Height of the box, in pixels. |
+| `Variant` | `"Outlined" \| "Filled"` | :x: | `"Outlined"` | `Outlined` has a recessed fill and a 1 pixel stroke. `Filled` has a stronger tonal fill and shows a stroke only on focus or on error. |
+| `Pill` | `boolean` | :x: | `false`, or from the blueprint for a one-line field | Fully rounded ends. Use it where the field sits next to pill-shaped controls, such as the hex field in a colour picker. |
+| `CornerRadius` | `number` | :x: | `RadiusSm`, or concentric in a container | Corner radius in pixels. It wins over `Pill`. |
 | `Prefix` | `string` | :x: | - | Fixed text at the start of the box, such as `"#"`. |
 
 ## Callbacks

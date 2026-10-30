@@ -6,6 +6,7 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local Motion = require(script.Parent.Parent.Internal.Motion)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Persist = require(script.Parent.Parent.Internal.Persist)
 local Bind = require(script.Parent.Parent.Internal.Bind)
@@ -63,12 +64,14 @@ return function(scope: Types.Scope, props: Types.TreeViewProps): Instance
 		local isExpanded = scope:Computed(function(use)
 			return use(expanded)[node.Id] == true
 		end)
-		local expandS = scope:Spring(
+		local expandS = Motion.spring(
+			scope,
 			scope:Computed(function(use)
 				return if use(isExpanded) then 1 else 0
 			end),
-			theme.Motion.SpringSpeed * 0.95,
-			theme.Motion.SpringDamping
+			theme,
+			"Smooth",
+			0.95
 		)
 		local isSelected = scope:Computed(function(use)
 			return use(selected) == node.Id
@@ -98,7 +101,7 @@ return function(scope: Types.Scope, props: Types.TreeViewProps): Instance
 							scope:Apply(Icon(scope, {
 								Theme = theme,
 								Name = "chevron-right",
-								IconSize = 16,
+								IconSize = theme.Metrics.IconSm,
 								Color = theme.Colors.OnSurfaceVariant,
 							}))({
 								AnchorPoint = Vector2.new(0.5, 0.5),
@@ -162,7 +165,7 @@ return function(scope: Types.Scope, props: Types.TreeViewProps): Instance
 				scope:Apply(Icon(scope, {
 					Theme = theme,
 					Name = iconName,
-					IconSize = 16,
+					IconSize = theme.Metrics.IconSm,
 					Color = theme.Colors.OnSurfaceVariant,
 				}))({
 					LayoutOrder = 2,

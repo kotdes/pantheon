@@ -2,6 +2,8 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local Defaults = require(script.Parent.Parent.Internal.Defaults)
+local Motion = require(script.Parent.Parent.Internal.Motion)
 local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Persist = require(script.Parent.Parent.Internal.Persist)
@@ -20,6 +22,7 @@ local INSET = 4
 
 return function(scope: Types.Scope, props: Types.SwitchProps): Instance
 	local theme = resolveTheme(props)
+	local outlined = Defaults.outlined(theme, "Switch", props.Outlined)
 	local persistKey = Persist.key("Switch", typeof(props.Checked) == "table")
 	local checked = Persist.value(scope, persistKey, "checked", peek(props.Checked) == true)
 	Bind.link(scope, props.Checked, checked)
@@ -28,17 +31,18 @@ return function(scope: Types.Scope, props: Types.SwitchProps): Instance
 		then props.Icons == true
 		else (theme.Controls and theme.Controls.SwitchIcons) ~= false
 
-	local checkedS = scope:Spring(
+	local checkedS = Motion.spring(
+		scope,
 		scope:Computed(function(use)
 			return if use(checked) then 1 else 0
 		end),
-		theme.Motion.SpringSpeed * 0.95,
-		theme.Motion.SpringDamping
+		theme,
+		"Snappy",
+		0.95
 	)
 
 	local stretch = scope:Value(0)
-	local stretchS =
-		scope:Spring(stretch, theme.Motion.SpringSpeed * 1.4, theme.Motion.SpringDamping)
+	local stretchS = Motion.spring(scope, stretch, theme, "Snappy", 1.4)
 
 	local ix = Interaction.bind(scope, theme, {
 		Disabled = disabled,
@@ -62,7 +66,9 @@ return function(scope: Types.Scope, props: Types.SwitchProps): Instance
 	local trackColor = scope:Computed(function(use)
 		local t = use(checkedS)
 		-- Off state: clearer outline track (not washed into surface)
-		local off = use(theme.Colors.SurfaceContainer)
+		local off = use(
+			if outlined then theme.Colors.SurfaceContainer else theme.Colors.SurfaceContainerHigh
+		)
 		local on = use(theme.Colors.Primary)
 		local base = Interaction.lerpColor(off, on, t, use)
 		if disabled then
@@ -112,7 +118,7 @@ return function(scope: Types.Scope, props: Types.SwitchProps): Instance
 				BackgroundTransparency = 1,
 				Text = "I",
 				FontFace = theme.Fonts.Heading,
-				TextSize = A.size(theme, 12),
+				TextSize = theme.Typography.Caption.Size,
 				TextColor3 = theme.Colors.OnPrimary,
 				TextTransparency = scope:Computed(function(use)
 					local t = use(checkedS)
@@ -134,7 +140,7 @@ return function(scope: Types.Scope, props: Types.SwitchProps): Instance
 				BackgroundTransparency = 1,
 				Text = "O",
 				FontFace = theme.Fonts.Heading,
-				TextSize = A.size(theme, 11),
+				TextSize = A.size(theme, 11), -- token-ok
 				TextColor3 = theme.Colors.OnSurfaceVariant,
 				TextTransparency = scope:Computed(function(use)
 					local t = use(checkedS) :: number
@@ -176,20 +182,22 @@ return function(scope: Types.Scope, props: Types.SwitchProps): Instance
 		CornerRadius = theme.Metrics.RadiusPill,
 		-- Keep stroke visible (ClipsDescendants clips UIStroke on the same instance).
 		ClipsDescendants = false,
-		Outline = {
-			Color = scope:Computed(function(use)
-				local c = Interaction.lerpColor(
-					use(theme.Colors.Outline),
-					use(theme.Colors.Primary),
-					use(checkedS),
-					use
-				)
-				return if disabled then use(theme.Colors.OutlineVariant) else c
-			end),
-			Thickness = 2,
-			Transparency = if disabled then 0.45 else 0.15,
-			Mode = Enum.ApplyStrokeMode.Border,
-		},
+		Outline = if outlined
+			then {
+				Color = scope:Computed(function(use)
+					local c = Interaction.lerpColor(
+						use(theme.Colors.Outline),
+						use(theme.Colors.Primary),
+						use(checkedS),
+						use
+					)
+					return if disabled then use(theme.Colors.OutlineVariant) else c
+				end),
+				Thickness = 2,
+				Transparency = if disabled then 0.45 else 0.15,
+				Mode = Enum.ApplyStrokeMode.Border,
+			}
+			else nil,
 		[OnEvent("Activated")] = function()
 			if not disabled then
 				commit(not peek(checked))

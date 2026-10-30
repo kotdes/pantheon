@@ -5,6 +5,8 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local Motion = require(script.Parent.Parent.Internal.Motion)
+local Defaults = require(script.Parent.Parent.Internal.Defaults)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Persist = require(script.Parent.Parent.Internal.Persist)
 local Bind = require(script.Parent.Parent.Internal.Bind)
@@ -20,28 +22,35 @@ return function(scope: Types.Scope, props: Types.CheckboxProps): Instance
 	local persistKey = Persist.key("Checkbox", typeof(props.Checked) == "table")
 	local checked = Persist.value(scope, persistKey, "checked", peek(props.Checked) == true)
 	Bind.link(scope, props.Checked, checked)
-	local checkedS = scope:Spring(
+	local checkedS = Motion.spring(
+		scope,
 		scope:Computed(function(use)
 			return if use(checked) then 1 else 0
 		end),
-		theme.Motion.SpringSpeed,
-		theme.Motion.SpringDamping
+		theme,
+		"Snappy"
 	)
-	local draw = scope:Spring(
+	local draw = Motion.spring(
+		scope,
 		scope:Computed(function(use)
 			return if use(checked) then 1 else 0
 		end),
-		theme.Motion.SpringSpeed * 1.15,
-		theme.Motion.SpringDamping
+		theme,
+		"Snappy",
+		1.15
 	)
-	local bounce = scope:Spring(
+	local bounce = Motion.spring(
+		scope,
 		scope:Computed(function(use)
 			return if use(checked) then 1 else 0
 		end),
-		theme.Motion.SpringSpeed * 1.3,
-		theme.Motion.SpringDamping
+		theme,
+		"Snappy",
+		1.3
 	)
 	local disabled = peek(props.Disabled) == true
+	-- Without an outline, an empty box is a tonal fill, so it can still be seen.
+	local outlined = Defaults.outlined(theme, "Checkbox", props.Outlined)
 	local ix = Interaction.bind(scope, theme, {
 		Disabled = disabled,
 		StateColor = theme.Colors.OnSurface,
@@ -49,8 +58,12 @@ return function(scope: Types.Scope, props: Types.CheckboxProps): Instance
 
 	local fillColor = scope:Computed(function(use)
 		local t = use(checkedS)
-		local base =
-			Interaction.lerpColor(use(theme.Colors.Surface), use(theme.Colors.Primary), t, use)
+		local base = Interaction.lerpColor(
+			use(if outlined then theme.Colors.Surface else theme.Colors.SurfaceContainerHigh),
+			use(theme.Colors.Primary),
+			t,
+			use
+		)
 		if disabled then
 			return Interaction.lerpColor(base, use(theme.Colors.SurfaceDim), 0.5, use)
 		end
@@ -76,20 +89,22 @@ return function(scope: Types.Scope, props: Types.CheckboxProps): Instance
 		Active = not disabled,
 		LayoutOrder = 1,
 		CornerRadius = 4,
-		Outline = {
-			Color = scope:Computed(function(use)
-				local c = Interaction.lerpColor(
-					use(theme.Colors.Outline),
-					use(theme.Colors.Primary),
-					use(checkedS),
-					use
-				)
-				return if disabled then use(theme.Colors.OutlineVariant) else c
-			end),
-			Thickness = 1.5,
-			Transparency = if disabled then 0.35 else 0,
-			Mode = Enum.ApplyStrokeMode.Border,
-		},
+		Outline = if outlined
+			then {
+				Color = scope:Computed(function(use)
+					local c = Interaction.lerpColor(
+						use(theme.Colors.Outline),
+						use(theme.Colors.Primary),
+						use(checkedS),
+						use
+					)
+					return if disabled then use(theme.Colors.OutlineVariant) else c
+				end),
+				Thickness = 1.5,
+				Transparency = if disabled then 0.35 else 0,
+				Mode = Enum.ApplyStrokeMode.Border,
+			}
+			else nil,
 		[OnEvent("Activated")] = function()
 			if disabled then
 				return

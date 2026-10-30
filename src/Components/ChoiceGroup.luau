@@ -5,6 +5,8 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local Defaults = require(script.Parent.Parent.Internal.Defaults)
+local Motion = require(script.Parent.Parent.Internal.Motion)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Persist = require(script.Parent.Parent.Internal.Persist)
 local Bind = require(script.Parent.Parent.Internal.Bind)
@@ -19,6 +21,7 @@ local peek = Fusion.peek
 
 return function(scope: Types.Scope, props: Types.ChoiceGroupProps): Instance
 	local theme = resolveTheme(props)
+	local outlined = Defaults.outlined(theme, "ChoiceGroup", props.Outlined)
 	local variant = props.Variant or "Radio"
 	local disabled = peek(props.Disabled) == true
 	local selected = Persist.value(
@@ -64,12 +67,13 @@ return function(scope: Types.Scope, props: Types.ChoiceGroupProps): Instance
 		local rows = {}
 		for i, opt in props.Options do
 			local optDisabled = disabled or opt.Disabled == true
-			local selectedS = scope:Spring(
+			local selectedS = Motion.spring(
+				scope,
 				scope:Computed(function(use)
 					return if use(selected) == opt.Value then 1 else 0
 				end),
-				theme.Motion.SpringSpeed,
-				theme.Motion.SpringDamping
+				theme,
+				"Snappy"
 			)
 			local ix = Interaction.bind(scope, theme, {
 				Disabled = optDisabled,
@@ -79,7 +83,14 @@ return function(scope: Types.Scope, props: Types.ChoiceGroupProps): Instance
 			local outer = scope:Frame({
 				Size = UDim2.fromOffset(20, 20),
 				BackgroundColor3 = scope:Computed(function(use)
-					local base = use(theme.Colors.Surface)
+					local base = if outlined
+						then use(theme.Colors.Surface)
+						else Interaction.lerpColor(
+							use(theme.Colors.SurfaceContainerHigh),
+							use(theme.Colors.Primary),
+							use(selectedS),
+							use
+						)
 					return Interaction.lerpColor(
 						base,
 						use(theme.Colors.OnSurface),
@@ -89,18 +100,20 @@ return function(scope: Types.Scope, props: Types.ChoiceGroupProps): Instance
 				end),
 				LayoutOrder = 1,
 				CornerRadius = theme.Metrics.RadiusPill,
-				Outline = {
-					Color = scope:Computed(function(use)
-						return Interaction.lerpColor(
-							use(theme.Colors.Outline),
-							use(theme.Colors.Primary),
-							use(selectedS),
-							use
-						)
-					end),
-					Thickness = 2,
-					Mode = Enum.ApplyStrokeMode.Border,
-				},
+				Outline = if outlined
+					then {
+						Color = scope:Computed(function(use)
+							return Interaction.lerpColor(
+								use(theme.Colors.Outline),
+								use(theme.Colors.Primary),
+								use(selectedS),
+								use
+							)
+						end),
+						Thickness = 2,
+						Mode = Enum.ApplyStrokeMode.Border,
+					}
+					else nil,
 				[Children] = {
 					scope:Frame({
 						Name = "Dot",
@@ -110,7 +123,9 @@ return function(scope: Types.Scope, props: Types.ChoiceGroupProps): Instance
 						end),
 						AnchorPoint = Vector2.new(0.5, 0.5),
 						Position = UDim2.fromScale(0.5, 0.5),
-						BackgroundColor3 = theme.Colors.Primary,
+						BackgroundColor3 = if outlined
+							then theme.Colors.Primary
+							else theme.Colors.OnPrimary,
 						BackgroundTransparency = scope:Computed(function(use)
 							return 1 - use(selectedS)
 						end),

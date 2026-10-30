@@ -4,6 +4,7 @@ local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
 local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
+local Motion = require(script.Parent.Parent.Internal.Motion)
 local Corners = require(script.Parent.Parent.Internal.Corners)
 local Persist = require(script.Parent.Parent.Internal.Persist)
 local Bind = require(script.Parent.Parent.Internal.Bind)
@@ -24,12 +25,14 @@ return function(scope: Types.Scope, props: Types.CollapsibleProps): Instance
 		peek(props.Open) == true
 	)
 	Bind.link(scope, props.Open, open)
-	local openS = scope:Spring(
+	local openS = Motion.spring(
+		scope,
 		scope:Computed(function(use)
 			return if use(open) then 1 else 0
 		end),
-		theme.Motion.SpringSpeed * 0.95,
-		theme.Motion.SpringDamping
+		theme,
+		"Smooth",
+		0.95
 	)
 	local contentHeight = scope:Value(0)
 	local ix = Interaction.bind(scope, theme, {
@@ -81,7 +84,7 @@ return function(scope: Types.Scope, props: Types.CollapsibleProps): Instance
 							scope:Apply(Icon(scope, {
 								Theme = theme,
 								Name = "chevron-right",
-								IconSize = 18,
+								IconSize = theme.Metrics.IconMd,
 								Color = theme.Colors.OnSurfaceVariant,
 							}))({
 								AnchorPoint = Vector2.new(0.5, 0.5),
@@ -94,7 +97,7 @@ return function(scope: Types.Scope, props: Types.CollapsibleProps): Instance
 			scope:TextLabel({
 				BackgroundTransparency = 1,
 				FontFace = theme.Typography.Title.Font,
-				TextSize = A.size(theme, 15),
+				TextSize = A.size(theme, 15), -- token-ok
 				TextColor3 = theme.Colors.OnSurface,
 				TextXAlignment = Enum.TextXAlignment.Left,
 				Text = props.Title,

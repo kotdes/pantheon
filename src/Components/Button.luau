@@ -5,6 +5,7 @@ local Types = require(script.Parent.Parent.Types)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local Color = require(script.Parent.Parent.Internal.Color)
+local Defaults = require(script.Parent.Parent.Internal.Defaults)
 local Icon = require(script.Parent.Icon)
 local P = require(script.Parent.Parent.Internal.props)
 
@@ -55,8 +56,16 @@ return function(scope: Types.Scope, props: Types.ButtonProps): Instance
 	local role = Color.resolve(colorInput, theme, "primary")
 	local bg, fg, transparency, outlined, stateColor = styleFromRole(style, role, theme)
 	local disabled = peek(props.Disabled) == true
-	local padX = math.max(theme.Metrics.ButtonPadX, 8)
 	local padY = math.max(theme.Metrics.ButtonPadY - 2, 2)
+	local scale = props.Scale or Defaults.get(theme, "Button", "Scale") or "Medium"
+	local height = if scale == "Large"
+		then theme.Metrics.ControlHeightLarge
+		elseif scale == "Small" then theme.Metrics.ControlHeightCompact
+		else theme.Metrics.ControlHeight
+	-- `ButtonPadX` is for a medium button. A taller or shorter one has the same shape: the space at
+	-- the sides stays about twice the space above and below the letters.
+	local padX =
+		math.max(math.round(theme.Metrics.ButtonPadX * height / theme.Metrics.ControlHeight), 8)
 	local leading = props.LeadingIcon or props.Icon
 	local trailing = props.TrailingIcon
 
@@ -83,7 +92,7 @@ return function(scope: Types.Scope, props: Types.ButtonProps): Instance
 			scope:Apply(Icon(scope, {
 				Theme = theme,
 				Name = leading,
-				IconSize = 18,
+				IconSize = theme.Metrics.IconMd,
 				Color = if disabled then disabledFg else fg,
 			}))({
 				LayoutOrder = 1,
@@ -91,7 +100,9 @@ return function(scope: Types.Scope, props: Types.ButtonProps): Instance
 			})
 		)
 	end
-	local typeScale = theme.Typography.Button or theme.Typography.Label or theme.Typography.Body
+	local typeScale = if scale == "Small"
+		then theme.Typography.Label
+		else theme.Typography.Button or theme.Typography.Label or theme.Typography.Body
 	table.insert(
 		kids,
 		scope:TextLabel({
@@ -111,7 +122,7 @@ return function(scope: Types.Scope, props: Types.ButtonProps): Instance
 			scope:Apply(Icon(scope, {
 				Theme = theme,
 				Name = trailing,
-				IconSize = 18,
+				IconSize = theme.Metrics.IconMd,
 				Color = if disabled then disabledFg else fg,
 			}))({
 				LayoutOrder = 3,
@@ -132,7 +143,7 @@ return function(scope: Types.Scope, props: Types.ButtonProps): Instance
 			then 0
 			else (if transparency >= 1 then ix.fillTransparency(1) else transparency),
 		AutomaticSize = Enum.AutomaticSize.XY,
-		Size = props.Size or UDim2.fromOffset(0, 40),
+		Size = props.Size or UDim2.fromOffset(0, height),
 		LayoutOrder = props.LayoutOrder or 0,
 		Visible = props.Visible,
 		ZIndex = props.ZIndex,

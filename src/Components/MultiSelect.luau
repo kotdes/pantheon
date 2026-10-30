@@ -6,6 +6,8 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local Defaults = require(script.Parent.Parent.Internal.Defaults)
+local Motion = require(script.Parent.Parent.Internal.Motion)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Focus = require(script.Parent.Parent.Internal.Focus)
 local Persist = require(script.Parent.Parent.Internal.Persist)
@@ -67,13 +69,15 @@ end
 
 return function(scope: Types.Scope, props: Types.MultiSelectProps): Instance
 	local theme = resolveTheme(props)
+	local outlined = Defaults.outlined(theme, "MultiSelect", props.Outlined)
 	local open = scope:Value(false)
-	local openS = scope:Spring(
+	local openS = Motion.spring(
+		scope,
 		scope:Computed(function(use)
 			return if use(open) then 1 else 0
 		end),
-		theme.Motion.SpringSpeed,
-		theme.Motion.SpringDamping
+		theme,
+		"Smooth"
 	)
 	local selected = Persist.value(
 		scope,
@@ -90,7 +94,8 @@ return function(scope: Types.Scope, props: Types.MultiSelectProps): Instance
 	local disabled = peek(props.Disabled) == true
 	local hasLabel = props.Label ~= nil
 	local displayMode = props.Display or "Chips"
-	local closedHeight = (if hasLabel then 20 else 0) + 40
+	local closedHeight = (if hasLabel then theme.Metrics.FieldLabelHeight else 0)
+		+ theme.Metrics.ControlHeight
 
 	local function commit(nextList: { string })
 		selected:set(nextList)
@@ -151,7 +156,7 @@ return function(scope: Types.Scope, props: Types.MultiSelectProps): Instance
 				scope:Apply(Icon(scope, {
 					Theme = theme,
 					Name = "check",
-					IconSize = 18,
+					IconSize = theme.Metrics.IconMd,
 					Color = theme.Colors.Primary,
 				}))({
 					LayoutOrder = 2,
@@ -224,7 +229,7 @@ return function(scope: Types.Scope, props: Types.MultiSelectProps): Instance
 			scope:Apply(Icon(scope, {
 				Theme = theme,
 				Name = "chevron-down",
-				IconSize = 18,
+				IconSize = theme.Metrics.IconMd,
 				Color = theme.Colors.OnSurfaceVariant,
 			}))({
 				LayoutOrder = 2,
@@ -266,7 +271,7 @@ return function(scope: Types.Scope, props: Types.MultiSelectProps): Instance
 			scope:Apply(Icon(scope, {
 				Theme = theme,
 				Name = "chevron-down",
-				IconSize = 18,
+				IconSize = theme.Metrics.IconMd,
 				Color = theme.Colors.OnSurfaceVariant,
 			}))({
 				LayoutOrder = 2,
@@ -276,7 +281,9 @@ return function(scope: Types.Scope, props: Types.MultiSelectProps): Instance
 
 	local triggerShell = scope:Frame({
 		Name = "Trigger",
-		BackgroundColor3 = triggerIx.fill(theme.Colors.SurfaceContainer),
+		BackgroundColor3 = triggerIx.fill(
+			if outlined then theme.Colors.SurfaceContainer else theme.Colors.SurfaceContainerHigh
+		),
 		Size = UDim2.new(1, 0, 0, if displayMode == "Chips" then 0 else 40),
 		AutomaticSize = if displayMode == "Chips"
 			then Enum.AutomaticSize.Y
@@ -284,11 +291,13 @@ return function(scope: Types.Scope, props: Types.MultiSelectProps): Instance
 		LayoutOrder = 2,
 		ClipsDescendants = false,
 		CornerRadius = theme.Metrics.RadiusSm,
-		Outline = {
-			Color = theme.Colors.Outline,
-			Thickness = 1,
-			Mode = Enum.ApplyStrokeMode.Border,
-		},
+		Outline = if outlined
+			then {
+				Color = theme.Colors.Outline,
+				Thickness = 1,
+				Mode = Enum.ApplyStrokeMode.Border,
+			}
+			else nil,
 		[Children] = {
 			scope:TextButton({
 				Name = "Hit",
@@ -383,11 +392,13 @@ return function(scope: Types.Scope, props: Types.MultiSelectProps): Instance
 		Visible = CanvasFade.shown(scope, openS, nil, { Theme = theme }),
 		BackgroundTransparency = CanvasFade.surfaceTransparency(scope, openS, { Theme = theme }),
 		CornerRadius = theme.Metrics.RadiusSm,
-		Outline = {
-			Color = theme.Colors.Outline,
-			Thickness = 1,
-			Mode = Enum.ApplyStrokeMode.Border,
-		},
+		Outline = if outlined
+			then {
+				Color = theme.Colors.Outline,
+				Thickness = 1,
+				Mode = Enum.ApplyStrokeMode.Border,
+			}
+			else nil,
 		Padding = { theme.Metrics.Space2xs },
 		Layout = {
 			Kind = "List",

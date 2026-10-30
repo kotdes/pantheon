@@ -10,17 +10,22 @@ local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolve
 local Persist = require(script.Parent.Parent.Internal.Persist)
 local Bind = require(script.Parent.Parent.Internal.Bind)
 local Focus = require(script.Parent.Parent.Internal.Focus)
+local Defaults = require(script.Parent.Parent.Internal.Defaults)
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local ScrollInput = require(script.Parent.Parent.Internal.ScrollInput)
 
 local Children = Fusion.Children
 local peek = Fusion.peek
 
-local THUMB = 16
-local EDGE = math.ceil(THUMB * 0.85)
+local THUMB = 16 -- default size of the thumb
 
 return function(scope: Types.Scope, props: Types.RangeSliderProps): Instance
 	local theme = resolveTheme(props)
+	-- The rail, the thumb and the touch area can be resized. The blueprint sets the default.
+	local thumb = props.ThumbSize or Defaults.get(theme, "RangeSlider", "ThumbSize") or THUMB
+	local thickness = props.Thickness or Defaults.get(theme, "RangeSlider", "Thickness") or 4
+	local height = props.Height or math.max(40, thumb + 24)
+	local edge = math.ceil(thumb * 0.85)
 	local minBound = props.Min or 0
 	local maxBound = props.Max or 1
 	local step = props.Step or 0.01
@@ -98,7 +103,7 @@ return function(scope: Types.Scope, props: Types.RangeSliderProps): Instance
 			Name = if which == 1 then "ThumbLow" else "ThumbHigh",
 			Size = scope:Computed(function(use)
 				local grow = use(grows[which]) :: number
-				local px = THUMB * (1 + 0.12 * (use(ix.Hover) :: number) + 0.3 * grow)
+				local px = thumb * (1 + 0.12 * (use(ix.Hover) :: number) + 0.3 * grow)
 				return UDim2.fromOffset(px, px)
 			end),
 			AnchorPoint = Vector2.new(0.5, 0.5),
@@ -114,7 +119,7 @@ return function(scope: Types.Scope, props: Types.RangeSliderProps): Instance
 	local bar = scope:TextButton({
 		Name = "Track",
 		Text = "",
-		Size = UDim2.new(1, 0, 0, 40),
+		Size = UDim2.new(1, 0, 0, height),
 		BackgroundTransparency = 1,
 		LayoutOrder = 2,
 		AutoButtonColor = false,
@@ -123,12 +128,12 @@ return function(scope: Types.Scope, props: Types.RangeSliderProps): Instance
 			scope:Frame({
 				Name = "TrackInner",
 				BackgroundTransparency = 1,
-				Size = UDim2.new(1, -EDGE * 2, 1, 0),
-				Position = UDim2.fromOffset(EDGE, 0),
+				Size = UDim2.new(1, -edge * 2, 1, 0),
+				Position = UDim2.fromOffset(edge, 0),
 				[Children] = {
 					scope:Frame({
 						Name = "Rail",
-						Size = UDim2.new(1, 0, 0, 4),
+						Size = UDim2.new(1, 0, 0, thickness),
 						AnchorPoint = Vector2.new(0, 0.5),
 						Position = UDim2.new(0, 0, 0.5, 0),
 						BackgroundColor3 = Interaction.trackColor(theme),
@@ -139,7 +144,7 @@ return function(scope: Types.Scope, props: Types.RangeSliderProps): Instance
 						Name = "Fill",
 						Size = scope:Computed(function(use)
 							local a, b = fraction(use, lo), fraction(use, hi)
-							return UDim2.new(b - a, 0, 0, 4)
+							return UDim2.new(b - a, 0, 0, thickness)
 						end),
 						AnchorPoint = Vector2.new(0, 0.5),
 						Position = scope:Computed(function(use)

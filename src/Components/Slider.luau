@@ -2,23 +2,28 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local Motion = require(script.Parent.Parent.Internal.Motion)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Persist = require(script.Parent.Parent.Internal.Persist)
 local Bind = require(script.Parent.Parent.Internal.Bind)
 local Focus = require(script.Parent.Parent.Internal.Focus)
+local Defaults = require(script.Parent.Parent.Internal.Defaults)
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local ScrollInput = require(script.Parent.Parent.Internal.ScrollInput)
 
 local Children = Fusion.Children
 local peek = Fusion.peek
 
-local THUMB = 16
+local THUMB = 16 -- default size of the thumb
 local STRETCH_MAX = 10 -- hard limit on velocity stretch (px)
--- Keep thumb (incl. hover/press grow) inside the control bounds.
-local EDGE = math.ceil(THUMB * 0.85)
 
 return function(scope: Types.Scope, props: Types.SliderProps): Instance
 	local theme = resolveTheme(props)
+	-- The rail, the thumb and the touch area can be resized. The blueprint sets the default.
+	local thumb = props.ThumbSize or Defaults.get(theme, "Slider", "ThumbSize") or THUMB
+	local thickness = props.Thickness or Defaults.get(theme, "Slider", "Thickness") or 4
+	local height = props.Height or math.max(40, thumb + 24)
+	local edge = math.ceil(thumb * 0.85)
 	local minV = props.Min or 0
 	local maxV = props.Max or 1
 	local step = props.Step or 0.01
@@ -30,10 +35,9 @@ return function(scope: Types.Scope, props: Types.SliderProps): Instance
 	)
 	Bind.link(scope, props.Value, value)
 	local dragging = scope:Value(0)
-	local draggingS = scope:Spring(dragging, theme.Motion.SpringSpeed, theme.Motion.SpringDamping)
+	local draggingS = Motion.spring(scope, dragging, theme, "Snappy")
 	local stretch = scope:Value(0)
-	local stretchS =
-		scope:Spring(stretch, theme.Motion.SpringSpeed * 1.6, theme.Motion.SpringDamping)
+	local stretchS = Motion.spring(scope, stretch, theme, "Snappy", 1.6)
 	local disabled = peek(props.Disabled) == true
 	local ix = Interaction.bind(scope, theme, {
 		Disabled = disabled,
@@ -53,12 +57,14 @@ return function(scope: Types.Scope, props: Types.SliderProps): Instance
 		for i = 0, stepCount do
 			-- A tick appears as the thumb is picked up, and the ones the thumb has passed fill with
 			-- the accent colour and grow a little.
-			local passed = scope:Spring(
+			local passed = Motion.spring(
+				scope,
 				scope:Computed(function(use)
 					return if i / stepCount <= fraction(use) + 1e-6 then 1 else 0
 				end),
-				theme.Motion.SpringSpeed * 1.4,
-				theme.Motion.SpringDamping
+				theme,
+				"Snappy",
+				1.4
 			)
 			table.insert(
 				ticks,
@@ -91,7 +97,7 @@ return function(scope: Types.Scope, props: Types.SliderProps): Instance
 		local pressN = use(ix.Press) :: number
 		local dragN = use(draggingS) :: number
 		local grow = 1 + hoverN * 0.12 + pressN * 0.18 + dragN * 0.15
-		local base = THUMB * grow
+		local base = thumb * grow
 		local sx = use(stretchS) :: number
 		return UDim2.fromOffset(base + sx, math.max(base - sx * 0.35, base * 0.7))
 	end)
@@ -99,7 +105,7 @@ return function(scope: Types.Scope, props: Types.SliderProps): Instance
 	local bar = scope:TextButton({
 		Name = "Track",
 		Text = "",
-		Size = UDim2.new(1, 0, 0, 40),
+		Size = UDim2.new(1, 0, 0, height),
 		BackgroundTransparency = 1,
 		LayoutOrder = 2,
 		AutoButtonColor = false,
@@ -108,12 +114,13 @@ return function(scope: Types.Scope, props: Types.SliderProps): Instance
 			scope:Frame({
 				Name = "TrackInner",
 				BackgroundTransparency = 1,
-				Size = UDim2.new(1, -EDGE * 2, 1, 0),
-				Position = UDim2.fromOffset(EDGE, 0),
+				-- Keeps the thumb, with its hover and press growth, inside the control.
+				Size = UDim2.new(1, -edge * 2, 1, 0),
+				Position = UDim2.fromOffset(edge, 0),
 				[Children] = {
 					scope:Frame({
 						Name = "Rail",
-						Size = UDim2.new(1, 0, 0, 4),
+						Size = UDim2.new(1, 0, 0, thickness),
 						AnchorPoint = Vector2.new(0, 0.5),
 						Position = UDim2.new(0, 0, 0.5, 0),
 						BackgroundColor3 = Interaction.trackColor(theme),
@@ -123,7 +130,7 @@ return function(scope: Types.Scope, props: Types.SliderProps): Instance
 					scope:Frame({
 						Name = "Fill",
 						Size = scope:Computed(function(use)
-							return UDim2.new(fraction(use), 0, 0, 4)
+							return UDim2.new(fraction(use), 0, 0, thickness)
 						end),
 						AnchorPoint = Vector2.new(0, 0.5),
 						Position = UDim2.new(0, 0, 0.5, 0),

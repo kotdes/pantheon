@@ -5,6 +5,7 @@ local Types = require(script.Parent.Parent.Types)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Icon = require(script.Parent.Icon)
 local Color = require(script.Parent.Parent.Internal.Color)
+local Defaults = require(script.Parent.Parent.Internal.Defaults)
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local P = require(script.Parent.Parent.Internal.props)
 
@@ -57,6 +58,10 @@ return function(scope: Types.Scope, props: Types.IconButtonProps): Instance
 	local role = Color.resolve(colorInput, theme, "primary")
 	local bg, fg, transparency, _outlined, stateColor = styleFromRole(style, role, theme)
 	local disabled = peek(props.Disabled) == true
+	-- A pill that is a little wider than it is tall. An aspect ratio of 1 is a square footprint, which
+	-- the pill radius turns into a circle.
+	local ratio = props.AspectRatio or Defaults.get(theme, "IconButton", "AspectRatio") or 1
+	local height = theme.Metrics.ControlHeight
 	local ix = Interaction.bind(scope, theme, {
 		Disabled = disabled,
 		StateColor = stateColor,
@@ -73,6 +78,18 @@ return function(scope: Types.Scope, props: Types.IconButtonProps): Instance
 	end)
 	local disabledFg = theme.Colors.OnSurface
 
+	local iconColor: any = if disabled then disabledFg else fg
+	local selected = props.Selected
+	if selected ~= nil and not disabled then
+		iconColor = scope:Computed(function(use)
+			return use(
+				if use(selected :: any) == true
+					then theme.Colors.Primary
+					else theme.Colors.OnSurfaceVariant
+			)
+		end)
+	end
+
 	local button = scope:TextButton(P({
 		Name = "IconButton",
 		Text = "",
@@ -84,7 +101,7 @@ return function(scope: Types.Scope, props: Types.IconButtonProps): Instance
 		BackgroundTransparency = if disabled
 			then 0
 			else (if transparency >= 1 then ix.fillTransparency(1) else transparency),
-		Size = props.Size or UDim2.fromOffset(40, 40),
+		Size = props.Size or UDim2.fromOffset(math.round(height * ratio), height),
 		LayoutOrder = props.LayoutOrder or 0,
 		Visible = props.Visible,
 		ZIndex = props.ZIndex,
@@ -96,8 +113,8 @@ return function(scope: Types.Scope, props: Types.IconButtonProps): Instance
 				Theme = theme,
 				Name = props.Name,
 				Image = props.Image,
-				IconSize = 20,
-				Color = if disabled then disabledFg else fg,
+				IconSize = theme.Metrics.IconLg,
+				Color = iconColor,
 				Transparency = if disabled then 0.62 else 0,
 			}))({
 				AnchorPoint = Vector2.new(0.5, 0.5),

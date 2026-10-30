@@ -2,6 +2,8 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local Defaults = require(script.Parent.Parent.Internal.Defaults)
+local Motion = require(script.Parent.Parent.Internal.Motion)
 local tr = require(script.Parent.Parent.Internal.Translate).t
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Focus = require(script.Parent.Parent.Internal.Focus)
@@ -18,13 +20,15 @@ local peek = Fusion.peek
 
 return function(scope: Types.Scope, props: Types.SelectProps): Instance
 	local theme = resolveTheme(props)
+	local outlined = Defaults.outlined(theme, "Select", props.Outlined)
 	local open = scope:Value(false)
-	local openS = scope:Spring(
+	local openS = Motion.spring(
+		scope,
 		scope:Computed(function(use)
 			return if use(open) then 1 else 0
 		end),
-		theme.Motion.SpringSpeed,
-		theme.Motion.SpringDamping
+		theme,
+		"Smooth"
 	)
 	local selected = Persist.value(
 		scope,
@@ -36,7 +40,8 @@ return function(scope: Types.Scope, props: Types.SelectProps): Instance
 	local filter = scope:Value("" :: string)
 	local disabled = peek(props.Disabled) == true
 	local hasLabel = props.Label ~= nil
-	local closedHeight = (if hasLabel then 20 else 0) + 40
+	local closedHeight = (if hasLabel then theme.Metrics.FieldLabelHeight else 0)
+		+ theme.Metrics.ControlHeight
 
 	local function labelFor(value: string): string
 		for _, opt in props.Options do
@@ -61,10 +66,8 @@ return function(scope: Types.Scope, props: Types.SelectProps): Instance
 				local isSelected = tostring(use(selected)) == optValue
 				local hover = scope:Value(0)
 				local press = scope:Value(0)
-				local hoverS =
-					scope:Spring(hover, theme.Motion.SpringSpeed, theme.Motion.SpringDamping)
-				local pressS =
-					scope:Spring(press, theme.Motion.SpringSpeed, theme.Motion.SpringDamping)
+				local hoverS = Motion.spring(scope, hover, theme, "Smooth")
+				local pressS = Motion.spring(scope, press, theme, "Smooth")
 				local base = if isSelected
 					then use(theme.Colors.PrimaryContainer)
 					else use(theme.Colors.Surface)
@@ -150,7 +153,9 @@ return function(scope: Types.Scope, props: Types.SelectProps): Instance
 		TextSize = theme.Typography.Body.Size,
 		TextColor3 = theme.Colors.OnSurface,
 		TextXAlignment = Enum.TextXAlignment.Left,
-		BackgroundColor3 = triggerIx.fill(theme.Colors.SurfaceContainer),
+		BackgroundColor3 = triggerIx.fill(
+			if outlined then theme.Colors.SurfaceContainer else theme.Colors.SurfaceContainerHigh
+		),
 		Size = UDim2.new(1, 0, 0, 40),
 		LayoutOrder = 2,
 		AutoButtonColor = false,
@@ -158,11 +163,13 @@ return function(scope: Types.Scope, props: Types.SelectProps): Instance
 		ClipsDescendants = false,
 		CornerRadius = theme.Metrics.RadiusSm,
 		Padding = { theme.Metrics.SpaceSm, theme.Metrics.SpaceMd },
-		Outline = {
-			Color = theme.Colors.Outline,
-			Thickness = 1,
-			Mode = Enum.ApplyStrokeMode.Border,
-		},
+		Outline = if outlined
+			then {
+				Color = theme.Colors.Outline,
+				Thickness = 1,
+				Mode = Enum.ApplyStrokeMode.Border,
+			}
+			else nil,
 		[OnEvent("Activated")] = function()
 			if not disabled then
 				open:set(not peek(open))
@@ -181,11 +188,13 @@ return function(scope: Types.Scope, props: Types.SelectProps): Instance
 		Visible = CanvasFade.shown(scope, openS, nil, { Theme = theme }),
 		BackgroundTransparency = CanvasFade.surfaceTransparency(scope, openS, { Theme = theme }),
 		CornerRadius = theme.Metrics.RadiusSm,
-		Outline = {
-			Color = theme.Colors.Outline,
-			Thickness = 1,
-			Mode = Enum.ApplyStrokeMode.Border,
-		},
+		Outline = if outlined
+			then {
+				Color = theme.Colors.Outline,
+				Thickness = 1,
+				Mode = Enum.ApplyStrokeMode.Border,
+			}
+			else nil,
 		Padding = { theme.Metrics.Space2xs },
 		Layout = {
 			Kind = "List",

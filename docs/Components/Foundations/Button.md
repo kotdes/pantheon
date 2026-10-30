@@ -46,6 +46,7 @@ scope:Button({
 | `TrailingIcon` | `string` | :x: | - | Lucide icon shown after the label. |
 | `HorizontalAlignment` | `Enum.HorizontalAlignment` | :x: | - | Where the icon and label sit in the button. They are centred by default. |
 | `CornerRadius` | `number` | :x: | `Metrics.RadiusPill` | Corner radius, in pixels. |
+| `Scale` | `"Small" \| "Medium" \| "Large"` | :x: | `"Medium"`, or from the blueprint | Height of the button: `ControlHeightCompact`, `ControlHeight` or `ControlHeightLarge`. `Size` wins over it. |
 | `Padding` | `{ number }` | :x: | `Metrics.ButtonPadY`, `Metrics.ButtonPadX` | Padding around the content, in pixels, as `{ vertical, horizontal }`. |
 
 ## Callbacks

@@ -5,6 +5,7 @@ local Types = require(script.Parent.Parent.Types)
 local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Corners = require(script.Parent.Parent.Internal.Corners)
+local Defaults = require(script.Parent.Parent.Internal.Defaults)
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local Persist = require(script.Parent.Parent.Internal.Persist)
 local Bind = require(script.Parent.Parent.Internal.Bind)
@@ -12,6 +13,9 @@ local Focus = require(script.Parent.Parent.Internal.Focus)
 
 local Children = Fusion.Children
 local peek = Fusion.peek
+
+local ACTION_SIZE = 32
+local ACTION_INSET = 4
 local UserInputService = game:GetService("UserInputService")
 local Validators = require(script.Parent.Parent.Internal.Validators)
 local Icon = require(script.Parent.Icon)
@@ -44,7 +48,8 @@ return function(scope: Types.Scope, props: Types.TextFieldProps): Instance
 	local minLines = props.MinLines or (if multiline then 3 else 1)
 	local maxLines = props.MaxLines or (if multiline then 12 else 1)
 	local lineH = theme.Typography.Body.Size * theme.Typography.Body.LineHeight
-	local resize: Types.TextFieldResize = props.Resize or (if multiline then "Y" else "None")
+	local resize: Types.TextFieldResize = props.Resize
+		or (if multiline and not props.Action then "Y" else "None")
 	local focused = scope:Value(0)
 	local focusS = scope:Spring(focused, theme.Motion.SpringSpeed, theme.Motion.SpringDamping)
 
@@ -52,8 +57,13 @@ return function(scope: Types.Scope, props: Types.TextFieldProps): Instance
 	local maxH = maxLines * lineH + theme.Metrics.SpaceSm * 2
 	-- `Compact` is the small in-widget variant (number boxes, hex fields).
 	local compact = props.Compact == true
-	local height =
-		scope:Value(if multiline then minH else (props.Height or (if compact then 28 else 40)))
+	local height = scope:Value(
+		if multiline
+			then minH
+			else (props.Height or (if compact
+				then theme.Metrics.ControlHeightCompact
+				else theme.Metrics.ControlHeight))
+	)
 
 	local strokeColor = scope:Computed(function(use)
 		local t = use(focusS)
@@ -62,25 +72,59 @@ return function(scope: Types.Scope, props: Types.TextFieldProps): Instance
 		end
 		return Interaction.lerpColor(use(theme.Colors.Outline), use(theme.Colors.Primary), t, use)
 	end)
+	-- `Filled` has no stroke at rest. It shows one on focus and on error.
+	local filled = (props.Variant or Defaults.get(theme, "TextField", "Variant")) == "Filled"
+	-- A filled field has one of three fills. It takes the one that stands out most from what it sits
+	-- on, so it is never the colour of the card or the window behind it.
+	local fillRole = scope:Value("High")
 	local strokeThickness = scope:Computed(function(use)
+		if filled then
+			return math.max(use(focusS) * 2, if use(hasError) then 1 else 0)
+		end
 		return 1 + use(focusS)
 	end)
 
-	local padH = if compact then 8 else theme.Metrics.SpaceMd
+	-- One-line fields can be pills by default, and a multi-line field has its own large radius. A
+	-- radius that comes from the blueprint is a choice, so the field does not shrink it to fit.
+	local pill = if props.Pill ~= nil
+		then props.Pill
+		else (not multiline and Defaults.get(theme, "TextField", "Pill") == true)
+	local radius: number? = props.CornerRadius
+	if radius == nil and multiline then
+		-- A name of a metric, such as "RadiusMd", or a number of pixels.
+		local named = Defaults.get(theme, "TextField", "MultilineRadius")
+		radius = if type(named) == "string" then (theme.Metrics :: any)[named] else named
+	end
+	-- The text keeps clear of a corner that is very round.
+	local round = pill or (radius or theme.Metrics.RadiusSm) >= theme.Metrics.RadiusLg
+	local padH = if round
+		then (if compact then theme.Metrics.SpaceSm else theme.Metrics.SpaceLg)
+		else (if compact then 8 else theme.Metrics.SpaceMd)
 	local padV = if compact then 2 else theme.Metrics.SpaceSm
 	local padL = if props.LeadingIcon then 36 elseif props.Prefix then padH + 14 else padH
-	local padR = if props.TrailingIcon then 36 else padH
+	local padR = if props.Action then ACTION_SIZE + padH elseif props.TrailingIcon then 36 else padH
 
 	local box = scope:TextBox({
 		Name = "Input",
 		ClearTextOnFocus = false,
 		FontFace = theme.Typography.Body.Font,
-		TextSize = if compact then 13 else theme.Typography.Body.Size,
+		TextSize = if compact then theme.Typography.Label.Size else theme.Typography.Body.Size,
 		Text = if persistedText then peek(persistedText) else (props.Text or ""),
 		PlaceholderText = props.Placeholder or "",
 		TextColor3 = theme.Colors.OnSurface,
 		PlaceholderColor3 = theme.Colors.OnSurfaceVariant,
-		BackgroundColor3 = theme.Colors.SurfaceContainer,
+		BackgroundColor3 = scope:Computed(function(use)
+			if not filled then
+				return use(theme.Colors.SurfaceContainer)
+			end
+			local role = use(fillRole)
+			if role == "High" then
+				return use(theme.Colors.SurfaceContainerHigh)
+			elseif role == "Surface" then
+				return use(theme.Colors.Surface)
+			end
+			return use(theme.Colors.SurfaceContainer)
+		end),
 		Size = scope:Computed(function(use)
 			return UDim2.new(1, 0, 0, use(height))
 		end),
@@ -92,8 +136,8 @@ return function(scope: Types.Scope, props: Types.TextFieldProps): Instance
 		LayoutOrder = 1,
 		-- ClipsDescendants would cut the outline stroke.
 		ClipsDescendants = false,
-		CornerRadius = props.CornerRadius
-			or if props.Pill then theme.Metrics.RadiusPill else theme.Metrics.RadiusSm,
+		CornerRadius = radius
+			or (if pill then theme.Metrics.RadiusPill else theme.Metrics.RadiusSm),
 		Padding = { padV, padR, padV, padL },
 		Outline = {
 			Color = strokeColor,
@@ -101,10 +145,61 @@ return function(scope: Types.Scope, props: Types.TextFieldProps): Instance
 			Mode = Enum.ApplyStrokeMode.Border,
 		},
 	}) :: TextBox
-	if not props.Pill then
-		Corners.auto(box, props.CornerRadius, theme.Metrics.RadiusSm)
+	if not pill and radius == nil then
+		Corners.auto(box, nil, theme.Metrics.RadiusSm)
 	end
 	Focus.manage(box, theme, true)
+	if filled then
+		local watching: RBXScriptConnection? = nil
+		local function adapt()
+			if watching then
+				watching:Disconnect()
+				watching = nil
+			end
+			local node: Instance? = box.Parent
+			while node do
+				if node:IsA("GuiObject") and node.BackgroundTransparency < 0.5 then
+					break
+				end
+				node = node.Parent
+			end
+			if node == nil then
+				return
+			end
+			local behind = (node :: GuiObject).BackgroundColor3
+			local function apart(colour: Color3): number
+				return math.abs(colour.R - behind.R)
+					+ math.abs(colour.G - behind.G)
+					+ math.abs(colour.B - behind.B)
+			end
+			local best, bestApart = "High", -1
+			for role, colour in
+				{
+					High = theme.Colors.SurfaceContainerHigh,
+					Container = theme.Colors.SurfaceContainer,
+					Surface = theme.Colors.Surface,
+				}
+			do
+				local distance = apart(peek(colour :: any))
+				if distance > bestApart then
+					best, bestApart = role, distance
+				end
+			end
+			fillRole:set(best)
+			watching = (node :: GuiObject)
+				:GetPropertyChangedSignal("BackgroundColor3")
+				:Connect(adapt)
+		end
+		table.insert(scope, box.AncestryChanged:Connect(adapt))
+		table.insert(scope, function()
+			if watching then
+				watching:Disconnect()
+			end
+		end)
+		task.defer(adapt)
+		-- Once more after it has been mounted, in case it was put into place a little later.
+		task.delay(0.15, adapt)
+	end
 
 	local function runValidation()
 		if props.Validators == nil then
@@ -170,7 +265,7 @@ return function(scope: Types.Scope, props: Types.TextFieldProps): Instance
 			scope:Apply(Icon(scope, {
 				Theme = theme,
 				Name = props.LeadingIcon,
-				IconSize = 18,
+				IconSize = theme.Metrics.IconMd,
 				Color = theme.Colors.OnSurfaceVariant,
 			}))({
 				Position = scope:Computed(function(use)
@@ -186,7 +281,7 @@ return function(scope: Types.Scope, props: Types.TextFieldProps): Instance
 			scope:Apply(Icon(scope, {
 				Theme = theme,
 				Name = props.TrailingIcon,
-				IconSize = 18,
+				IconSize = theme.Metrics.IconMd,
 				Color = theme.Colors.OnSurfaceVariant,
 			}))({
 				AnchorPoint = Vector2.new(1, 0),
@@ -194,6 +289,19 @@ return function(scope: Types.Scope, props: Types.TextFieldProps): Instance
 					return UDim2.new(1, -10, 0, math.floor((use(height) - 18) / 2))
 				end),
 				ZIndex = 2,
+			})
+		)
+	end
+
+	if props.Action then
+		table.insert(
+			adornments,
+			scope:Apply(props.Action)({
+				AnchorPoint = if multiline then Vector2.new(1, 1) else Vector2.new(1, 0.5),
+				Position = if multiline
+					then UDim2.new(1, -ACTION_INSET, 1, -ACTION_INSET)
+					else UDim2.new(1, -ACTION_INSET, 0.5, 0),
+				ZIndex = 5,
 			})
 		)
 	end
@@ -209,7 +317,9 @@ return function(scope: Types.Scope, props: Types.TextFieldProps): Instance
 				Size = UDim2.fromOffset(14, 20),
 				TextXAlignment = Enum.TextXAlignment.Left,
 				FontFace = theme.Fonts.Body,
-				TextSize = if compact then 13 else theme.Typography.Body.Size,
+				TextSize = if compact
+					then theme.Typography.Label.Size
+					else theme.Typography.Body.Size,
 				TextColor3 = theme.Colors.OnSurfaceVariant,
 				Text = props.Prefix,
 				ZIndex = 2,
@@ -339,7 +449,7 @@ return function(scope: Types.Scope, props: Types.TextFieldProps): Instance
 		scope:TextLabel({
 			BackgroundTransparency = 1,
 			FontFace = theme.Typography.Label.Font,
-			TextSize = A.size(theme, 11),
+			TextSize = A.size(theme, 11), -- token-ok
 			TextColor3 = scope:Computed(function(use)
 				return if use(hasError)
 					then use(theme.Colors.Error)

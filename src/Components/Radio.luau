@@ -8,6 +8,8 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local Defaults = require(script.Parent.Parent.Internal.Defaults)
+local Motion = require(script.Parent.Parent.Internal.Motion)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local P = require(script.Parent.Parent.Internal.props)
@@ -18,6 +20,7 @@ local peek = Fusion.peek
 
 return function(scope: Types.Scope, props: Types.RadioProps): Instance
 	local theme = resolveTheme(props)
+	local outlined = Defaults.outlined(theme, "Radio", props.Outlined)
 	local disabled = peek(props.Disabled) == true
 
 	local checked = scope:Computed(function(use)
@@ -29,16 +32,14 @@ return function(scope: Types.Scope, props: Types.RadioProps): Instance
 		return if use(checked) then 1 else 0
 	end)
 
-	local selectedRingS =
-		scope:Spring(checkedN, theme.Motion.SpringSpeed, theme.Motion.SpringDamping)
+	local selectedRingS = Motion.spring(scope, checkedN, theme, "Snappy")
 	local ix = Interaction.bind(scope, theme, {
 		Disabled = disabled,
 		StateColor = theme.Colors.OnSurface,
 	})
 
 	local dotBurstV = scope:Value(0)
-	local dotBurstS =
-		scope:Spring(dotBurstV, theme.Motion.SpringSpeed * 1.3, theme.Motion.SpringDamping)
+	local dotBurstS = Motion.spring(scope, dotBurstV, theme, "Snappy", 1.3)
 
 	table.insert(
 		scope,
@@ -60,23 +61,32 @@ return function(scope: Types.Scope, props: Types.RadioProps): Instance
 	local outer = scope:Frame({
 		Size = UDim2.fromOffset(20, 20),
 		BackgroundColor3 = scope:Computed(function(use)
-			local base = use(theme.Colors.Surface)
-			return Interaction.lerpColor(base, use(theme.Colors.OnSurface), ix.alpha(use), use)
-		end),
-		CornerRadius = theme.Metrics.RadiusPill,
-		LayoutOrder = 1,
-		Outline = {
-			Color = scope:Computed(function(use)
-				return Interaction.lerpColor(
-					use(theme.Colors.Outline),
+			local base = if outlined
+				then use(theme.Colors.Surface)
+				else Interaction.lerpColor(
+					use(theme.Colors.SurfaceContainerHigh),
 					use(theme.Colors.Primary),
 					use(selectedRingS),
 					use
 				)
-			end),
-			Thickness = 2,
-			Mode = Enum.ApplyStrokeMode.Border,
-		},
+			return Interaction.lerpColor(base, use(theme.Colors.OnSurface), ix.alpha(use), use)
+		end),
+		CornerRadius = theme.Metrics.RadiusPill,
+		LayoutOrder = 1,
+		Outline = if outlined
+			then {
+				Color = scope:Computed(function(use)
+					return Interaction.lerpColor(
+						use(theme.Colors.Outline),
+						use(theme.Colors.Primary),
+						use(selectedRingS),
+						use
+					)
+				end),
+				Thickness = 2,
+				Mode = Enum.ApplyStrokeMode.Border,
+			}
+			else nil,
 		[Children] = {
 			scope:Frame({
 				Name = "Dot",
@@ -89,7 +99,9 @@ return function(scope: Types.Scope, props: Types.RadioProps): Instance
 				end),
 				AnchorPoint = Vector2.new(0.5, 0.5),
 				Position = UDim2.fromScale(0.5, 0.5),
-				BackgroundColor3 = theme.Colors.Primary,
+				BackgroundColor3 = if outlined
+					then theme.Colors.Primary
+					else theme.Colors.OnPrimary,
 				BackgroundTransparency = scope:Computed(function(use)
 					return 1 - use(selectedRingS)
 				end),

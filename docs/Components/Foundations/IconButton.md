@@ -36,6 +36,8 @@ scope:IconButton({
 | `Name` | `string` | :x: | - | Name of a Lucide icon. |
 | `Image` | `string` | :x: | - | Asset ID of an image to use instead of a Lucide icon. |
 | `Disabled` | `UsedAs<boolean>` | :x: | `false` | Stops the button reacting to input and dims it. The component reads this once, when it creates the button. |
+| `Selected` | `UsedAs<boolean>` | :x: | - | For a button that is one of a set, such as a category tab. The icon is in the primary colour when it is selected and muted when it is not. |
+| `AspectRatio` | `number` | :x: | `1`, or from the blueprint | Width divided by height. `1` is a square footprint, drawn as a circle by the pill radius. `1.25` is a pill. The height is `ControlHeight`. `Size` wins over it. |
 | `Variant` | `string` | :x: | `"Text"` | Style of the button. It takes the same values as [Button](./Button.md). |
 | `Color` | `UsedAs<ColorInput>` | :x: | - | Colour of the button. It takes the same values as [Button](./Button.md). |
 

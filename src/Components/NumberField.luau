@@ -6,8 +6,9 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
-local A = require(script.Parent.Parent.Internal.Accessibility)
+local Defaults = require(script.Parent.Parent.Internal.Defaults)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
+local Motion = require(script.Parent.Parent.Internal.Motion)
 local Corners = require(script.Parent.Parent.Internal.Corners)
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local Persist = require(script.Parent.Parent.Internal.Persist)
@@ -41,6 +42,7 @@ end
 
 return function(scope: Types.Scope, props: Types.NumberFieldProps): Instance
 	local theme = resolveTheme(props)
+	local outlined = Defaults.outlined(theme, "NumberField", props.Outlined)
 	local minValue = props.Min or -math.huge
 	local maxValue = props.Max or math.huge
 	local step = props.Step or 1
@@ -78,9 +80,9 @@ return function(scope: Types.Scope, props: Types.NumberFieldProps): Instance
 	local focused = scope:Value(0)
 	local scrubbing = scope:Value(0)
 	local hovered = scope:Value(0)
-	local focusS = scope:Spring(focused, theme.Motion.SpringSpeed, theme.Motion.SpringDamping)
-	local scrubS = scope:Spring(scrubbing, theme.Motion.SpringSpeed, theme.Motion.SpringDamping)
-	local hoverS = scope:Spring(hovered, theme.Motion.SpringSpeed, theme.Motion.SpringDamping)
+	local focusS = Motion.spring(scope, focused, theme, "Snappy")
+	local scrubS = Motion.spring(scope, scrubbing, theme, "Snappy")
+	local hoverS = Motion.spring(scope, hovered, theme, "Snappy")
 
 	local box: TextBox
 	box = scope:New("TextBox")({
@@ -90,7 +92,7 @@ return function(scope: Types.Scope, props: Types.NumberFieldProps): Instance
 		ClearTextOnFocus = false,
 		TextEditable = not disabled,
 		FontFace = theme.Fonts.Body,
-		TextSize = A.size(theme, 14),
+		TextSize = theme.Typography.Label.Size,
 		TextColor3 = if disabled then theme.Colors.OnSurfaceVariant else theme.Colors.OnSurface,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		Text = scope:Computed(formatted),
@@ -144,7 +146,7 @@ return function(scope: Types.Scope, props: Types.NumberFieldProps): Instance
 			AutoButtonColor = false,
 			Active = not disabled,
 			FontFace = theme.Typography.Label.Font,
-			TextSize = A.size(theme, 13),
+			TextSize = theme.Typography.Label.Size,
 			TextColor3 = scope:Computed(function(use)
 				return Interaction.lerpColor(
 					use(theme.Colors.OnSurfaceVariant),
@@ -233,7 +235,9 @@ return function(scope: Types.Scope, props: Types.NumberFieldProps): Instance
 
 	local field = scope:Frame({
 		Name = "NumberField",
-		BackgroundColor3 = theme.Colors.SurfaceContainer,
+		BackgroundColor3 = if outlined
+			then theme.Colors.SurfaceContainer
+			else theme.Colors.SurfaceContainerHigh,
 		BackgroundTransparency = if disabled then 0.4 else 0,
 		Size = props.Size or UDim2.new(1, 0, 0, 32),
 		LayoutOrder = props.LayoutOrder or 0,
@@ -244,7 +248,9 @@ return function(scope: Types.Scope, props: Types.NumberFieldProps): Instance
 		Outline = {
 			Color = strokeColor,
 			Thickness = scope:Computed(function(use)
-				return 1 + use(focusS) :: number
+				-- Without an outline, the field has one only while it has focus.
+				return (if outlined then 1 else 0)
+					+ use(focusS) :: number * (if outlined then 1 else 2)
 			end),
 			Mode = Enum.ApplyStrokeMode.Border,
 		},
@@ -264,7 +270,7 @@ return function(scope: Types.Scope, props: Types.NumberFieldProps): Instance
 					Size = UDim2.new(0, 0, 1, 0),
 					AutomaticSize = Enum.AutomaticSize.X,
 					FontFace = theme.Fonts.Body,
-					TextSize = A.size(theme, 13),
+					TextSize = theme.Typography.Label.Size,
 					TextColor3 = theme.Colors.OnSurfaceVariant,
 					Text = props.Suffix,
 					LayoutOrder = 3,
