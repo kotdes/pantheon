@@ -179,7 +179,11 @@ local function isShown(gui: GuiObject): boolean
 end
 
 function Focus.select(gui: GuiObject?)
-	GuiService.SelectedObject = gui
+	-- GuiService only selects inside a PlayerGui. In a plugin widget, such as a story preview, it
+	-- raises an error, so there the control only takes a text box's focus.
+	if gui == nil or gui:FindFirstAncestorWhichIsA("PlayerGui") ~= nil then
+		GuiService.SelectedObject = gui
+	end
 	if gui and gui:IsA("TextBox") then
 		(gui :: TextBox):CaptureFocus()
 	end

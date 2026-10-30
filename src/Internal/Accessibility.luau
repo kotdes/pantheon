@@ -83,6 +83,14 @@ function Accessibility.apply(theme: any, prefs: Prefs?): any
 		out.Motion.SpringSpeed = math.max(out.Motion.SpringSpeed, 400)
 		out.Motion.SpringDamping = 1
 		out.Motion.PressScale = 1
+		-- The named springs and the stagger follow, so no role moves more than `SpringSpeed` does.
+		local springs = {}
+		for role in out.Motion.Springs or {} do
+			springs[role] = { Speed = out.Motion.SpringSpeed, Damping = 1 }
+		end
+		out.Motion.Springs = springs
+		out.Motion.Stagger = 0
+		out.Motion.Presence = { ScaleFrom = 1, FromOrigin = false }
 	end
 
 	-- PreferredTransparency: higher = user wants more transparency allowed.

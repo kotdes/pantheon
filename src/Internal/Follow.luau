@@ -22,8 +22,12 @@ local function whileActive(
 	local function sync()
 		local on = isActive(peek(source))
 		if on and not conn then
-			step(0)
 			conn = RunService.RenderStepped:Connect(step)
+			task.defer(function()
+				if conn then
+					step(0)
+				end
+			end)
 		elseif not on and conn then
 			conn:Disconnect()
 			conn = nil
