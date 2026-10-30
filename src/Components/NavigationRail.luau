@@ -100,7 +100,7 @@ return function(scope: Types.Scope, props: Types.NavigationRailProps): Instance
 		local icon = scope:Apply(Icon(scope, {
 			Theme = theme,
 			Name = item.Icon or "circle",
-			IconSize = if horizontal then 22 else 24,
+			IconSize = if horizontal then 22 else theme.Metrics.IconXl,
 			Color = scope:Computed(function(use)
 				return if use(isSelected)
 					then use(theme.Colors.Primary)

@@ -19,6 +19,7 @@ return function(scope: Types.Scope, props: Types.FooterProps): Instance
 		CornerRadius = props.Radius or { 0, theme.Metrics.RadiusPanel },
 		Size = props.Size or UDim2.new(1, 0, 0, barHeight + fadeHeight),
 		LayoutOrder = props.LayoutOrder or 0,
+		Visible = props.Visible,
 		ZIndex = props.ZIndex or 10,
 		[Children] = {
 			scope:Frame({

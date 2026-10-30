@@ -2,6 +2,7 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local Presence = require(script.Parent.Parent.Internal.Presence)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Icon = require(script.Parent.Icon)
 local MenuButton = require(script.Parent.MenuButton)
@@ -50,7 +51,7 @@ return function(scope: Types.Scope, props: Types.MenuSectionProps): Instance
 	local theme = resolveTheme(props)
 	local compact = props.Compact ~= false
 	local hPad = if compact then theme.Metrics.SpaceSm else theme.Metrics.SpaceMd
-	local categoryIconSize = 16
+	local categoryIconSize = theme.Metrics.IconSm
 	local titlePeek = if props.Title == nil then nil else peek(props.Title)
 	local hasTitle = typeof(titlePeek) == "string" and titlePeek ~= ""
 	local collapsible = if props.Collapsible ~= nil then props.Collapsible == true else false
@@ -130,7 +131,7 @@ return function(scope: Types.Scope, props: Types.MenuSectionProps): Instance
 								scope:Apply(Icon(scope, {
 									Theme = theme,
 									Name = "chevron-right",
-									IconSize = 16,
+									IconSize = theme.Metrics.IconSm,
 									Color = theme.Colors.OnSurfaceVariant,
 								}))({
 									AnchorPoint = Vector2.new(0.5, 0.5),
@@ -208,6 +209,12 @@ return function(scope: Types.Scope, props: Types.MenuSectionProps): Instance
 					Compact = compact,
 					OnClose = props.OnClose,
 					LayoutOrder = i,
+					Reveal = Presence.stagger(
+						scope,
+						props.Progress,
+						(props.StaggerFrom or 0) + i,
+						theme
+					),
 				})
 			)
 		end

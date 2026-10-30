@@ -7,6 +7,8 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local Defaults = require(script.Parent.Parent.Internal.Defaults)
+local Presence = require(script.Parent.Parent.Internal.Presence)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Corners = require(script.Parent.Parent.Internal.Corners)
 local Focus = require(script.Parent.Parent.Internal.Focus)
@@ -21,6 +23,7 @@ local peek = Fusion.peek
 
 return function(scope: Types.Scope, props: Types.DialogProps): Instance
 	local theme = resolveTheme(props)
+	local outlined = Defaults.outlined(theme, "Dialog", props.Outlined)
 	local openRef = props.Open
 	local open = scope:Computed(function(use)
 		if openRef == nil then
@@ -28,13 +31,8 @@ return function(scope: Types.Scope, props: Types.DialogProps): Instance
 		end
 		return (if typeof(openRef) == "table" then use(openRef) else openRef) ~= false
 	end)
-	local openS = scope:Spring(
-		scope:Computed(function(use)
-			return if use(open) then 1 else 0
-		end),
-		theme.Motion.SpringSpeed,
-		theme.Motion.SpringDamping
-	)
+	local presence = Presence.create(scope, open, theme, "Soft")
+	local openS = presence.Progress
 
 	local actions: { Types.DialogAction } = props.Actions or {}
 	if props.OnClose and #actions == 0 then
@@ -87,11 +85,13 @@ return function(scope: Types.Scope, props: Types.DialogProps): Instance
 		Active = true,
 		LayoutOrder = 2,
 		CornerRadius = radius,
-		Outline = {
-			Color = theme.Colors.OutlineVariant,
-			Thickness = 1,
-			Mode = Enum.ApplyStrokeMode.Border,
-		},
+		Outline = if outlined
+			then {
+				Color = theme.Colors.OutlineVariant,
+				Thickness = 1,
+				Mode = Enum.ApplyStrokeMode.Border,
+			}
+			else nil,
 		Shadow = {
 			BlurRadius = 12,
 			Transparency = scope:Computed(function(use)
@@ -229,7 +229,7 @@ return function(scope: Types.Scope, props: Types.DialogProps): Instance
 		Size = UDim2.fromScale(1, 1),
 		Position = UDim2.fromScale(0, 0),
 		Visible = scope:Computed(function(use)
-			return use(openS) > 0.02 and (props.Visible ~= false)
+			return use(presence.Mounted) and (props.Visible ~= false)
 		end),
 		ZIndex = baseZ,
 		LayoutOrder = props.LayoutOrder or 0,

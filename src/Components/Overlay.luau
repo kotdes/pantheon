@@ -19,7 +19,7 @@ return function(scope: Types.Scope, props: Types.OverlayProps?): Instance
 		AnchorPoint = Vector2.new(0, 0),
 		Position = UDim2.fromScale(0, 0),
 		BackgroundColor3 = theme.Colors.Scrim,
-		BackgroundTransparency = 0.35,
+		BackgroundTransparency = p.Transparency or 0.35,
 		BorderSizePixel = 0,
 		Size = p.Size or UDim2.fromScale(1, 1),
 		ZIndex = p.ZIndex or 50,
@@ -29,8 +29,6 @@ return function(scope: Types.Scope, props: Types.OverlayProps?): Instance
 		[OnEvent("Activated")] = p.OnClick,
 	}) :: TextButton
 
-	-- Inside a Window the scrim covers the window, so it takes on the window's rounding
-	-- (unless a radius was given explicitly).
 	if p.CornerRadius == nil then
 		table.insert(
 			scope,

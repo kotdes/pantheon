@@ -7,6 +7,7 @@ local Corners = require(script.Parent.Parent.Internal.Corners)
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local Color = require(script.Parent.Parent.Internal.Color)
 local MenuNav = require(script.Parent.Parent.Internal.MenuNav)
+local TextBlur = require(script.Parent.Parent.Internal.TextBlur)
 local Icon = require(script.Parent.Icon)
 local Tooltip = require(script.Parent.Tooltip)
 local P = require(script.Parent.Parent.Internal.props)
@@ -75,6 +76,17 @@ return function(scope: Types.Scope, props: Types.MenuButtonProps): Instance
 		Disabled = not clickable,
 		StateColor = stateColor,
 	})
+
+	-- With a stagger, the label and the icons come in with the row.
+	local reveal = props.Reveal
+	local function fade(base: number): any
+		if reveal == nil then
+			return base
+		end
+		return scope:Computed(function(use)
+			return 1 - (1 - base) * math.clamp(use(reveal :: any) :: number, 0, 1)
+		end)
+	end
 
 	local leadingName, leadingInst = resolveSlot(props.Leading, props.LeadingIcon)
 	local trailingName, trailingInst = resolveSlot(props.Trailing, props.TrailingIcon)
@@ -149,7 +161,7 @@ return function(scope: Types.Scope, props: Types.MenuButtonProps): Instance
 							Color = fg,
 						}))({
 							LayoutOrder = 1,
-							ImageTransparency = if disabled then 0.38 else 0,
+							ImageTransparency = fade(if disabled then 0.38 else 0),
 						})
 						else nil,
 					scope:TextLabel({
@@ -159,7 +171,7 @@ return function(scope: Types.Scope, props: Types.MenuButtonProps): Instance
 							else theme.Typography.Button.Font,
 						TextSize = theme.Typography.Button.Size,
 						TextColor3 = fg,
-						TextTransparency = if disabled then 0.38 else 0,
+						TextTransparency = fade(if disabled then 0.38 else 0),
 						TextXAlignment = Enum.TextXAlignment.Left,
 						Text = props.Text,
 						Name = "Label",
@@ -167,7 +179,20 @@ return function(scope: Types.Scope, props: Types.MenuButtonProps): Instance
 						Size = UDim2.new(0, 0, 1, 0),
 						TextTruncate = Enum.TextTruncate.AtEnd,
 						LayoutOrder = 2,
-						[Children] = scope:New("UIFlexItem")({ FlexMode = Enum.UIFlexMode.Fill }),
+						[Children] = {
+							scope:New("UIFlexItem")({ FlexMode = Enum.UIFlexMode.Fill }),
+							-- A row that is coming in is blurred, and comes into focus as it arrives.
+							if reveal ~= nil
+								then TextBlur.shadow(
+									scope,
+									theme.Typography.Button.Size,
+									fg,
+									scope:Computed(function(use)
+										return 1 - math.clamp(use(reveal :: any) :: number, 0, 1)
+									end)
+								)
+								else nil,
+						},
 					}),
 				},
 			}),
@@ -194,7 +219,7 @@ return function(scope: Types.Scope, props: Types.MenuButtonProps): Instance
 							Color = fg,
 						}))({
 							LayoutOrder = 1,
-							ImageTransparency = if disabled then 0.38 else 0,
+							ImageTransparency = fade(if disabled then 0.38 else 0),
 						})
 						else nil,
 					if trailingInst then scope:Apply(trailingInst)({ LayoutOrder = 2 }) else nil,
@@ -215,7 +240,15 @@ return function(scope: Types.Scope, props: Types.MenuButtonProps): Instance
 	if label then
 		local truncated = scope:Value(false)
 		local tooltipMade = false
+		local alive = true
+		table.insert(scope, function()
+			alive = false
+		end)
 		local function refresh()
+			-- The row can be gone by the time a deferred or late signal arrives.
+			if not alive then
+				return
+			end
 			local cut = not label.TextFits
 			truncated:set(cut)
 			if cut and not tooltipMade then

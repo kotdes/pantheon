@@ -37,7 +37,17 @@ scope:Tooltip({
 | `Target` | `Instance` | :x: | - | The element that shows the tooltip when hovered. |
 | `Placement` | `TooltipPlacement` | :x: | `"Auto"` | Preferred side of the target. `"Auto"` picks the side with most room. |
 | `Gap` | `number` | :x: | `8` | Space between the target and the tooltip in pixels. |
+| `Tail` | `boolean` | :x: | from the blueprint | Draw a tail on the edge that faces the target. The tail slides along the edge as the tooltip moves. It also turns on the gliding between tooltips, described below. |
+| `Color` | `UsedAs<ColorInput>` | :x: | The inverse of the surface | Colour of a tooltip with a tail: a palette name, a `Color3` or a role. |
 | `Enabled` | `UsedAs<boolean>` | :x: | `true` | Whether hovering the target shows the tooltip. Pass a state to turn it on and off. |
+
+## Tail and gliding
+
+With `Tail`, the tooltip is a pill in the inverse colour of the surface, with a tail that points at the target. The tail is on the edge that faces the target and slides along it as the tooltip moves.
+
+When the pointer goes from one target to another within about a third of a second, the next tooltip does not appear. It starts as the shape of the last one and moves, resizes and changes colour on the way to its own, and its text slides out and in. Both tooltips have to be on the same layer.
+
+The Pantheon blueprint turns `Tail` on. Materia keeps the plain tooltip.
 
 ## See also
 

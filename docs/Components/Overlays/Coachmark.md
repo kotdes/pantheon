@@ -51,6 +51,7 @@ The card and the pulse are placed in the space of the layer and kept inside it, 
 | `Placement` | `TooltipPlacement` | :x: | `"Auto"` | Preferred side of the target for the card. |
 | `Spotlight` | `boolean` | :x: | `true` | Dim everything except the target. |
 | `Dim` | `number` | :x: | `0.55` | How dark the scrim is, from `0` to `1`. |
+| `ScrimRadius` | `number` | :x: | `0` | Corner radius in px of the dimmed area. Inside a window the dimming takes on the window's corner radius by itself. Set this to use another radius. |
 | `DismissOnScrim` | `boolean` | :x: | `false` | Close the coachmark when the dimmed area is pressed. |
 | `TargetPadding` | `number` | :x: | `6` | Space in pixels around the cut-out. |
 | `Gap` | `number` | :x: | `16` | Space in pixels between the target and the card. |

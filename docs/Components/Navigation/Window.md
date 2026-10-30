@@ -71,6 +71,7 @@ Set `Resizable` to add handles on the edges and corners. Use `MinSize`, `MaxSize
 | `RailOrientation` | `"Vertical" \| "Horizontal"` | :x: | - | Whether the rail is `"Vertical"` or `"Horizontal"`. Set this to match `NavigationRail.Orientation`. When left out it is guessed from the size of the rail. |
 | `CornerRadius` | `number` | :x: | `Metrics.RadiusPanel` | Corner radius of the window in pixels. |
 | `Elevated` | `boolean` | :x: | `true` | Use the raised fill and a larger shadow. |
+| `BackgroundTransparency` | `UsedAs<number>` | :x: | `0` | Transparency of the window fill, from 0 (opaque) to 1. The edges and the content stay opaque. |
 | `Draggable` | `boolean` | :x: | `false` | Let the user drag the window by its app bar. |
 | `DragBounds` | `"Titlebar" \| "Screen" \| "Free"` | :x: | `"Titlebar"` | `"Titlebar"` lets the window leave the screen but keeps the handle reachable. `"Screen"` keeps the whole window on screen. `"Free"` has no limit. |
 | `DragKeepVisible` | `number` | :x: | `120` | `"Titlebar"` only. How much of the window must stay on screen horizontally, in pixels. |

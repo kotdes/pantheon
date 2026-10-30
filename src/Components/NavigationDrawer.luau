@@ -13,7 +13,9 @@ local Types = require(script.Parent.Parent.Types)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Focus = require(script.Parent.Parent.Internal.Focus)
 local Layer = require(script.Parent.Parent.Internal.Layer)
+local Motion = require(script.Parent.Parent.Internal.Motion)
 local Corners = require(script.Parent.Parent.Internal.Corners)
+local Defaults = require(script.Parent.Parent.Internal.Defaults)
 local Overlay = require(script.Parent.Overlay)
 local Menu = require(script.Parent.Menu)
 
@@ -66,12 +68,13 @@ return function(scope: Types.Scope, props: Types.NavigationDrawerProps): Instanc
 	local modal = scope:Computed(function(use)
 		return use(open) and not use(docked)
 	end)
-	local openS = scope:Spring(
+	local openS = Motion.spring(
+		scope,
 		scope:Computed(function(use)
 			return if use(shown) then 1 else 0
 		end),
-		theme.Motion.SpringSpeed,
-		theme.Motion.SpringDamping
+		theme,
+		"Soft"
 	)
 
 	-- The width follows `Width` with a spring, so a drawer that gets narrower or wider glides.
@@ -79,7 +82,7 @@ return function(scope: Types.Scope, props: Types.NavigationDrawerProps): Instanc
 		local given = if props.Width ~= nil then use(props.Width :: any) else nil
 		return given or theme.Metrics.DrawerWidth
 	end)
-	local widthS = scope:Spring(widthGoal, theme.Motion.SpringSpeed, theme.Motion.SpringDamping)
+	local widthS = Motion.spring(scope, widthGoal, theme, "Soft")
 	local inset = props.Inset or (if props.Sidebar then theme.Metrics.SidebarInset else 0)
 	local cornerRadius = props.CornerRadius
 		or (if inset > 0 then theme.Metrics.RadiusPanel + 4 else theme.Metrics.RadiusPanel)
@@ -110,7 +113,9 @@ return function(scope: Types.Scope, props: Types.NavigationDrawerProps): Instanc
 		OnChanged = props.OnChanged,
 		MaxHeight = props.MaxHeight,
 		Fill = props.MaxHeight == nil,
+		Padding = props.Padding or Defaults.get(theme, "NavigationDrawer", "Padding"),
 		Background = if props.Sidebar then theme.Colors.Sidebar else nil,
+		BackgroundTransparency = props.BackgroundTransparency,
 		BorderColor = if props.Sidebar then theme.Colors.SidebarSelected else nil,
 		Size = scope:Computed(function(use)
 			return UDim2.new(0, use(widthS), 1, -inset * 2)
@@ -128,7 +133,9 @@ return function(scope: Types.Scope, props: Types.NavigationDrawerProps): Instanc
 			return UDim2.new(0, inset + (t - 1) * (use(widthS) + inset), 0, inset)
 		end),
 		-- CanvasGroup wrap must stay transparent; the inner Menu is already opaque.
-		BackgroundTransparency = if menu:IsA("CanvasGroup") then 1 else 0,
+		BackgroundTransparency = if menu:IsA("CanvasGroup")
+			then 1
+			else props.BackgroundTransparency or 0,
 		ClipsDescendants = true,
 	})
 
@@ -158,7 +165,6 @@ return function(scope: Types.Scope, props: Types.NavigationDrawerProps): Instanc
 			scope:Apply(Overlay(scope, {
 				Theme = theme,
 				OnClick = close,
-				CornerRadius = cornerRadius + inset,
 				ZIndex = 60,
 			}))({
 				-- No scrim while docked: the content beside the drawer stays in use.

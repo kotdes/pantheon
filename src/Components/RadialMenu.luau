@@ -6,7 +6,6 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
-local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local Persist = require(script.Parent.Parent.Internal.Persist)
@@ -14,6 +13,11 @@ local Bind = require(script.Parent.Parent.Internal.Bind)
 local Focus = require(script.Parent.Parent.Internal.Focus)
 local Layer = require(script.Parent.Parent.Internal.Layer)
 local ScrollInput = require(script.Parent.Parent.Internal.ScrollInput)
+local Defaults = require(script.Parent.Parent.Internal.Defaults)
+local Morph = require(script.Parent.Parent.Internal.Morph)
+local Motion = require(script.Parent.Parent.Internal.Motion)
+local TextBlur = require(script.Parent.Parent.Internal.TextBlur)
+local Presence = require(script.Parent.Parent.Internal.Presence)
 local Icon = require(script.Parent.Icon)
 
 local Children = Fusion.Children
@@ -32,19 +36,32 @@ return function(scope: Types.Scope, props: Types.RadialMenuProps): Instance
 	local count = #items
 	local radius = props.Radius or 96
 	local itemSize = props.ItemSize or 52
+	-- With `FromOrigin` the choices flow: a highlight glides from one choice to the next, and the
+	-- springs come from the theme. Without it, the ring keeps the springs it always had.
+	local liquid = Presence.fromOrigin(theme)
+	local outlined = Defaults.outlined(theme, "RadialMenu", props.Outlined)
 	local persistKey = Persist.key("RadialMenu", true)
 	local open = Persist.value(scope, persistKey, "open", peek(props.Open) == true)
 	Bind.link(scope, props.Open, open)
 
 	local hovered = scope:Value(0) -- index of the choice the pointer is over, or 0
 	local origin = scope:Value(Vector2.zero) -- centre of the ring, in the space of the layer
-	local openS = scope:Spring(
-		scope:Computed(function(use)
-			return if use(open) then 1 else 0
-		end),
-		theme.Motion.SpringSpeed * 1.2,
-		0.65
-	)
+	local openGoal = scope:Computed(function(use)
+		return if use(open) then 1 else 0
+	end)
+	local openS = if liquid
+		then Motion.spring(scope, openGoal, theme, "Bouncy")
+		else scope:Spring(openGoal, theme.Motion.SpringSpeed * 1.2, 0.65)
+
+	-- With a `MorphTarget`, the ring grows out of that element: it starts as its shape and becomes
+	-- the ring. The ring then opens on the element, and not where the pointer is.
+	local morphFrom = Layer.asGui(props.MorphTarget)
+	local ringSprings = if liquid and morphFrom then Morph.springs(scope, theme, open) else nil
+	local ringSize = (radius + itemSize / 2 + 10) * 2
+	local fromPos = scope:Value(Vector2.zero)
+	local fromSize = scope:Value(Vector2.zero)
+	local fromRadius = scope:Value(0)
+	local fromColor = scope:Value(peek(theme.Colors.Surface))
 
 	local layer = scope:New("TextButton")({
 		Name = "RadialMenu",
@@ -80,32 +97,72 @@ return function(scope: Types.Scope, props: Types.RadialMenuProps): Instance
 	end
 
 	-- the ring
-	local ring = scope:New("Frame")({
+	scope:New("Frame")({
 		Name = "Ring",
-		BackgroundColor3 = theme.Colors.Surface,
+		BackgroundColor3 = if ringSprings
+			then scope:Computed(function(use)
+				local t = math.clamp(use(ringSprings.Shape) :: number, 0, 1)
+				return (use(fromColor) :: Color3):Lerp(use(theme.Colors.Surface), t)
+			end)
+			else theme.Colors.Surface,
 		BackgroundTransparency = scope:Computed(function(use)
-			return 1 - 0.85 * math.clamp(use(openS) :: number, 0, 1)
+			local shown = if ringSprings then ringSprings.Shape else openS
+			return 1 - 0.85 * math.clamp(use(shown) :: number, 0, 1)
 		end),
-		AnchorPoint = Vector2.new(0.5, 0.5),
+		AnchorPoint = if ringSprings then Vector2.zero else Vector2.new(0.5, 0.5),
 		Position = scope:Computed(function(use)
 			local at = use(origin) :: Vector2
+			if ringSprings then
+				local from = use(fromPos) :: Vector2
+				local to = at - Vector2.new(ringSize, ringSize) / 2
+				return UDim2.fromOffset(
+					Morph.mix(from.X, to.X, use(ringSprings.X) :: number),
+					Morph.mix(from.Y, to.Y, use(ringSprings.Y) :: number)
+				)
+			end
 			return UDim2.fromOffset(at.X, at.Y)
 		end),
 		Size = scope:Computed(function(use)
-			local reach = (radius + itemSize / 2 + 10) * 2 * math.max(use(openS) :: number, 0)
+			if ringSprings then
+				local from = use(fromSize) :: Vector2
+				return UDim2.fromOffset(
+					math.max(Morph.mix(from.X, ringSize, use(ringSprings.Width) :: number), 0),
+					math.max(Morph.mix(from.Y, ringSize, use(ringSprings.Height) :: number), 0)
+				)
+			end
+			local reach = ringSize * math.max(use(openS) :: number, 0)
 			return UDim2.fromOffset(reach, reach)
 		end),
 		BorderSizePixel = 0,
 		Parent = layer,
 		[Children] = {
-			scope:New("UICorner")({ CornerRadius = UDim.new(1, 0) }),
-			scope:New("UIStroke")({
-				Color = theme.Colors.OutlineVariant,
-				Thickness = 1,
-				ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+			scope:New("UICorner")({
+				CornerRadius = if ringSprings
+					then scope:Computed(function(use)
+						local t = math.clamp(use(ringSprings.Shape) :: number, 0, 1)
+						return UDim.new(0, Morph.mix(use(fromRadius) :: number, ringSize / 2, t))
+					end)
+					else UDim.new(1, 0),
 			}),
+			if outlined
+				then scope:New("UIStroke")({
+					Color = theme.Colors.OutlineVariant,
+					Thickness = 1,
+					ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+				})
+				else nil,
+			if liquid
+				then scope:New("UIShadow")({
+					BlurRadius = UDim.new(0, 24),
+					Color = Color3.new(0, 0, 0),
+					Offset = UDim2.fromOffset(0, 8),
+					Transparency = scope:Computed(function(use)
+						return 1 - 0.18 * math.clamp(use(openS) :: number, 0, 1)
+					end),
+				})
+				else nil,
 		},
-	}) :: Frame
+	})
 
 	-- The name of the choice under the pointer, in the middle.
 	scope:New("TextLabel")({
@@ -113,10 +170,13 @@ return function(scope: Types.Scope, props: Types.RadialMenuProps): Instance
 		Parent = layer,
 		BackgroundTransparency = 1,
 		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = ring.Position,
+		Position = scope:Computed(function(use)
+			local at = use(origin) :: Vector2
+			return UDim2.fromOffset(at.X, at.Y)
+		end),
 		Size = UDim2.fromOffset(radius * DEAD_ZONE * 2, 40),
 		FontFace = theme.Typography.Label.Font,
-		TextSize = A.size(theme, 14),
+		TextSize = theme.Typography.Label.Size,
 		TextWrapped = true,
 		TextColor3 = theme.Colors.OnSurface,
 		TextTransparency = scope:Computed(function(use)
@@ -126,7 +186,88 @@ return function(scope: Types.Scope, props: Types.RadialMenuProps): Instance
 			local item = items[use(hovered) :: number]
 			return if item then (item.Text or item.Id) else (props.Title or "")
 		end),
+		-- The name comes into focus as the ring opens.
+		[Children] = {
+			TextBlur.shadow(
+				scope,
+				theme.Typography.Label.Size,
+				theme.Colors.OnSurface,
+				scope:Computed(function(use)
+					return 1 - math.clamp(use(openS) :: number, 0, 1)
+				end)
+			),
+		},
 	})
+
+	-- The highlight is one shape that glides between the choices. The two axes and the size each
+	-- have a spring of their own, so it stretches as it goes and settles with a small wobble.
+	local last = scope:Value(1)
+	if liquid then
+		table.insert(
+			scope,
+			scope:Observer(hovered):onBind(function()
+				local index = peek(hovered) :: number
+				if index > 0 then
+					last:set(index)
+				end
+			end)
+		)
+		local function spot(use: any): Vector2
+			local angle = math.rad((use(last) - 1) * 360 / count - 90)
+			return (use(origin) :: Vector2) + Vector2.new(math.cos(angle), math.sin(angle)) * radius
+		end
+		local active = scope:Computed(function(use)
+			return if use(hovered) > 0 then 1 else 0
+		end)
+		local x = Motion.spring(
+			scope,
+			scope:Computed(function(use)
+				return spot(use).X
+			end),
+			theme,
+			"LiquidMove"
+		)
+		local y = Motion.spring(
+			scope,
+			scope:Computed(function(use)
+				return spot(use).Y
+			end),
+			theme,
+			"LiquidMove",
+			0.82
+		)
+		local across = Motion.spring(scope, active, theme, "LiquidWidth")
+		local down = Motion.spring(scope, active, theme, "LiquidHeight")
+		scope:New("Frame")({
+			Name = "Highlight",
+			Parent = layer,
+			BackgroundColor3 = theme.Colors.Primary,
+			BorderSizePixel = 0,
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			ZIndex = 1,
+			Position = scope:Computed(function(use)
+				return UDim2.fromOffset(use(x) :: number, use(y) :: number)
+			end),
+			Size = scope:Computed(function(use)
+				local grown = itemSize * 1.14
+				return UDim2.fromOffset(
+					math.max(grown * (use(across) :: number), 0),
+					math.max(grown * (use(down) :: number), 0)
+				)
+			end),
+			[Children] = {
+				scope:New("UICorner")({ CornerRadius = UDim.new(1, 0) }),
+				scope:New("UIShadow")({
+					BlurRadius = UDim.new(0, 14),
+					Color = theme.Colors.Primary,
+					Offset = UDim2.fromOffset(0, 4),
+					Transparency = scope:Computed(function(use)
+						return 1 - 0.35 * math.clamp(use(down) :: number, 0, 1)
+					end),
+				}),
+			},
+		})
+	end
 
 	local buttons: { GuiObject } = {}
 	for index, item in items do
@@ -137,13 +278,12 @@ return function(scope: Types.Scope, props: Types.RadialMenuProps): Instance
 			return use(hovered) == index
 		end)
 		-- Each choice springs out from the middle, a little later than the one before it.
-		local reach = scope:Spring(
-			scope:Computed(function(use)
-				return if use(open) then 1 else 0
-			end),
-			theme.Motion.SpringSpeed * (1.1 - 0.04 * index),
-			0.62
-		)
+		local reachGoal = scope:Computed(function(use)
+			return if use(open) then 1 else 0
+		end)
+		local reach = if liquid
+			then Motion.spring(scope, reachGoal, theme, "Bouncy", 1.1 - 0.04 * index)
+			else scope:Spring(reachGoal, theme.Motion.SpringSpeed * (1.1 - 0.04 * index), 0.62)
 		local lift = scope:Spring(
 			scope:Computed(function(use)
 				return if use(isHovered) and not disabled then 1 else 0
@@ -178,7 +318,9 @@ return function(scope: Types.Scope, props: Types.RadialMenuProps): Instance
 				)
 			end),
 			BackgroundTransparency = scope:Computed(function(use)
-				return 1 - math.clamp(use(reach) :: number, 0, 1) * (if disabled then 0.5 else 1)
+				local shown = math.clamp(use(reach) :: number, 0, 1) * (if disabled then 0.5 else 1)
+				-- The highlight is behind the choice that is under the pointer, so its own disc goes.
+				return 1 - shown * (if liquid then 1 - math.clamp(use(lift) :: number, 0, 1) else 1)
 			end),
 			BorderSizePixel = 0,
 			ZIndex = 2,
@@ -212,7 +354,7 @@ return function(scope: Types.Scope, props: Types.RadialMenuProps): Instance
 						BackgroundTransparency = 1,
 						Size = UDim2.fromScale(1, 1),
 						FontFace = theme.Typography.Label.Font,
-						TextSize = A.size(theme, 13),
+						TextSize = theme.Typography.Label.Size,
 						TextColor3 = theme.Colors.OnSurface,
 						Text = item.Text or item.Id,
 					}),
@@ -281,7 +423,19 @@ return function(scope: Types.Scope, props: Types.RadialMenuProps): Instance
 				local base = if parent and parent:IsA("GuiObject")
 					then (parent :: GuiObject).AbsolutePosition
 					else Vector2.zero
-				local at = props.Origin or (ScrollInput.mouseLocation() - base)
+				local at = props.Origin
+					or (
+						if morphFrom
+							then morphFrom.AbsolutePosition - base + morphFrom.AbsoluteSize / 2
+							else ScrollInput.mouseLocation() - base
+					)
+				if morphFrom and ringSprings and parent and parent:IsA("GuiObject") then
+					local start = Morph.originOf(morphFrom, parent :: GuiObject)
+					fromPos:set(start.Position)
+					fromSize:set(start.Size)
+					fromRadius:set(start.Radius)
+					fromColor:set(start.Color or peek(theme.Colors.Surface))
+				end
 				local margin = radius + itemSize / 2 + 12
 				origin:set(
 					Vector2.new(

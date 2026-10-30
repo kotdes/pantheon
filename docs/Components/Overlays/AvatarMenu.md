@@ -38,6 +38,7 @@ scope:AvatarMenu({
 | `ZIndex` | `UsedAs<number>` | :x: | - | Z index of the component. |
 | `Open` | `UsedAs<boolean>` | :x: | - | Whether the menu is shown. Follows the state you pass. |
 | `Target` | `Instance` | :x: | - | The element the menu is placed next to. |
+| `MorphTarget` | `Instance` | :x: | `Target` | The element that the shape grows out of when the blueprint morphs panels (`FromOrigin`, as in Pantheon). Set it to grow out of some other element than the one the panel is placed beside. For a RadialMenu it is also where the ring opens. |
 | `Sections` | `{ MenuSectionProps }` | :x: | - | Groups of rows. See [MenuSection](./MenuSection.md). |
 | `MaxHeight` | `number` | :x: | - | Largest height of the menu in pixels. |
 | `Image` | `string` | :x: | - | Asset ID of the picture in the header. |

@@ -7,6 +7,7 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local Motion = require(script.Parent.Parent.Internal.Motion)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Layer = require(script.Parent.Parent.Internal.Layer)
 local ScrollInput = require(script.Parent.Parent.Internal.ScrollInput)
@@ -176,7 +177,7 @@ return function(scope: Types.Scope, props: Types.SnackbarHostProps?): HostApi
 		end)
 
 		local shown = inner:Value(0)
-		local progress = inner:Spring(shown, theme.Motion.SpringSpeed, theme.Motion.SpringDamping)
+		local progress = Motion.spring(inner, shown, theme, "Bouncy")
 		local height = inner:Value(56)
 		local entry: Entry = {
 			dismiss = function() end,

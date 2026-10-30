@@ -5,6 +5,9 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local Motion = require(script.Parent.Parent.Internal.Motion)
+local Morph = require(script.Parent.Parent.Internal.Morph)
+local Presence = require(script.Parent.Parent.Internal.Presence)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Focus = require(script.Parent.Parent.Internal.Focus)
 local Layer = require(script.Parent.Parent.Internal.Layer)
@@ -26,14 +29,6 @@ return function(scope: Types.Scope, props: Types.AvatarMenuProps): Instance
 		end
 		return (if typeof(openRef) == "table" then use(openRef) else openRef) == true
 	end)
-	local openS = scope:Spring(
-		scope:Computed(function(use)
-			return if use(open) then 1 else 0
-		end),
-		theme.Motion.SpringSpeed * 0.9,
-		theme.Motion.SpringDamping
-	)
-
 	local width = 280
 	local pos = scope:Value(UDim2.fromOffset(16, 72))
 
@@ -114,12 +109,13 @@ return function(scope: Types.Scope, props: Types.AvatarMenuProps): Instance
 	-- TODO: When AvatarMenu is nested, the return to main content button in the nested page component may have additional spacing at the top.
 	local onRoot = scope:Value(true)
 	local rootId = props.RootPage or "root"
-	local profileShown = scope:Spring(
+	local profileShown = Motion.spring(
+		scope,
 		scope:Computed(function(use)
 			return if use(onRoot) then 1 else 0
 		end),
-		theme.Motion.SpringSpeed,
-		theme.Motion.SpringDamping
+		theme,
+		"Soft"
 	)
 	local natural = scope:Value(0)
 	local function measure()
@@ -169,19 +165,34 @@ return function(scope: Types.Scope, props: Types.AvatarMenuProps): Instance
 		ZIndex = (props.ZIndex or 95) + 1,
 	})
 
+	local shape = if Presence.fromOrigin(theme)
+		then Morph.create(scope, {
+			Theme = theme,
+			Open = open,
+			Content = menu :: GuiObject,
+			ZIndex = (props.ZIndex or 95) + 1,
+		})
+		else nil
+	local presence = if shape
+		then shape.Presence
+		else Presence.create(scope, open, theme, "Bouncy", 0.9)
+	local openS = presence.Progress
+
 	scope:Apply(menu)({
 		Name = "AvatarMenuPanel",
-		Position = pos,
+		Position = if shape then UDim2.fromOffset(0, 0) else pos,
 	})
 
-	local scale = Instance.new("UIScale")
-	scale.Parent = menu
-	table.insert(
-		scope,
-		scope:Observer(openS):onBind(function()
-			scale.Scale = 0.94 + 0.06 * peek(openS)
-		end)
-	)
+	if not shape then
+		local grow = Instance.new("UIScale")
+		grow.Parent = menu
+		table.insert(
+			scope,
+			scope:Observer(openS):onBind(function()
+				grow.Scale = Presence.scaleAt(theme, peek(openS))
+			end)
+		)
+	end
 
 	local function updatePosition()
 		local target = Layer.asGui(props.Target)
@@ -194,7 +205,16 @@ return function(scope: Types.Scope, props: Types.AvatarMenuProps): Instance
 		local lp = layer.AbsolutePosition
 		local x = tp.X - lp.X + ts.X - width
 		local y = tp.Y - lp.Y + ts.Y + 8
-		pos:set(UDim2.fromOffset(math.max(12, x), math.max(12, y)))
+		local at = Vector2.new(math.max(12, x), math.max(12, y))
+		pos:set(UDim2.fromOffset(at.X, at.Y))
+		if shape then
+			shape.measure(
+				Layer.asGui(props.MorphTarget) or target,
+				layer,
+				at,
+				(menu :: GuiObject).AbsoluteSize
+			)
+		end
 	end
 
 	Follow(scope, open, function(v)
@@ -206,7 +226,7 @@ return function(scope: Types.Scope, props: Types.AvatarMenuProps): Instance
 		BackgroundTransparency = 1,
 		Size = UDim2.fromScale(1, 1),
 		Visible = scope:Computed(function(use)
-			return use(openS) > 0.02
+			return use(presence.Mounted)
 		end),
 		ZIndex = props.ZIndex or 95,
 		[Children] = {
@@ -216,10 +236,10 @@ return function(scope: Types.Scope, props: Types.AvatarMenuProps): Instance
 				ZIndex = props.ZIndex or 95,
 			}))({
 				BackgroundTransparency = scope:Computed(function(use)
-					return 1 - (use(openS) :: number) * 0.4
+					return 1 - math.clamp(use(openS) :: number, 0, 1) * 0.4
 				end),
 			}),
-			menu,
+			if shape then shape.Instance else menu,
 		},
 	}) :: Frame
 

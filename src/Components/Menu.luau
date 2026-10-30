@@ -6,8 +6,10 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
+local Defaults = require(script.Parent.Parent.Internal.Defaults)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local CanvasFade = require(script.Parent.Parent.Internal.CanvasFade)
+local Corners = require(script.Parent.Parent.Internal.Corners)
 local Layer = require(script.Parent.Parent.Internal.Layer)
 local MenuNav = require(script.Parent.Parent.Internal.MenuNav)
 local ScrollArea = require(script.Parent.ScrollArea)
@@ -48,6 +50,7 @@ end
 
 return function(scope: Types.Scope, props: Types.MenuProps): Instance
 	local theme = resolveTheme(props)
+	local outlined = Defaults.outlined(theme, "Menu", props.Outlined)
 	local open = if props.Open == nil then true else props.Open
 	local openS = scope:Spring(
 		scope:Computed(function(use)
@@ -102,6 +105,7 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 		or (props.Items ~= nil and #(props.Items :: { Types.MenuItemProps }) > 0)
 
 	if hasData then
+		local rowsBefore = 0
 		for sectionIndex, section in resolveSections(props) do
 			table.insert(
 				listKids,
@@ -117,9 +121,12 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 					OnChanged = section.OnChanged,
 					Compact = if section.Compact ~= nil then section.Compact else compact,
 					OnClose = props.OnClose,
+					Progress = openS,
+					StaggerFrom = rowsBefore,
 					LayoutOrder = sectionIndex,
 				})
 			)
+			rowsBefore += #(section.Items or {})
 		end
 	end
 
@@ -545,19 +552,22 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 		Size = props.Size or UDim2.fromOffset(220, 0),
 		AutomaticSize = if fill then Enum.AutomaticSize.None else Enum.AutomaticSize.Y,
 		Visible = CanvasFade.shown(scope, openS, nil, { Theme = theme }),
-		BackgroundTransparency = CanvasFade.surfaceTransparency(scope, openS, { Theme = theme }),
+		BackgroundTransparency = props.BackgroundTransparency
+			or CanvasFade.surfaceTransparency(scope, openS, { Theme = theme }),
 		Active = true,
 		ClipsDescendants = fill or #pageInsts > 0,
 		ZIndex = props.ZIndex or 80,
 		LayoutOrder = props.LayoutOrder or 0,
 		-- `Corners` lets docked panels round only some corners ({tl, tr, bl, br}).
 		CornerRadius = props.Corners or radius,
-		Outline = {
-			Color = props.BorderColor
-				or (if hasHeader then theme.Colors.OutlineVariant else theme.Colors.Outline),
-			Thickness = 1,
-			Mode = Enum.ApplyStrokeMode.Border,
-		},
+		Outline = if outlined
+			then {
+				Color = props.BorderColor
+					or (if hasHeader then theme.Colors.OutlineVariant else theme.Colors.Outline),
+				Thickness = 1,
+				Mode = Enum.ApplyStrokeMode.Border,
+			}
+			else nil,
 		Padding = pad,
 		Layout = {
 			Kind = "List",
@@ -567,6 +577,9 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 		},
 		[Children] = kids,
 	}) :: TextButton
+	-- The menu is a container: its rows round themselves to fit its corners, and not to the window
+	-- that it floats over.
+	Corners.setContainer(menu, radius)
 
 	local nav = (scope :: any)._pantheonMenuNav
 	if nav then

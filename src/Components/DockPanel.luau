@@ -6,7 +6,7 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
-local A = require(script.Parent.Parent.Internal.Accessibility)
+local Defaults = require(script.Parent.Parent.Internal.Defaults)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local Persist = require(script.Parent.Parent.Internal.Persist)
@@ -22,6 +22,7 @@ local HEADER_HEIGHT = 32
 
 return function(scope: Types.Scope, props: Types.DockPanelProps): Instance
 	local theme = resolveTheme(props)
+	local outlined = Defaults.outlined(theme, "DockPanel", props.Outlined)
 	local tabs = props.Tabs
 	local hasTabs = tabs ~= nil and #tabs > 0
 
@@ -52,14 +53,17 @@ return function(scope: Types.Scope, props: Types.DockPanelProps): Instance
 			SortOrder = Enum.SortOrder.LayoutOrder,
 			Padding = UDim.new(0, 4),
 		}),
-		scope:New("UIPadding")({ PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 6) }),
+		scope:New("UIPadding")({
+			PaddingLeft = UDim.new(0, 8),
+			PaddingRight = UDim.new(0, theme.Metrics.SpaceXs),
+		}),
 	}
 
 	if props.Collapsible then
 		local arrow = scope:Apply(Icon(scope, {
 			Theme = theme,
 			Name = "chevron-down",
-			IconSize = 16,
+			IconSize = theme.Metrics.IconSm,
 			Color = theme.Colors.OnSurfaceVariant,
 		}))({
 			LayoutOrder = 1,
@@ -129,7 +133,7 @@ return function(scope: Types.Scope, props: Types.DockPanelProps): Instance
 				Size = UDim2.new(0, 0, 1, 0),
 				LayoutOrder = index,
 				FontFace = theme.Typography.Label.Font,
-				TextSize = A.size(theme, 13),
+				TextSize = theme.Typography.Label.Size,
 				TextColor3 = scope:Computed(function(use)
 					local on = if use(selected) == tab.Id then 1 else 0
 					return Interaction.lerpColor(
@@ -188,7 +192,7 @@ return function(scope: Types.Scope, props: Types.DockPanelProps): Instance
 				TextXAlignment = Enum.TextXAlignment.Left,
 				TextTruncate = Enum.TextTruncate.AtEnd,
 				FontFace = theme.Typography.Label.Font,
-				TextSize = A.size(theme, 13),
+				TextSize = theme.Typography.Label.Size,
 				TextColor3 = theme.Colors.OnSurface,
 				Text = props.Title or "",
 				[Children] = scope:New("UIFlexItem")({ FlexMode = Enum.UIFlexMode.Fill }),
@@ -298,11 +302,13 @@ return function(scope: Types.Scope, props: Types.DockPanelProps): Instance
 			end)
 			else full,
 		CornerRadius = theme.Metrics.RadiusSm,
-		Outline = {
-			Color = theme.Colors.OutlineVariant,
-			Thickness = 1,
-			Mode = Enum.ApplyStrokeMode.Border,
-		},
+		Outline = if outlined
+			then {
+				Color = theme.Colors.OutlineVariant,
+				Thickness = 1,
+				Mode = Enum.ApplyStrokeMode.Border,
+			}
+			else nil,
 		[Children] = { header, content },
 	}) :: Frame
 end

@@ -32,6 +32,7 @@ scope:Overlay({
 | `Size` | `UsedAs<UDim2>` | :x: | `UDim2.fromScale(1, 1)` | Size of the component. |
 | `Visible` | `UsedAs<boolean>` | :x: | `true` | Whether the component is shown. |
 | `ZIndex` | `UsedAs<number>` | :x: | `50` | Z index of the component. |
+| `Transparency` | `number` | :x: | `0.35` | Background transparency of the scrim, from `0` to `1`. A higher number is lighter. |
 | `CornerRadius` | `number` | :x: | `0`, or the window's | Corner radius of the scrim in pixels. Inside a [Window](../Navigation/Window.md) it takes the corner radius of the window when this is left out. |
 
 ## Callbacks

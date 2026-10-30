@@ -2,7 +2,7 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
-local A = require(script.Parent.Parent.Internal.Accessibility)
+local Motion = require(script.Parent.Parent.Internal.Motion)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local EdgeFade = require(script.Parent.Parent.Internal.EdgeFade)
@@ -30,7 +30,7 @@ return function(scope: Types.Scope, props: Types.AppBarProps): Instance
 				else props.ScrollOffset
 			return math.clamp((offset :: number) / ramp, 0, 1)
 		end)
-		raised = scope:Spring(target, theme.Motion.SpringSpeed, theme.Motion.SpringDamping)
+		raised = Motion.spring(scope, target, theme, "Smooth")
 	end
 	local function level(use: any): number
 		local v = if typeof(raised) == "table" then use(raised) else raised
@@ -44,6 +44,11 @@ return function(scope: Types.Scope, props: Types.AppBarProps): Instance
 			else scope:Computed(function(use)
 				return Interaction.lerpColor(fadeTo, raisedColor, level(use), use)
 			end),
+		BackgroundTransparency = if gradient and props.FadeAtTop
+			then scope:Computed(function(use)
+				return 1 - level(use)
+			end)
+			else 0,
 		CornerRadius = props.Radius or { theme.Metrics.RadiusPanel, 0 },
 		Size = props.Size or UDim2.new(1, 0, 0, barHeight + fadeHeight),
 		LayoutOrder = props.LayoutOrder or 0,
@@ -93,7 +98,7 @@ return function(scope: Types.Scope, props: Types.AppBarProps): Instance
 						else scope:TextLabel({
 							BackgroundTransparency = 1,
 							FontFace = theme.Fonts.Heading,
-							TextSize = A.size(theme, 18),
+							TextSize = theme.Typography.Title.Size,
 							TextColor3 = theme.Colors.OnSurface,
 							TextXAlignment = Enum.TextXAlignment.Left,
 							TextYAlignment = Enum.TextYAlignment.Center,

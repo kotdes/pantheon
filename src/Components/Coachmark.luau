@@ -20,18 +20,40 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
-local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local CanvasFade = require(script.Parent.Parent.Internal.CanvasFade)
+local Motion = require(script.Parent.Parent.Internal.Motion)
+local Corners = require(script.Parent.Parent.Internal.Corners)
 local Layer = require(script.Parent.Parent.Internal.Layer)
 local Follow = require(script.Parent.Parent.Internal.Follow)
 local place = require(script.Parent.Parent.Internal.Placement)
+local Presence = require(script.Parent.Parent.Internal.Presence)
 
 local Children = Fusion.Children
 local peek = Fusion.peek
 
 local ARROW = 14 -- px, side of the rotated square
 local PULSE_PERIOD = 1.6
+
+--- Moves `position` towards `target` with a spring of the given speed and damping ratio. The
+--- step is split so that a long frame cannot make a stiff spring blow up.
+local function spring(
+	position: number,
+	velocity: number,
+	target: number,
+	speed: number,
+	damping: number,
+	dt: number
+): (number, number)
+	local steps = math.max(1, math.ceil(dt * 240))
+	local h = dt / steps
+	for _ = 1, steps do
+		local acceleration = speed * speed * (target - position) - 2 * damping * speed * velocity
+		velocity += acceleration * h
+		position += velocity * h
+	end
+	return position, velocity
+end
 
 return function(scope: Types.Scope, props: Types.CoachmarkProps): Instance
 	local theme = resolveTheme(props)
@@ -53,12 +75,13 @@ return function(scope: Types.Scope, props: Types.CoachmarkProps): Instance
 	if typeof(open) ~= "table" then
 		open = scope:Value(open ~= false)
 	end
-	local openS = scope:Spring(
+	local openS = Motion.spring(
+		scope,
 		scope:Computed(function(use)
 			return if use(open) then 1 else 0
 		end),
-		theme.Motion.SpringSpeed,
-		theme.Motion.SpringDamping
+		theme,
+		"Gentle"
 	)
 
 	local function dismiss()
@@ -153,7 +176,7 @@ return function(scope: Types.Scope, props: Types.CoachmarkProps): Instance
 			AutomaticSize = Enum.AutomaticSize.XY,
 			Size = UDim2.fromOffset(0, 0),
 			FontFace = theme.Typography.Label.Font,
-			TextSize = A.size(theme, 14),
+			TextSize = theme.Typography.Label.Size,
 			TextColor3 = onCard,
 			Text = props.ActionText or "Got it",
 			[Fusion.OnEvent("Activated")] = function()
@@ -167,10 +190,10 @@ return function(scope: Types.Scope, props: Types.CoachmarkProps): Instance
 			[Children] = {
 				scope:New("UICorner")({ CornerRadius = UDim.new(1, 0) }),
 				scope:New("UIPadding")({
-					PaddingTop = UDim.new(0, 6),
-					PaddingBottom = UDim.new(0, 6),
-					PaddingLeft = UDim.new(0, 14),
-					PaddingRight = UDim.new(0, 14),
+					PaddingTop = UDim.new(0, theme.Metrics.SpaceXs),
+					PaddingBottom = UDim.new(0, theme.Metrics.SpaceXs),
+					PaddingLeft = UDim.new(0, theme.Metrics.SpaceMd),
+					PaddingRight = UDim.new(0, theme.Metrics.SpaceMd),
 				}),
 			} :: any,
 		})
@@ -213,6 +236,31 @@ return function(scope: Types.Scope, props: Types.CoachmarkProps): Instance
 	local cardHost = CanvasFade.host(scope, card, openS, { Theme = theme })
 	cardHost.ZIndex = 4
 
+	local scrimCorner = scope:New("UICorner")({
+		CornerRadius = UDim.new(0, props.ScrimRadius or 0),
+	}) :: UICorner
+	local scrimGroup = scope:New("CanvasGroup")({
+		Name = "Scrim",
+		BackgroundTransparency = 1,
+		Size = UDim2.fromScale(1, 1),
+		ZIndex = 1,
+		[Children] = {
+			scrimCorner,
+			scrimTop,
+			scrimBottom,
+			scrimLeft,
+			scrimRight,
+		} :: any,
+	}) :: CanvasGroup
+	if props.ScrimRadius == nil then
+		table.insert(
+			scope,
+			Corners.followWindow(scrimGroup, function(radius: number)
+				scrimCorner.CornerRadius = UDim.new(0, radius)
+			end)
+		)
+	end
+
 	local root = scope:New("Frame")({
 		Name = "Coachmark",
 		BackgroundTransparency = 1,
@@ -222,10 +270,7 @@ return function(scope: Types.Scope, props: Types.CoachmarkProps): Instance
 			return (use(openS) :: number) > 0.01
 		end),
 		[Children] = {
-			scrimTop,
-			scrimBottom,
-			scrimLeft,
-			scrimRight,
+			scrimGroup,
 			ring :: any,
 			arrow :: any,
 			cardHost :: any,
@@ -240,7 +285,25 @@ return function(scope: Types.Scope, props: Types.CoachmarkProps): Instance
 	end
 
 	local clock = 0
-	local shown: { X: number, Y: number, W: number, H: number, CX: number, CY: number }? = nil
+	-- With `FromOrigin` the spotlight and the card move between targets like a liquid: the two
+	-- axes and the size each have a spring of their own, so the shape stretches on the way and
+	-- settles with a small wobble. Without it they ease towards the target as they always did.
+	local liquid = Presence.fromOrigin(theme)
+	local shown: {
+		X: number,
+		Y: number,
+		W: number,
+		H: number,
+		CX: number,
+		CY: number,
+		VX: number,
+		VY: number,
+		VW: number,
+		VH: number,
+		VCX: number,
+		VCY: number,
+	}? =
+		nil
 	local lastTarget: GuiObject? = nil
 
 	local function update(dt: number)
@@ -263,8 +326,32 @@ return function(scope: Types.Scope, props: Types.CoachmarkProps): Instance
 		local wantX, wantY = math.max(tp.X, 0), math.max(tp.Y, 0)
 		local wantW, wantH = math.min(ts.X, W - wantX), math.min(ts.Y, H - wantY)
 		local ease = 1 - math.exp(-math.min(dt, 0.1) * 14)
+		local step = math.min(dt, 0.05)
 		if shown == nil then
-			shown = { X = wantX, Y = wantY, W = wantW, H = wantH, CX = 0, CY = 0 }
+			shown = {
+				X = wantX,
+				Y = wantY,
+				W = wantW,
+				H = wantH,
+				CX = 0,
+				CY = 0,
+				VX = 0,
+				VY = 0,
+				VW = 0,
+				VH = 0,
+				VCX = 0,
+				VCY = 0,
+			}
+		elseif liquid then
+			local moveSpeed, moveDamping = Motion.tuning(theme, "LiquidMove")
+			local widthSpeed, widthDamping = Motion.tuning(theme, "LiquidWidth")
+			local heightSpeed, heightDamping = Motion.tuning(theme, "LiquidHeight")
+			shown.X, shown.VX = spring(shown.X, shown.VX, wantX, moveSpeed, moveDamping, step)
+			shown.Y, shown.VY =
+				spring(shown.Y, shown.VY, wantY, moveSpeed * 0.82, moveDamping, step)
+			shown.W, shown.VW = spring(shown.W, shown.VW, wantW, widthSpeed, widthDamping, step)
+			shown.H, shown.VH = spring(shown.H, shown.VH, wantH, heightSpeed, heightDamping, step)
+			shown.W, shown.H = math.max(shown.W, 0), math.max(shown.H, 0)
 		else
 			shown.X += (wantX - shown.X) * ease
 			shown.Y += (wantY - shown.Y) * ease
@@ -295,6 +382,13 @@ return function(scope: Types.Scope, props: Types.CoachmarkProps): Instance
 		local wantCX, wantCY = pos.X.Offset, pos.Y.Offset
 		if shown.CX == 0 and shown.CY == 0 then
 			shown.CX, shown.CY = wantCX, wantCY
+		elseif liquid then
+			-- The card follows a little behind the spotlight.
+			local moveSpeed, moveDamping = Motion.tuning(theme, "LiquidMove")
+			shown.CX, shown.VCX =
+				spring(shown.CX, shown.VCX, wantCX, moveSpeed * 0.85, moveDamping, step)
+			shown.CY, shown.VCY =
+				spring(shown.CY, shown.VCY, wantCY, moveSpeed * 0.7, moveDamping, step)
 		else
 			shown.CX += (wantCX - shown.CX) * ease
 			shown.CY += (wantCY - shown.CY) * ease

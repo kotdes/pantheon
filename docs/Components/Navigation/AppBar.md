@@ -39,7 +39,7 @@ scope:AppBar({
 | `Variant` | `"Solid" \| "Gradient"` | :x: | `"Solid"` | `"Gradient"` gives a flat fill that fades out below the controls, with no divider or shadow. In a [Window](./Window.md) the content runs behind the bar. |
 | `FadeHeight` | `number` | :x: | `24` | `Gradient` only. Height of the fade below the bar, in pixels. |
 | `TitleContent` | `Instance` | :x: | - | Replaces the title text, for example with a button. |
-| `FadeAtTop` | `boolean` | :x: | - | Start flat and become raised as the content scrolls under the bar. |
+| `FadeAtTop` | `boolean` | :x: | - | Start flat and become raised as the content scrolls under the bar. With the `Gradient` variant, the bar and its gradient are invisible until the content scrolls. |
 | `ScrollOffset` | `UsedAs<number>` | :x: | - | Scroll position of the content in pixels, as a number or a state. It drives `FadeAtTop`. |
 | `FadeRamp` | `number` | :x: | `24` | Scroll distance in pixels over which the bar goes from flat to raised. |
 | `FadeTo` | `Color3` | :x: | `Colors.SurfaceContainerHigh` | Fill of the flat bar. Match the content or window fill. |

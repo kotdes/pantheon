@@ -96,6 +96,7 @@ A sidebar is flush with the window or inset from it by `SidebarInset` from the t
 | `Children` | `any` | :x: | - | Menu content built from [MenuPage](../Overlays/MenuPage.md), [MenuSection](../Overlays/MenuSection.md) and [MenuButton](../Overlays/MenuButton.md), as an alternative to `Items`. |
 | `Inset` | `number` | :x: | `0`, or `SidebarInset` with `Sidebar` | Gap in pixels between the drawer and the edge of its parent. |
 | `CornerRadius` | `number` | :x: | `Metrics.RadiusPanel`, or `Metrics.RadiusPanel + 4` when inset | Corner radius of the panel in pixels. |
+| `BackgroundTransparency` | `UsedAs<number>` | :x: | `0` | Transparency of the panel fill, from 0 (opaque) to 1. The outline and the rows stay opaque. A docked sidebar over a see-through window can use this to let the window show. |
 | `RootPage` | `string` | :x: | - | Id of the first page when `Children` has several [MenuPage](../Overlays/MenuPage.md)s. |
 | `Page` | `UsedAs<string>` | :x: | - | Id of the page to show. Follows the state you pass. |
 | `MaxHeight` | `number` | :x: | - | Largest height in pixels of the menu. When left out, the menu fills the height of the drawer. |
@@ -103,6 +104,7 @@ A sidebar is flush with the window or inset from it by `SidebarInset` from the t
 | `Footer` | `Instance` | :x: | - | Content below the menu, pinned to the bottom, such as a profile. Give it a fixed height. |
 | `DockAt` | `UsedAs<number>` | :x: | - | Width in pixels of the parent from which the drawer stays open beside the content. When left out, the drawer never docks. Pass a state to change it later, and `math.huge` to stop the drawer docking. |
 | `Width` | `UsedAs<number>` | :x: | `DrawerWidth` | Width of the drawer in pixels. When it changes, the drawer glides to the new width, and a docked drawer moves the content with it. |
+| `Padding` | `number` | :x: | `4`, or from the blueprint | Space between the edge of the drawer and its rows, in pixels. A larger value keeps a row at the bottom clear of a round corner, and gives the same space on every side. |
 | `Sidebar` | `boolean` | :x: | `false` | Fill the drawer with the theme's `Sidebar` colour and draw its border in `SidebarSelected`. Rows you compose should use `OnSidebar` for icons and text and `SidebarSelected` for the selected row. Rows from `Items` and `Sections` keep `OnSurface` text. |
 
 ## Callbacks

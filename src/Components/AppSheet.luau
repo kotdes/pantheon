@@ -10,6 +10,8 @@ local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolve
 local Focus = require(script.Parent.Parent.Internal.Focus)
 local CanvasFade = require(script.Parent.Parent.Internal.CanvasFade)
 local Layer = require(script.Parent.Parent.Internal.Layer)
+local Motion = require(script.Parent.Parent.Internal.Motion)
+local Presence = require(script.Parent.Parent.Internal.Presence)
 local Corners = require(script.Parent.Parent.Internal.Corners)
 local ScrollInput = require(script.Parent.Parent.Internal.ScrollInput)
 local Overlay = require(script.Parent.Overlay)
@@ -37,25 +39,21 @@ return function(scope: Types.Scope, props: Types.AppSheetProps): Instance
 		end
 		return (if typeof(openRef) == "table" then use(openRef) else openRef) == true
 	end)
-	local openS = scope:Spring(
-		scope:Computed(function(use)
-			return if use(open) then 1 else 0
-		end),
-		theme.Motion.SpringSpeed * 0.85,
-		theme.Motion.SpringDamping
-	)
+	local presence = Presence.create(scope, open, theme, "Soft", 0.85)
+	local openS = presence.Progress
 
 	-- Dragging the grabber or the header. `pull` is the drag in pixels, negative upwards.
 	local expanded = scope:Value(false)
 	local pull = scope:Value(0)
 	local layerHeight = scope:Value(600)
-	local pullS = scope:Spring(pull, theme.Motion.SpringSpeed, theme.Motion.SpringDamping)
-	local expandS = scope:Spring(
+	local pullS = Motion.spring(scope, pull, theme, "Soft")
+	local expandS = Motion.spring(
+		scope,
 		scope:Computed(function(use)
 			return if use(expanded) then 1 else 0
 		end),
-		theme.Motion.SpringSpeed,
-		theme.Motion.SpringDamping
+		theme,
+		"Soft"
 	)
 	-- Height of the sheet as a fraction of its layer.
 	local heightScale = scope:Computed(function(use)
@@ -145,7 +143,23 @@ return function(scope: Types.Scope, props: Types.AppSheetProps): Instance
 		}),
 		scope:Apply(IconButton(scope, {
 			Theme = theme,
+			Name = "check",
+			Variant = "Filled",
+			Color = "primary",
+			Visible = props.ConfirmWhen or false,
+			OnClick = props.OnConfirm,
+		}))({
+			LayoutOrder = 3,
+			Size = UDim2.fromOffset(40, 40),
+		}),
+		scope:Apply(IconButton(scope, {
+			Theme = theme,
 			Name = "x",
+			Visible = if props.ConfirmWhen ~= nil
+				then scope:Computed(function(use)
+					return not use(props.ConfirmWhen :: any)
+				end)
+				else true,
 			OnClick = props.OnClose,
 			-- A role name follows the theme. A colour is resolved once, so it would stay light.
 			Color = "surface",
@@ -155,6 +169,21 @@ return function(scope: Types.Scope, props: Types.AppSheetProps): Instance
 			Size = UDim2.fromOffset(40, 40),
 		}),
 	}
+	if props.TitleContent then
+		headerKids[1] = scope:Frame({
+			Name = "TitleContent",
+			BackgroundTransparency = 1,
+			Size = UDim2.new(1, 0, 1, 0),
+			LayoutOrder = 1,
+			Layout = {
+				Kind = "List",
+				FillDirection = Enum.FillDirection.Horizontal,
+				VerticalAlignment = Enum.VerticalAlignment.Center,
+				SortOrder = Enum.SortOrder.LayoutOrder,
+			},
+			[Children] = { props.TitleContent },
+		})
+	end
 	local titleLabel = headerKids[1]
 	if titleLabel and titleLabel:IsA("GuiObject") then
 		local flex = Instance.new("UIFlexItem")
@@ -274,7 +303,7 @@ return function(scope: Types.Scope, props: Types.AppSheetProps): Instance
 		Size = UDim2.fromScale(1, 1),
 		Position = UDim2.fromScale(0, 0),
 		Visible = scope:Computed(function(use)
-			return use(openS) > 0.02 and (props.Visible ~= false)
+			return use(presence.Mounted) and (props.Visible ~= false)
 		end),
 		ZIndex = props.ZIndex or 110,
 		LayoutOrder = props.LayoutOrder or 0,

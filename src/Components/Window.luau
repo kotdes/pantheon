@@ -164,9 +164,19 @@ return function(scope: Types.Scope, props: Types.WindowProps): Instance
 		content,
 		overlayLayer,
 		scope:New("UIStroke")({
+			Name = "OuterEdge",
 			BorderStrokePosition = Enum.BorderStrokePosition.Outer,
-			Color = theme.Colors.OutlineVariant,
-			Transparency = 0.25,
+			Color = Color3.new(0, 0, 0),
+			Transparency = 0.55,
+			Thickness = 1,
+			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+			ZIndex = 5,
+		}),
+		scope:New("UIStroke")({
+			Name = "InnerEdge",
+			BorderStrokePosition = Enum.BorderStrokePosition.Inner,
+			Color = Color3.new(1, 1, 1),
+			Transparency = 0.8,
 			Thickness = 1,
 			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 			ZIndex = 5,
@@ -188,6 +198,7 @@ return function(scope: Types.Scope, props: Types.WindowProps): Instance
 		BackgroundColor3 = if elevated
 			then theme.Colors.SurfaceContainerHigh
 			else theme.Colors.Surface,
+		BackgroundTransparency = props.BackgroundTransparency or 0,
 		Shadow = {
 			BlurRadius = if elevated then 24 else 6,
 			Offset = UDim2.new(0, 0, 0, 4),
@@ -403,7 +414,7 @@ return function(scope: Types.Scope, props: Types.WindowProps): Instance
 			local icon = scope:Apply(Icon(scope, {
 				Theme = theme,
 				Name = iconName,
-				IconSize = 18,
+				IconSize = theme.Metrics.IconMd,
 				Color = theme.Colors.OnSurface,
 			}))({
 				AnchorPoint = Vector2.new(0.5, 0.5),

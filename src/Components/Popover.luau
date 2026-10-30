@@ -9,6 +9,8 @@ local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolve
 local Focus = require(script.Parent.Parent.Internal.Focus)
 local Layer = require(script.Parent.Parent.Internal.Layer)
 local Follow = require(script.Parent.Parent.Internal.Follow)
+local Morph = require(script.Parent.Parent.Internal.Morph)
+local Presence = require(script.Parent.Parent.Internal.Presence)
 local place = require(script.Parent.Parent.Internal.Placement)
 local Overlay = require(script.Parent.Overlay)
 local Menu = require(script.Parent.Menu)
@@ -25,17 +27,10 @@ return function(scope: Types.Scope, props: Types.PopoverProps): Instance
 		end
 		return (if typeof(openRef) == "table" then use(openRef) else openRef) == true
 	end)
-	local openS = scope:Spring(
-		scope:Computed(function(use)
-			return if use(open) then 1 else 0
-		end),
-		theme.Motion.SpringSpeed,
-		theme.Motion.SpringDamping
-	)
-
 	local width = props.Width or 240
 	local placement = props.Placement or "Bottom"
 	local pos = scope:Value(UDim2.fromOffset(0, 0))
+	local morph = Presence.fromOrigin(theme)
 
 	local menu = Menu(scope, {
 		Theme = theme,
@@ -55,20 +50,34 @@ return function(scope: Types.Scope, props: Types.PopoverProps): Instance
 		ZIndex = (props.ZIndex or 90) + 1,
 	})
 
+	local shape = if morph
+		then Morph.create(scope, {
+			Theme = theme,
+			Open = open,
+			Content = menu :: GuiObject,
+			ZIndex = (props.ZIndex or 90) + 1,
+		})
+		else nil
+	local presence = if shape then shape.Presence else Presence.create(scope, open, theme, "Bouncy")
+	local openS = presence.Progress
+
 	scope:Apply(menu)({
 		Name = "PopoverPanel",
-		Position = pos,
+		Position = if morph then UDim2.fromOffset(0, 0) else pos,
 	})
 
-	local scale = Instance.new("UIScale")
-	scale.Parent = menu
-	table.insert(
-		scope,
-		scope:Observer(openS):onBind(function()
-			local t = peek(openS)
-			scale.Scale = 0.92 + 0.08 * t
-		end)
-	)
+	local scale: UIScale? = nil
+	if not morph then
+		local grow = Instance.new("UIScale")
+		grow.Parent = menu
+		scale = grow
+		table.insert(
+			scope,
+			scope:Observer(openS):onBind(function()
+				grow.Scale = Presence.scaleAt(theme, peek(openS))
+			end)
+		)
+	end
 
 	-- Placed with the menu's real size: on the preferred side when it fits, else on the other
 	-- side, and always kept inside the layer.
@@ -79,14 +88,25 @@ return function(scope: Types.Scope, props: Types.PopoverProps): Instance
 			return
 		end
 		local origin = layer.AbsolutePosition
+		-- The scale of the panel is part of its measured size, so take it out.
+		local size = (menu :: GuiObject).AbsoluteSize
+			/ math.max(if scale then scale.Scale else 1, 0.01)
 		local at = place(
 			placement,
 			target.AbsolutePosition - origin,
 			target.AbsoluteSize,
-			(menu :: GuiObject).AbsoluteSize,
+			size,
 			8,
 			layer.AbsoluteSize
 		)
+		if shape then
+			shape.measure(
+				Layer.asGui(props.MorphTarget) or target,
+				layer,
+				Vector2.new(at.X.Offset, at.Y.Offset),
+				size
+			)
+		end
 		pos:set(at)
 	end
 
@@ -98,9 +118,7 @@ return function(scope: Types.Scope, props: Types.PopoverProps): Instance
 		Name = "Popover",
 		BackgroundTransparency = 1,
 		Size = UDim2.fromScale(1, 1),
-		Visible = scope:Computed(function(use)
-			return use(openS) > 0.02
-		end),
+		Visible = presence.Mounted,
 		ZIndex = props.ZIndex or 90,
 		[Children] = {
 			scope:Apply(Overlay(scope, {
@@ -110,10 +128,10 @@ return function(scope: Types.Scope, props: Types.PopoverProps): Instance
 			}))({
 				BackgroundTransparency = scope:Computed(function(use)
 					-- Light dismiss scrim
-					return 1 - (use(openS) :: number) * 0.25
+					return 1 - math.clamp(use(openS) :: number, 0, 1) * 0.25
 				end),
 			}),
-			menu,
+			if shape then shape.Instance else menu,
 		},
 	}) :: Frame
 

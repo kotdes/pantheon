@@ -42,6 +42,7 @@ To build a submenu, give the menu several [MenuPage](./MenuPage.md)s as `Childre
 | `Theme` | `ThemeRef` | :x: | The contextual theme | Theme to use for this component instead of the one from `Theme.Provide`. |
 | `LayoutOrder` | `UsedAs<number>` | :x: | `0` | Position in a parent `UIListLayout` or `UIGridLayout`. |
 | `Size` | `UsedAs<UDim2>` | :x: | - | Size of the component. |
+| `BackgroundTransparency` | `UsedAs<number>` | :x: | `0` | Transparency of the fill, from 0 (opaque) to 1. The outline and the content stay opaque. |
 | `ZIndex` | `UsedAs<number>` | :x: | - | Z index of the component. |
 | `Items` | `{ any }` | :x: | - | A flat list of rows. See [MenuButton](./MenuButton.md). Used when there are no `Sections`. |
 | `Sections` | `{ MenuSectionProps }` | :x: | - | Groups of rows with optional titles. See [MenuSection](./MenuSection.md). |

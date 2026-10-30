@@ -46,6 +46,8 @@ If `OnClose` does not close the sheet, it springs back. A sheet always opens at 
 | `ZIndex` | `UsedAs<number>` | :x: | - | Z index of the component. |
 | `Open` | `UsedAs<boolean>` | :x: | - | Whether the sheet is shown. Follows the state you pass. |
 | `Title` | `UsedAs<string>` | :x: | - | Title at the top of the sheet. |
+| `TitleContent` | `Instance` | :x: | - | Replaces the title text, for example with a button that opens a menu. It sits at the start of the header and keeps its own width. |
+| `ConfirmWhen` | `UsedAs<boolean>` | :x: | - | While this is true, the close button in the header becomes a check button in the colour of the interface, and pressing it calls `OnConfirm`. |
 | `Children` | `any` | :x: | - | Content of the sheet. |
 | `Detent` | `number` | :x: | `0.92` | Normal height of the sheet as a fraction, from `0` to `1`, of the layer it is mounted on. Dragging up expands it to `1`. |
 | `ShowGrabber` | `boolean` | :x: | `true` | Show the small handle at the top. |
@@ -54,7 +56,8 @@ If `OnClose` does not close the sheet, it springs back. A sheet always opens at 
 
 | Name | Description |
 | ---- | ----------- |
-| `OnClose: () -> ()` | Runs when the user presses the scrim. |
+| `OnClose: () -> ()` | Runs when the user presses the scrim, or the close button. |
+| `OnConfirm: () -> ()` | Runs when the user presses the check button that shows while `ConfirmWhen` is true. |
 
 ## See also
 

@@ -39,6 +39,7 @@ scope:Popover({
 | `ZIndex` | `UsedAs<number>` | :x: | - | Z index of the component. |
 | `Open` | `UsedAs<boolean>` | :x: | - | Whether the popover is shown. Follows the state you pass. |
 | `Target` | `Instance` | :x: | - | The element the popover is placed next to. |
+| `MorphTarget` | `Instance` | :x: | `Target` | The element that the shape grows out of when the blueprint morphs panels (`FromOrigin`, as in Pantheon). Set it to grow out of some other element than the one the panel is placed beside. For a RadialMenu it is also where the ring opens. |
 | `Placement` | `"Auto" \| "Bottom" \| "Top" \| "Left" \| "Right"` | :x: | `"Bottom"` | Preferred side of the target. If the popover does not fit on that side, it moves to the opposite side, and it always stays inside its layer. `"Auto"` picks the side with the most room. |
 | `Items` | `{ any }` | :x: | - | Menu rows. See [MenuButton](./MenuButton.md). |
 | `Sections` | `{ MenuSectionProps }` | :x: | - | Groups of rows. See [MenuSection](./MenuSection.md). |

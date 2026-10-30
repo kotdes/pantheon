@@ -44,6 +44,8 @@ The ring is mounted on a layer, so it needs `Layer`, or one from `Layer.Provide`
 
 | Name | Type | Required | Default | Description |
 | ---- | ---- | -------- | ------- | ----------- |
+| `MorphTarget` | `Instance` | :x: | - | The element that the ring grows out of when the blueprint morphs panels (`FromOrigin`, as in Pantheon). The ring starts as that element's shape and becomes the ring, and it opens on the element, not where the pointer is. |
+| `Outlined` | `boolean` | :x: | from the blueprint | Draw an outline around the ring. |
 
 ## See also
 
