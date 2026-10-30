@@ -5,6 +5,7 @@ local Types = require(script.Parent.Parent.Types)
 local Theme = require(script.Parent.Parent.Theme)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Corners = require(script.Parent.Parent.Internal.Corners)
+local Defaults = require(script.Parent.Parent.Internal.Defaults)
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local ListItemStyle = require(script.Parent.Parent.Internal.ListItemStyle)
 local P = require(script.Parent.Parent.Internal.props)
@@ -24,7 +25,11 @@ end
 return function(scope: Types.Scope, props: Types.ListItemProps): Instance
 	local theme = resolveTheme(props)
 	local themeRef = props.Theme or Theme.useRef()
-	local style = ListItemStyle(theme)
+	local flat = if props.Flat ~= nil
+		then props.Flat
+		else Defaults.get(theme, "ListItem", "Flat") == true
+	local style = ListItemStyle(theme, flat)
+	local padX = props.PaddingX or style.PaddingX
 	local slot = props.Slot
 	local mode = if slot then slot.Mode else nil
 	local inline = mode == "Inline"
@@ -120,16 +125,24 @@ return function(scope: Types.Scope, props: Types.ListItemProps): Instance
 			top,
 			scope:Frame({
 				Name = "IconSlot",
-				BackgroundTransparency = 1,
+				BackgroundColor3 = theme.Colors.SurfaceContainerHigh,
+				BackgroundTransparency = if flat then 0 else 1,
 				Size = UDim2.fromOffset(style.IconSize, style.IconSize),
 				LayoutOrder = 1,
-				Layout = { Kind = "List", VerticalAlignment = Enum.VerticalAlignment.Center },
+				CornerRadius = if flat then theme.Metrics.RadiusPill else nil,
+				Layout = {
+					Kind = "List",
+					HorizontalAlignment = Enum.HorizontalAlignment.Center,
+					VerticalAlignment = Enum.VerticalAlignment.Center,
+				},
 				[Children] = {
 					Icon(scope, {
 						Theme = theme,
 						Name = props.Icon,
-						IconSize = style.IconSize,
-						Color = theme.Colors.OnSurfaceVariant,
+						IconSize = if flat then theme.Metrics.IconXl else style.IconSize,
+						Color = if flat
+							then theme.Colors.OnSurface
+							else theme.Colors.OnSurfaceVariant,
 					}),
 				},
 			})
@@ -149,7 +162,7 @@ return function(scope: Types.Scope, props: Types.ListItemProps): Instance
 		local icon = Icon(scope, {
 			Theme = theme,
 			Name = name,
-			IconSize = 18,
+			IconSize = theme.Metrics.IconMd,
 			Color = theme.Colors.OnSurfaceVariant,
 		})
 		if mode == "Accordion" then
@@ -163,6 +176,50 @@ return function(scope: Types.Scope, props: Types.ListItemProps): Instance
 	end
 
 	local ends: { any } = {}
+	if props.Value ~= nil then
+		local function valueLine(text: any, font: Font, size: number, colour: any, order: number)
+			return scope:TextLabel({
+				BackgroundTransparency = 1,
+				FontFace = font,
+				TextSize = size,
+				TextXAlignment = Enum.TextXAlignment.Right,
+				TextColor3 = colour,
+				Text = text,
+				AutomaticSize = Enum.AutomaticSize.XY,
+				LayoutOrder = order,
+			})
+		end
+		local lines: { any } = {
+			valueLine(props.Value, style.TitleFont, style.TitleSize, theme.Colors.OnSurface, 1),
+		}
+		if props.ValueSubtitle ~= nil then
+			table.insert(
+				lines,
+				valueLine(
+					props.ValueSubtitle,
+					style.SubtitleFont,
+					style.SubtitleSize,
+					theme.Colors.OnSurfaceVariant,
+					2
+				)
+			)
+		end
+		table.insert(
+			ends,
+			scope:Frame({
+				Name = "Value",
+				BackgroundTransparency = 1,
+				Size = UDim2.new(0, 0, 0, 0),
+				AutomaticSize = Enum.AutomaticSize.XY,
+				Layout = {
+					Kind = "List",
+					HorizontalAlignment = Enum.HorizontalAlignment.Right,
+					SortOrder = Enum.SortOrder.LayoutOrder,
+				},
+				[Children] = lines,
+			})
+		)
+	end
 	if props.Trailing then
 		table.insert(ends, scope:Apply(props.Trailing)({ LayoutOrder = 1 }))
 	end
@@ -268,11 +325,23 @@ return function(scope: Types.Scope, props: Types.ListItemProps): Instance
 	end
 
 	local height = if props.Subtitle ~= nil then style.HeightWithSubtitle else style.Height
+	local base: any = theme.Colors.Surface
+	if props.Selected ~= nil then
+		local selected = props.Selected
+		base = scope:Computed(function(use)
+			return use(
+				if use(selected :: any) then theme.Colors.PrimaryContainer else theme.Colors.Surface
+			)
+		end)
+	end
+	-- A flat row has no fill until it is hovered or pressed. A selected row keeps its fill.
+	local flatRest = flat and props.Selected == nil
 	local row = scope:TextButton(P({
 		Name = "ListItem",
 		AutoButtonColor = false,
 		Active = not disabled,
-		BackgroundColor3 = ix.fill(theme.Colors.Surface),
+		BackgroundColor3 = if flatRest then theme.Colors.OnSurface else ix.fill(base),
+		BackgroundTransparency = if flatRest then ix.fillTransparency(1) else nil,
 		BorderSizePixel = 0,
 		Size = props.Size or UDim2.new(1, 0, 0, height),
 		AutomaticSize = if wrap or below then Enum.AutomaticSize.Y else Enum.AutomaticSize.None,
@@ -281,7 +350,7 @@ return function(scope: Types.Scope, props: Types.ListItemProps): Instance
 		Visible = if mode == "Accordion" then nil else props.Visible,
 		ZIndex = props.ZIndex,
 		CornerRadius = props.CornerRadius or style.Radius,
-		Padding = { style.PaddingY, style.PaddingX },
+		Padding = { if wrap or below then style.PaddingYTall else style.PaddingY, padX },
 		Layout = {
 			Kind = "List",
 			VerticalAlignment = Enum.VerticalAlignment.Center,
@@ -326,7 +395,7 @@ return function(scope: Types.Scope, props: Types.ListItemProps): Instance
 		BackgroundTransparency = 1,
 		Size = UDim2.new(1, 0, 0, 0),
 		AutomaticSize = Enum.AutomaticSize.Y,
-		Padding = { style.PaddingY, style.PaddingX },
+		Padding = { style.PaddingY, padX },
 		[Children] = {
 			scope:Computed(function(use, inner)
 				if not use(opened) then

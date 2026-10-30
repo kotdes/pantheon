@@ -32,7 +32,7 @@ return function(scope: Types.Scope, props: Types.DataLinkProps): Instance
 		Icon(scope, {
 			Theme = theme,
 			Name = "chevron-right",
-			IconSize = 18,
+			IconSize = theme.Metrics.IconMd,
 			Color = theme.Colors.OnSurfaceVariant,
 			LayoutOrder = 3,
 		})

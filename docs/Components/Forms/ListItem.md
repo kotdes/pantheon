@@ -50,8 +50,13 @@ ix.wire(row)
 | `ZIndex` | `UsedAs<number>` | :x: | - | Z index of the component. |
 | `Title` | `UsedAs<string>` | :white_check_mark: | - | Main text of the row. |
 | `Subtitle` | `UsedAs<string>` | :x: | - | Smaller text under the title. |
+| `PaddingX` | `number` | :x: | `SpaceMd`, or `SpaceSm` when flat | Space at the left and right of the row, in pixels. |
+| `Flat` | `boolean` | :x: | from the blueprint | A borderless row with no fill at rest, a bold title, and an icon in a 44 pixel round container. It shows a fill only when hovered or pressed. |
+| `Value` | `UsedAs<string>` | :x: | - | Bold text at the end of the row, right-aligned, such as an amount. |
+| `ValueSubtitle` | `UsedAs<string>` | :x: | - | Muted line under `Value`, such as a change. |
 | `Leading` | `Instance` | :x: | - | Element at the start of the row, such as an Avatar or an Icon. |
 | `Trailing` | `Instance` | :x: | - | Element at the end of the row. |
+| `Selected` | `UsedAs<boolean>` | :x: | - | Fills the row with the primary container colour, to show that it is chosen. |
 | `Disabled` | `UsedAs<boolean>` | :x: | `false` | Stops the row reacting to input. The component reads this once, when it creates the row. |
 
 ## Callbacks

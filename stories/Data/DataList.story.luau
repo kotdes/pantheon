@@ -1,7 +1,7 @@
 --!strict
 local StoryUtil = require(script.Parent.Parent.StoryUtil)
 
-return StoryUtil.story(function(scope)
+return StoryUtil.story(function(scope, _, ctx)
 	local notices = scope:Value(true)
 	local ui = scope:Value(false)
 	local master = scope:Value(0.6)
@@ -71,11 +71,13 @@ return StoryUtil.story(function(scope)
 				Children = {
 					scope:ListItem({
 						Title = "kick",
+						PaddingX = ctx.theme.Metrics.SpaceXl,
 						Subtitle = "Remove a player",
 						OnClick = function() end,
 					}),
 					scope:ListItem({
 						Title = "ban",
+						PaddingX = ctx.theme.Metrics.SpaceXl,
 						Subtitle = "Ban a player",
 						OnClick = function() end,
 					}),

@@ -81,6 +81,15 @@ function Corners.setContainer(inst: Instance, radius: number)
 	inst:SetAttribute(CONTAINER_RADIUS, radius)
 end
 
+local STACKED = "PantheonStackedRows"
+
+--- Marks a container whose children are rows stacked edge to edge, such as a card of list items.
+--- A row is rounded only at the corners that touch the container's own corners, so a row in the
+--- middle has square corners and the first and last rows have the container's radius there.
+function Corners.setStacked(inst: Instance)
+	inst:SetAttribute(STACKED, true)
+end
+
 local function radiusOf(inst: Instance): number?
 	local r = inst:GetAttribute(CONTAINER_RADIUS)
 	if typeof(r) ~= "number" then
@@ -111,7 +120,7 @@ export type AutoOptions = {
 	Minimum: number?,
 }
 
-const DEFAULT_MINIMUM = 4
+local DEFAULT_MINIMUM = 4
 
 function Corners.auto(
 	inst: GuiObject,
@@ -174,13 +183,16 @@ function Corners.auto(
 		watching = target
 		table.insert(watched, target:GetAttributeChangedSignal(CONTAINER_RADIUS):Connect(sync))
 		table.insert(watched, target:GetAttributeChangedSignal(WINDOW_RADIUS):Connect(sync))
+		table.insert(watched, target:GetAttributeChangedSignal(STACKED):Connect(sync))
 		if target:IsA("GuiObject") then
 			table.insert(watched, target:GetPropertyChangedSignal("AbsolutePosition"):Connect(sync))
 			table.insert(watched, target:GetPropertyChangedSignal("AbsoluteSize"):Connect(sync))
 		end
 	end
 
-	sync = function()
+	local syncing = false
+	local again = false
+	local function run()
 		local target, outer = Corners.container(inst)
 		if target == nil then
 			clearWatch()
@@ -198,11 +210,35 @@ function Corners.auto(
 			dr = math.max(tp.X + ts.X - (ip.X + is.X), 0)
 			db = math.max(tp.Y + ts.Y - (ip.Y + is.Y), 0)
 		end
+		local stacked = target:GetAttribute(STACKED) == true
 		local function corner(gapA: number, gapB: number): number
+			if stacked then
+				-- A corner is at the container's corner only when it is close to both edges.
+				local gap = math.max(gapA, gapB)
+				return if gap >= outer then 0 else Corners.concentric(outer, gap)
+			end
 			local r = Corners.concentric(outer, math.min(gapA, gapB), minimum)
 			return math.min(r, math.max(fallback, minimum))
 		end
 		apply(corner(dl, dt), corner(dr, dt), corner(dl, db), corner(dr, db))
+	end
+
+	-- Setting radii can move things on some engines, which calls this again from inside itself. A
+	-- call that comes while it runs is done once more afterwards, and not nested, so it cannot
+	-- loop.
+	sync = function()
+		if syncing then
+			again = true
+			return
+		end
+		syncing = true
+		local rounds = 0
+		repeat
+			again = false
+			rounds += 1
+			run()
+		until not again or rounds >= 3
+		syncing = false
 	end
 
 	local own1 = inst.AncestryChanged:Connect(sync)

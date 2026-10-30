@@ -4,6 +4,7 @@ local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Corners = require(script.Parent.Parent.Internal.Corners)
+local ListItemStyle = require(script.Parent.Parent.Internal.ListItemStyle)
 local Text = require(script.Parent.Text)
 
 local Children = Fusion.Children
@@ -18,7 +19,8 @@ return function(scope: Types.Scope, props: Types.DataListProps): Instance
 				scope:Frame({
 					Name = "Divider",
 					BackgroundColor3 = theme.Colors.OutlineVariant,
-					Size = UDim2.new(1, -theme.Metrics.SpaceMd * 2, 0, 1),
+					-- Starts where the text of a row starts.
+					Size = UDim2.new(1, -ListItemStyle(theme).PaddingX * 2, 0, 1),
 					LayoutOrder = #rows + 1,
 				})
 			)
@@ -44,6 +46,7 @@ return function(scope: Types.Scope, props: Types.DataListProps): Instance
 		[Children] = rows,
 	}) :: GuiObject
 	Corners.setContainer(card, radius)
+	Corners.setStacked(card)
 
 	local heading = props.Heading
 	return scope:Frame({

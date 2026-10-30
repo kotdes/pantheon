@@ -145,7 +145,8 @@ return function(scope: Types.Scope, props: Types.DataRowProps): Instance
 		Visible = props.Visible,
 		ZIndex = props.ZIndex,
 		CornerRadius = props.CornerRadius or style.Radius,
-		Padding = { style.PaddingY, style.PaddingX },
+		-- The row is as tall as its content, so the space above and below the text is set here.
+		Padding = { style.PaddingYTall, style.PaddingX },
 		Layout = {
 			Kind = "List",
 			VerticalAlignment = Enum.VerticalAlignment.Center,
