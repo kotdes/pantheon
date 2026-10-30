@@ -6,7 +6,6 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
-local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local Bind = require(script.Parent.Parent.Internal.Bind)
@@ -470,7 +469,7 @@ return function(scope: Types.Scope, props: Types.ExplorerProps): Instance
 			TextXAlignment = Enum.TextXAlignment.Left,
 			TextTruncate = Enum.TextTruncate.AtEnd,
 			FontFace = theme.Fonts.Body,
-			TextSize = A.size(theme, 13),
+			TextSize = theme.Typography.Label.Size,
 			TextColor3 = sc:Computed(function(use)
 				return if use(isSelected)
 					then use(theme.Colors.OnPrimaryContainer)
@@ -496,7 +495,7 @@ return function(scope: Types.Scope, props: Types.ExplorerProps): Instance
 			ClearTextOnFocus = false,
 			TextXAlignment = Enum.TextXAlignment.Left,
 			FontFace = theme.Fonts.Body,
-			TextSize = A.size(theme, 13),
+			TextSize = theme.Typography.Label.Size,
 			TextColor3 = theme.Colors.OnSurface,
 			Visible = sc:Computed(function(use)
 				local current = use(row) :: Row?
@@ -544,7 +543,7 @@ return function(scope: Types.Scope, props: Types.ExplorerProps): Instance
 				return inner:Apply(Icon(inner, {
 					Theme = theme,
 					Name = use(iconName),
-					IconSize = 16,
+					IconSize = theme.Metrics.IconSm,
 					Color = use(theme.Colors.OnSurfaceVariant),
 				}))({
 					AnchorPoint = Vector2.new(0.5, 0.5),
@@ -589,7 +588,7 @@ return function(scope: Types.Scope, props: Types.ExplorerProps): Instance
 						local current = use(row) :: Row?
 						return UDim.new(0, 4 + (if current then current.depth * indent else 0))
 					end),
-					PaddingRight = UDim.new(0, 6),
+					PaddingRight = UDim.new(0, theme.Metrics.SpaceXs),
 				}),
 				arrow,
 				iconHost,

@@ -6,7 +6,6 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
-local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local Layer = require(script.Parent.Parent.Internal.Layer)
@@ -39,9 +38,12 @@ return function(scope: Types.Scope, props: Types.StatusBarProps): Instance
 				FillDirection = Enum.FillDirection.Horizontal,
 				VerticalAlignment = Enum.VerticalAlignment.Center,
 				SortOrder = Enum.SortOrder.LayoutOrder,
-				Padding = UDim.new(0, 5),
+				Padding = UDim.new(0, theme.Metrics.Space2xs),
 			}),
-			scope:New("UIPadding")({ PaddingLeft = UDim.new(0, 6), PaddingRight = UDim.new(0, 6) }),
+			scope:New("UIPadding")({
+				PaddingLeft = UDim.new(0, theme.Metrics.SpaceXs),
+				PaddingRight = UDim.new(0, theme.Metrics.SpaceXs),
+			}),
 		}
 		if item.Busy then
 			table.insert(
@@ -69,7 +71,7 @@ return function(scope: Types.Scope, props: Types.StatusBarProps): Instance
 					Size = UDim2.fromOffset(0, HEIGHT),
 					LayoutOrder = 2,
 					FontFace = theme.Fonts.Body,
-					TextSize = A.size(theme, 12),
+					TextSize = theme.Typography.Caption.Size,
 					TextColor3 = color,
 					Text = item.Text,
 				})

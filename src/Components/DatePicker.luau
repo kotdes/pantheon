@@ -6,7 +6,6 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
-local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Persist = require(script.Parent.Parent.Internal.Persist)
 local Bind = require(script.Parent.Parent.Internal.Bind)
@@ -126,7 +125,7 @@ return function(scope: Types.Scope, props: Types.DatePickerProps): Instance
 			FontFace = scope:Computed(function(use)
 				return if use(activeS) then theme.Fonts.Heading else theme.Fonts.Body
 			end),
-			TextSize = A.size(theme, 16),
+			TextSize = theme.Typography.Body.Size,
 			TextColor3 = scope:Computed(function(use)
 				return if use(activeS)
 					then use(theme.Colors.OnPrimary)
@@ -242,7 +241,7 @@ return function(scope: Types.Scope, props: Types.DatePickerProps): Instance
 				scope:Apply(Icon(scope, {
 					Theme = theme,
 					Name = iconName,
-					IconSize = 18,
+					IconSize = theme.Metrics.IconMd,
 					Color = theme.Colors.OnSurface,
 				}))({
 					AnchorPoint = Vector2.new(0.5, 0.5),
@@ -345,7 +344,7 @@ return function(scope: Types.Scope, props: Types.DatePickerProps): Instance
 				Position = UDim2.fromOffset((index - 1) * (CELL + GAP), 0),
 				Size = UDim2.fromOffset(CELL, WEEK_H),
 				FontFace = theme.Fonts.Body,
-				TextSize = A.size(theme, 12),
+				TextSize = theme.Typography.Caption.Size,
 				TextColor3 = theme.Colors.OnSurfaceVariant,
 				Text = letter,
 			})
@@ -404,7 +403,7 @@ return function(scope: Types.Scope, props: Types.DatePickerProps): Instance
 				FontFace = cellScope:Computed(function(use)
 					return if use(selectedS) then theme.Fonts.Heading else theme.Fonts.Body
 				end),
-				TextSize = A.size(theme, 13),
+				TextSize = theme.Typography.Label.Size,
 				TextColor3 = cellScope:Computed(function(use)
 					return Interaction.lerpColor(
 						use(theme.Colors.OnSurface),
@@ -526,7 +525,7 @@ return function(scope: Types.Scope, props: Types.DatePickerProps): Instance
 				end),
 				[Children] = { arrivalScale(cellScope, progress) },
 				FontFace = if selected then theme.Fonts.Heading else theme.Fonts.Body,
-				TextSize = A.size(theme, 13),
+				TextSize = theme.Typography.Label.Size,
 				TextColor3 = if selected
 					then use(theme.Colors.OnPrimary)
 					else use(theme.Colors.OnSurface),
@@ -587,7 +586,7 @@ return function(scope: Types.Scope, props: Types.DatePickerProps): Instance
 				end),
 				[Children] = { arrivalScale(cellScope, progress) },
 				FontFace = if selected then theme.Fonts.Heading else theme.Fonts.Body,
-				TextSize = A.size(theme, 13),
+				TextSize = theme.Typography.Label.Size,
 				TextColor3 = if selected
 					then use(theme.Colors.OnPrimary)
 					else use(theme.Colors.OnSurface),

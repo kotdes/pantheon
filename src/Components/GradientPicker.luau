@@ -6,7 +6,6 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
-local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Drag = require(script.Parent.Parent.Internal.Picker.Drag)
 local Widgets = require(script.Parent.Parent.Internal.Picker.Widgets)
@@ -511,7 +510,7 @@ return function(scope: Types.Scope, props: Types.GradientPickerProps): Instance
 					sc:Apply(Icon(sc, {
 						Theme = theme,
 						Name = "arrow-left",
-						IconSize = 16,
+						IconSize = theme.Metrics.IconSm,
 						Color = theme.Colors.OnSurface,
 					}))({
 						AnchorPoint = Vector2.new(0.5, 0.5),
@@ -546,7 +545,7 @@ return function(scope: Types.Scope, props: Types.GradientPickerProps): Instance
 						Size = UDim2.new(0, LABEL_W, 1, 0),
 						TextXAlignment = Enum.TextXAlignment.Left,
 						FontFace = theme.Typography.Label.Font,
-						TextSize = A.size(theme, 13),
+						TextSize = theme.Typography.Label.Size,
 						TextColor3 = theme.Colors.OnSurfaceVariant,
 						Text = label,
 					}),
@@ -740,7 +739,7 @@ return function(scope: Types.Scope, props: Types.GradientPickerProps): Instance
 						Size = UDim2.new(0, 40, 1, 0),
 						TextXAlignment = Enum.TextXAlignment.Left,
 						FontFace = theme.Fonts.Body,
-						TextSize = A.size(theme, 13),
+						TextSize = theme.Typography.Label.Size,
 						TextColor3 = theme.Colors.OnSurfaceVariant,
 						Text = key,
 					}),
@@ -751,7 +750,7 @@ return function(scope: Types.Scope, props: Types.GradientPickerProps): Instance
 						TextXAlignment = Enum.TextXAlignment.Left,
 						TextTruncate = Enum.TextTruncate.AtEnd,
 						FontFace = theme.Typography.Label.Font,
-						TextSize = A.size(theme, 14),
+						TextSize = theme.Typography.Label.Size,
 						TextColor3 = theme.Colors.OnSurface,
 						Text = text,
 					}),
@@ -928,7 +927,7 @@ return function(scope: Types.Scope, props: Types.GradientPickerProps): Instance
 					scope:Apply(Icon(scope, {
 						Theme = theme,
 						Name = iconName,
-						IconSize = 18,
+						IconSize = theme.Metrics.IconMd,
 						Color = theme.Colors.OnSurface,
 					}))({
 						AnchorPoint = Vector2.new(0.5, 0.5),

@@ -2,7 +2,6 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
-local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 
 local Children = Fusion.Children
@@ -19,7 +18,7 @@ return function(scope: Types.Scope, props: Types.BreadcrumbsProps): Instance
 					BackgroundTransparency = 1,
 					Text = "/",
 					FontFace = theme.Fonts.Body,
-					TextSize = A.size(theme, 14),
+					TextSize = theme.Typography.Label.Size,
 					TextColor3 = theme.Colors.OnSurfaceVariant,
 					AutomaticSize = Enum.AutomaticSize.XY,
 					LayoutOrder = i * 2 - 1,
@@ -32,7 +31,7 @@ return function(scope: Types.Scope, props: Types.BreadcrumbsProps): Instance
 				BackgroundTransparency = 1,
 				Text = item.Label,
 				FontFace = theme.Fonts.Body,
-				TextSize = A.size(theme, 14),
+				TextSize = theme.Typography.Label.Size,
 				TextColor3 = if i == #props.Items
 					then theme.Colors.OnSurface
 					else theme.Colors.Primary,

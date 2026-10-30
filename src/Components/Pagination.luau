@@ -2,7 +2,6 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
-local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Persist = require(script.Parent.Parent.Internal.Persist)
 local Bind = require(script.Parent.Parent.Internal.Bind)
@@ -52,7 +51,7 @@ return function(scope: Types.Scope, props: Types.PaginationProps): Instance
 			scope:TextLabel({
 				BackgroundTransparency = 1,
 				FontFace = theme.Fonts.Body,
-				TextSize = A.size(theme, 14),
+				TextSize = theme.Typography.Label.Size,
 				TextColor3 = theme.Colors.OnSurface,
 				Text = scope:Computed(function(use)
 					return `{use(page)} / {count}`

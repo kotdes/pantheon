@@ -22,6 +22,7 @@ jobs:
           echo "$HOME/.rokit/bin" >> $GITHUB_PATH
       - run: rokit install --no-trust-check
       - run: selene src demo libs/router/src
+      - run: scripts/check-tokens.sh
 
   router-tests:
     runs-on: ubuntu-latest

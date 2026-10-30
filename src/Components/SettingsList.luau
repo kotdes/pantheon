@@ -41,7 +41,7 @@ return function(scope: Types.Scope, props: Types.SettingsListProps): Instance
 						scope:Apply(Icon(scope, {
 							Theme = theme,
 							Name = item.Icon,
-							IconSize = 20,
+							IconSize = theme.Metrics.IconLg,
 							Color = theme.Colors.OnPrimaryContainer,
 						}))({
 							AnchorPoint = Vector2.new(0.5, 0.5),
@@ -56,7 +56,7 @@ return function(scope: Types.Scope, props: Types.SettingsListProps): Instance
 			scope:TextLabel({
 				BackgroundTransparency = 1,
 				FontFace = theme.Typography.Title.Font,
-				TextSize = A.size(theme, 15),
+				TextSize = A.size(theme, 15), -- token-ok
 				TextXAlignment = Enum.TextXAlignment.Left,
 				TextColor3 = theme.Colors.OnSurface,
 				Text = item.Title,
@@ -70,7 +70,7 @@ return function(scope: Types.Scope, props: Types.SettingsListProps): Instance
 				scope:TextLabel({
 					BackgroundTransparency = 1,
 					FontFace = theme.Typography.Body.Font,
-					TextSize = A.size(theme, 12),
+					TextSize = theme.Typography.Caption.Size,
 					TextXAlignment = Enum.TextXAlignment.Left,
 					TextColor3 = theme.Colors.OnSurfaceVariant,
 					Text = item.Subtitle,
@@ -105,7 +105,7 @@ return function(scope: Types.Scope, props: Types.SettingsListProps): Instance
 				scope:Apply(Icon(scope, {
 					Theme = theme,
 					Name = "chevron-right",
-					IconSize = 18,
+					IconSize = theme.Metrics.IconMd,
 					Color = theme.Colors.OnSurfaceVariant,
 				}))({
 					LayoutOrder = 3,

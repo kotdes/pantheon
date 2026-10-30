@@ -2,7 +2,6 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
-local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 
 local Children = Fusion.Children
@@ -37,7 +36,7 @@ return function(scope: Types.Scope, props: FormProps): Instance
 				then scope:TextLabel({
 					BackgroundTransparency = 1,
 					FontFace = theme.Fonts.Heading,
-					TextSize = A.size(theme, 16),
+					TextSize = theme.Typography.Body.Size,
 					TextColor3 = theme.Colors.OnSurface,
 					TextXAlignment = Enum.TextXAlignment.Left,
 					Text = props.Title,

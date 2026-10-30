@@ -303,7 +303,7 @@ return function(scope: Types.Scope, props: Types.CurveEditorProps): Instance
 			Size = UDim2.fromOffset(40, 12),
 			TextXAlignment = Enum.TextXAlignment.Left,
 			FontFace = theme.Fonts.Mono,
-			TextSize = A.size(theme, 10),
+			TextSize = A.size(theme, 10), -- token-ok
 			TextColor3 = theme.Colors.OnSurfaceVariant,
 			Text = tostring(label[1]),
 		})

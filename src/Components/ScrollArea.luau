@@ -1031,7 +1031,7 @@ return function(scope: Types.Scope, props: Types.ScrollAreaProps): Instance
 								scope:Apply(Icon(scope, {
 									Theme = theme,
 									Name = "arrow-down",
-									IconSize = 18,
+									IconSize = theme.Metrics.IconMd,
 									Color = theme.Colors.OnSurfaceVariant,
 								}))({
 									Visible = scope:Computed(function(use)
@@ -1041,7 +1041,7 @@ return function(scope: Types.Scope, props: Types.ScrollAreaProps): Instance
 								scope:Apply(Icon(scope, {
 									Theme = theme,
 									Name = "arrow-up",
-									IconSize = 18,
+									IconSize = theme.Metrics.IconMd,
 									Color = theme.Colors.Primary,
 								}))({
 									Visible = scope:Computed(function(use)

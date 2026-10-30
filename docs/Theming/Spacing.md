@@ -45,9 +45,15 @@ There is no `SpaceNone` or `Space2xl`. Use `0`, or a multiple of a token such as
 | `AppBarHeight` | 64 | Height of an [AppBar](../Components/Navigation/AppBar.md). |
 | `DrawerWidth` | 280 | Width of a [NavigationDrawer](../Components/Navigation/NavigationDrawer.md). |
 | `SidebarInset` | 4 | Gap between a sidebar and the edges of its window. Use 0 for a sidebar that is flush with them. |
+| `SidebarItemRadius` | 8 | Corner radius of a row in a sidebar, such as the selected page. Make it larger to match a sidebar with round corners. |
 | `RailWidth` | 72 | Width of a [NavigationRail](../Components/Navigation/NavigationRail.md). |
-| `ButtonPadX` | 20 | Horizontal padding inside a [Button](../Components/Foundations/Button.md). |
+| `ButtonPadX` | 20 | Horizontal padding inside a medium [Button](../Components/Foundations/Button.md). A `Small` or `Large` button scales it with its height, so the shape stays the same. |
 | `ButtonPadY` | 4 | Vertical padding inside a Button, on top of the line height. |
+| `ControlHeight` | 40 | Height of a field or select. |
+| `ControlHeightCompact` | 28 | Height of the compact variant, used in number boxes and hex fields. |
+| `ControlHeightLarge` | 48 | Height of a `Large` [Button](../Components/Foundations/Button.md), such as a full-width Continue button. |
+| `FieldLabelHeight` | 20 | Height of the label above a field. |
+| `IconSm`, `IconMd`, `IconLg`, `IconXl` | 16, 18, 20, 24 | Icon sizes. `IconMd` is the default in buttons and fields. |
 
 ## Change the values
 

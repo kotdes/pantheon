@@ -166,6 +166,9 @@ function Widgets.new(theme: Types.Theme, color: any)
 		return TextField(sc, {
 			Theme = theme,
 			Compact = true,
+			Pill = true,
+			-- As tall as the track beside it, whatever height a blueprint gives compact fields.
+			Height = TRACK_HEIGHT,
 			Text = sc:Computed(formatted),
 			OnSubmit = function(text: string, box: TextBox)
 				local n = tonumber(text)
@@ -317,6 +320,7 @@ function Widgets.new(theme: Types.Theme, color: any)
 		return TextField(sc, {
 			Theme = theme,
 			Compact = true,
+			Pill = true,
 			Height = height,
 			Prefix = "#",
 			Placeholder = "RRGGBB",

@@ -37,7 +37,7 @@ return function(scope: Types.Scope, props: Types.BadgeProps): Instance
 								BackgroundTransparency = 1,
 								Size = UDim2.fromScale(1, 1),
 								FontFace = theme.Fonts.Body,
-								TextSize = A.size(theme, 10),
+								TextSize = A.size(theme, 10), -- token-ok
 								TextColor3 = theme.Colors.OnError,
 								Text = tostring(math.min(count :: number, 99)),
 							}),

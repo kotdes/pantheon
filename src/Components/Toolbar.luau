@@ -5,7 +5,6 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
-local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
 local Bind = require(script.Parent.Parent.Internal.Bind)
@@ -35,10 +34,10 @@ return function(scope: Types.Scope, props: Types.ToolbarProps): Instance
 			Padding = UDim.new(0, 2),
 		}),
 		scope:New("UIPadding")({
-			PaddingLeft = UDim.new(0, 6),
-			PaddingRight = UDim.new(0, 6),
-			PaddingTop = UDim.new(0, 4),
-			PaddingBottom = UDim.new(0, 4),
+			PaddingLeft = UDim.new(0, theme.Metrics.SpaceXs),
+			PaddingRight = UDim.new(0, theme.Metrics.SpaceXs),
+			PaddingTop = UDim.new(0, theme.Metrics.Space2xs),
+			PaddingBottom = UDim.new(0, theme.Metrics.Space2xs),
 		}),
 	}
 
@@ -93,7 +92,7 @@ return function(scope: Types.Scope, props: Types.ToolbarProps): Instance
 					VerticalAlignment = Enum.VerticalAlignment.Center,
 					HorizontalAlignment = Enum.HorizontalAlignment.Center,
 					SortOrder = Enum.SortOrder.LayoutOrder,
-					Padding = UDim.new(0, 6),
+					Padding = UDim.new(0, theme.Metrics.SpaceXs),
 				}),
 				scope:New("UIPadding")({
 					PaddingLeft = UDim.new(0, if item.Text then 10 else 0),
@@ -114,7 +113,7 @@ return function(scope: Types.Scope, props: Types.ToolbarProps): Instance
 					scope:Apply(Icon(scope, {
 						Theme = theme,
 						Name = item.Icon,
-						IconSize = 18,
+						IconSize = theme.Metrics.IconMd,
 						Color = ink,
 						Transparency = if disabled then 0.55 else 0,
 					}))({ LayoutOrder = 1 })
@@ -129,7 +128,7 @@ return function(scope: Types.Scope, props: Types.ToolbarProps): Instance
 						Size = UDim2.fromOffset(0, BUTTON),
 						LayoutOrder = 2,
 						FontFace = theme.Typography.Label.Font,
-						TextSize = A.size(theme, 13),
+						TextSize = theme.Typography.Label.Size,
 						TextColor3 = ink,
 						TextTransparency = if disabled then 0.55 else 0,
 						Text = item.Text,

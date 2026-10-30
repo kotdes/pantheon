@@ -6,7 +6,6 @@
 local Packages = script.Parent.Parent.Parent
 local Fusion = require(Packages.Fusion)
 local Types = require(script.Parent.Parent.Types)
-local A = require(script.Parent.Parent.Internal.Accessibility)
 local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolveTheme
 local HSV = require(script.Parent.Parent.Internal.Picker.HSV)
 local ColorSpaces = require(script.Parent.Parent.Internal.Picker.ColorSpaces)
@@ -976,7 +975,7 @@ return function(scope: Types.Scope, props: Types.ColorPickerProps): Instance
 					Size = UDim2.fromOffset(52, TRACK_HEIGHT),
 					LayoutOrder = 3,
 					FontFace = theme.Fonts.Body,
-					TextSize = A.size(theme, 13),
+					TextSize = theme.Typography.Label.Size,
 					TextColor3 = theme.Colors.OnSurfaceVariant,
 					Text = scope:Computed(function(use)
 						return if showAlpha
