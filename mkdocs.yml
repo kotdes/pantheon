@@ -167,6 +167,7 @@ nav:
         - Components/Overlays/Coachmark.md
         - Components/Overlays/ConfirmDialog.md
         - Components/Overlays/Dialog.md
+        - Components/Overlays/EmojiPicker.md
         - Components/Overlays/Menu.md
         - Components/Overlays/MenuButton.md
         - Components/Overlays/MenuPage.md

@@ -68,6 +68,7 @@ return {
 	DataSlider = require(script.DataSlider),
 	DataSegmented = require(script.DataSegmented),
 	AppSheet = require(script.AppSheet),
+	EmojiPicker = require(script.EmojiPicker),
 	StarRating = require(script.StarRating),
 	SegmentedControl = require(script.SegmentedControl),
 	MultiSelect = require(script.MultiSelect),

@@ -53,6 +53,7 @@ local Pantheon = {
 	Corners = require(script.Internal.Corners),
 	Interaction = require(script.Internal.Interaction),
 	ListItemStyle = require(script.Internal.ListItemStyle),
+	Emoji = require(script.Internal.Emoji),
 	Shadow = require(script.Internal.Shadow),
 	GroupFade = require(script.Internal.GroupFade),
 	Translate = require(script.Internal.Translate),
