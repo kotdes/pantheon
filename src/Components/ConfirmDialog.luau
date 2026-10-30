@@ -2,26 +2,14 @@
 local Types = require(script.Parent.Parent.Types)
 local Prompt = require(script.Parent.Prompt)
 
+--[[
+	Deprecated: use `Prompt` with `Destructive = true`. This stays so that existing code keeps
+	working. It passes every prop on to `Prompt`, and is destructive unless you say it is not.
+]]
 return function(scope: Types.Scope, props: Types.ConfirmDialogProps): Instance
-	return Prompt(scope, {
-		Theme = props.Theme,
-		Title = props.Title,
-		Body = props.Body,
-		Children = props.Children,
-		Actions = props.Actions,
-		OnClose = props.OnClose,
-		OnConfirm = props.OnConfirm,
-		ConfirmText = props.ConfirmText,
-		Open = props.Open,
-		LayoutOrder = props.LayoutOrder,
-		Size = props.Size,
-		CornerRadius = props.CornerRadius,
-		Visible = props.Visible,
-		ZIndex = props.ZIndex,
-		Layer = props.Layer,
-		Icon = props.Icon,
-		IconColor = props.IconColor,
-		IconSize = props.IconSize,
-		Destructive = true,
-	})
+	local merged = table.clone(props :: any)
+	if merged.Destructive == nil then
+		merged.Destructive = true
+	end
+	return Prompt(scope, merged)
 end

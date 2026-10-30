@@ -166,7 +166,8 @@ return function(app: any)
 		discardOpen:set(true)
 		return false
 	end
-	scope:ConfirmDialog({
+	scope:Prompt({
+		Destructive = true,
 		Layer = overlayLayer,
 		Open = discardOpen,
 		Title = "Discard your changes?",
@@ -183,7 +184,8 @@ return function(app: any)
 		end,
 	})
 
-	scope:ConfirmDialog({
+	scope:Prompt({
+		Destructive = true,
 		Layer = overlayLayer,
 		Open = confirmOpen,
 		Title = "Delete this to-do?",

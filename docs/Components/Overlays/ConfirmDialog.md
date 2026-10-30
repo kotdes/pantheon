@@ -6,47 +6,16 @@ tags:
 
 # ConfirmDialog
 
-ConfirmDialog is a [Prompt](./Prompt.md) with `Destructive` always on. Use it to confirm an action that cannot be undone.
+!!! warning "Deprecated"
+    ConfirmDialog is the same component as [Prompt](./Prompt.md). Use `Prompt` with `Destructive = true`. ConfirmDialog stays so that existing code keeps working.
 
-## Usage
-
-Call `Components.ConfirmDialog` with a scope and a table of properties:
+ConfirmDialog takes every property that Prompt takes, and passes them all on. The only difference is that `Destructive` is `true` unless you set it to `false`.
 
 ```luau
-scope:ConfirmDialog({
-	Layer = overlayLayer,
-	Open = open,
-	Title = "Delete project?",
-	Body = "All files will be removed.",
-	ConfirmText = "Delete",
-	OnConfirm = deleteProject,
-	OnClose = function()
-		open:set(false)
-	end,
-})
+-- These are the same.
+scope:ConfirmDialog({ Title = "Delete project?", OnConfirm = deleteProject })
+scope:Prompt({ Title = "Delete project?", Destructive = true, OnConfirm = deleteProject })
 ```
-
-## Properties
-
-| Name | Type | Required | Default | Description |
-| ---- | ---- | -------- | ------- | ----------- |
-| `Title` | `UsedAs<string>` | :white_check_mark: | - | Heading of the dialog. |
-| `Body` | `UsedAs<string>` | :x: | - | Text under the heading. |
-| `Children` | `any` | :x: | - | Custom content under the body. |
-| `Actions` | `{ DialogAction }` | :x: | - | Buttons to use instead of the Cancel and confirm pair. |
-| `ConfirmText` | `string` | :x: | `"OK"` | Label of the confirm button. |
-| `Open` | `UsedAs<boolean>` | :x: | - | Whether the dialog is shown. Follows the state you pass. |
-| `Icon` | `string` | :x: | - | Lucide icon above the title. |
-| `IconColor` | `UsedAs<Color3>` | :x: | - | Colour of the icon. It is red by default when an icon is set. |
-| `IconSize` | `number` | :x: | - | Size of the icon in pixels. |
-| `CornerRadius` | `number` | :x: | `Radius3xl` | Corner radius in pixels. A dialog is not concentric with its container, because it sits far from the edges and the corners would be nearly square. |
-
-## Callbacks
-
-| Name | Description |
-| ---- | ----------- |
-| `OnClose: () -> ()` | Runs when the user cancels or presses the scrim. |
-| `OnConfirm: () -> ()` | Runs when the user presses the confirm button. When left out, `OnClose` is called. |
 
 ## See also
 

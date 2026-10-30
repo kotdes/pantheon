@@ -6,7 +6,7 @@ tags:
 
 # Prompt
 
-Prompt is a [Dialog](./Dialog.md) with a Cancel and a confirm button already set up. Use it for questions with a yes or no answer.
+Prompt is a [Dialog](./Dialog.md) with a Cancel and a confirm button already set up. Use it for questions with a yes or no answer, and set `Destructive` when the answer cannot be undone. It replaces the older ConfirmDialog.
 
 ## Usage
 
@@ -47,7 +47,7 @@ scope:Prompt({
 | `CornerRadius` | `number` | :x: | `Radius3xl` | Corner radius in pixels. A dialog is not concentric with its container, because it sits far from the edges and the corners would be nearly square. |
 | `ConfirmText` | `string` | :x: | `"OK"` | Label of the confirm button. |
 | `CancelText` | `string` | :x: | `"Cancel"` | Label of the cancel button. |
-| `Destructive` | `boolean` | :x: | `false` | Make the confirm button red. |
+| `Destructive` | `boolean` | :x: | `false` | Make the confirm button red, and the icon red when no `IconColor` is set. Use it for an action that cannot be undone. |
 
 ## Callbacks
 
@@ -58,5 +58,5 @@ scope:Prompt({
 
 ## See also
 
-- [ConfirmDialog](./ConfirmDialog.md)
+- [ConfirmDialog](./ConfirmDialog.md) (deprecated)
 - [Dialog](./Dialog.md)
