@@ -786,11 +786,16 @@ return function(scope: Types.Scope, props: Types.ScrollAreaProps): Instance
 		},
 	})
 
+	local trackPx = scope:Value(0)
+
 	local function thumbMetrics(use: any): (number, number, number, number)
 		local vs = use(viewSize) :: Vector2
 		local cs = use(contentSize) :: Vector2
 		local off = use(offset) :: number
-		local trackLen = math.max(axisOf(vs) - buttonSize * 2, 1)
+		local trackSpan = use(trackPx) :: number
+		local trackLen = if trackSpan > 0
+			then trackSpan
+			else math.max(axisOf(vs) - buttonSize * 2, 1)
 		local contentLen = math.max(axisOf(cs), 1)
 		local max = math.max(0, contentLen - axisOf(vs))
 		local ratio = math.clamp(axisOf(vs) / contentLen, 0.12, 1)
@@ -800,8 +805,7 @@ return function(scope: Types.Scope, props: Types.ScrollAreaProps): Instance
 		local velSx = math.min(math.abs(use(stretchS) :: number), baseLen * 0.7)
 		local sx = drag * baseLen * 0.1 + velSx
 		local len = math.min(baseLen + sx, trackLen)
-		local travel = math.max(trackLen - baseLen, 0)
-		local pos = math.clamp(t * travel - (len - baseLen) * 0.5, 0, math.max(trackLen - len, 0))
+		local pos = t * math.max(trackLen - len, 0)
 		local thin = math.max(thumbThickness - drag * 2.5, railThickness + 1)
 		return pos, len, thin, trackLen
 	end
@@ -924,6 +928,9 @@ return function(scope: Types.Scope, props: Types.ScrollAreaProps): Instance
 		return btn
 	end
 
+	local insetStart = scope:Value(0)
+	local insetEnd = scope:Value(0)
+
 	local chrome = scope:New("Frame")({
 		Name = "ScrollChrome",
 		BackgroundTransparency = 1,
@@ -945,10 +952,26 @@ return function(scope: Types.Scope, props: Types.ScrollAreaProps): Instance
 		ZIndex = 5,
 		[Children] = {
 			scope:New("UIPadding")({
-				PaddingLeft = UDim.new(0, if horizontal then 4 else padX),
-				PaddingRight = UDim.new(0, if horizontal then 4 else padX),
-				PaddingTop = UDim.new(0, if horizontal then padX else 4),
-				PaddingBottom = UDim.new(0, if horizontal then padX else 4),
+				PaddingLeft = if horizontal
+					then scope:Computed(function(use)
+						return UDim.new(0, 4 + use(insetStart))
+					end)
+					else UDim.new(0, padX),
+				PaddingRight = if horizontal
+					then scope:Computed(function(use)
+						return UDim.new(0, 4 + use(insetEnd))
+					end)
+					else UDim.new(0, padX),
+				PaddingTop = if horizontal
+					then UDim.new(0, padX)
+					else scope:Computed(function(use)
+						return UDim.new(0, 4 + use(insetStart))
+					end),
+				PaddingBottom = if horizontal
+					then UDim.new(0, padX)
+					else scope:Computed(function(use)
+						return UDim.new(0, 4 + use(insetEnd))
+					end),
 			}),
 			scope:New("Frame")({
 				Name = "ChromeInner",
@@ -976,6 +999,13 @@ return function(scope: Types.Scope, props: Types.ScrollAreaProps): Instance
 			}),
 		},
 	})
+
+	local function measureTrack()
+		local size = track.AbsoluteSize
+		trackPx:set(if horizontal then size.X else size.Y)
+	end
+	table.insert(scope, track:GetPropertyChangedSignal("AbsoluteSize"):Connect(measureTrack))
+	task.defer(measureTrack)
 
 	-- When buttons are off, track should fill the chrome
 	if not showButtons then
@@ -1094,6 +1124,107 @@ return function(scope: Types.Scope, props: Types.ScrollAreaProps): Instance
 			pullIndicator,
 		},
 	}) :: Frame
+
+	do
+		local CONTAINER_RADIUS = "PantheonContainerRadius"
+		local WINDOW_RADIUS = "PantheonWindowRadius"
+		local watched: { RBXScriptConnection } = {}
+		local function unwatch()
+			for _, conn in watched do
+				conn:Disconnect()
+			end
+			table.clear(watched)
+		end
+
+		local function roundedAround(): (GuiObject?, number, UICorner?)
+			local current = root.Parent
+			while current do
+				if current:IsA("GuiObject") then
+					local published = current:GetAttribute(CONTAINER_RADIUS)
+					if typeof(published) ~= "number" then
+						published = current:GetAttribute(WINDOW_RADIUS)
+					end
+					if typeof(published) == "number" then
+						return current, published, nil
+					end
+					local corner = current:FindFirstChildOfClass("UICorner")
+					if corner then
+						local abs = current.AbsoluteSize
+						local radius = corner.CornerRadius.Offset
+							+ corner.CornerRadius.Scale * math.min(abs.X, abs.Y)
+						if radius > 0 then
+							return current, radius, corner
+						end
+					end
+				end
+				current = current.Parent
+			end
+			return nil, 0, nil
+		end
+
+		local sync: () -> ()
+		local function bind()
+			unwatch()
+			local frame, _, corner = roundedAround()
+			if frame == nil then
+				return
+			end
+			table.insert(watched, frame:GetPropertyChangedSignal("AbsolutePosition"):Connect(sync))
+			table.insert(watched, frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(sync))
+			table.insert(watched, frame:GetAttributeChangedSignal(CONTAINER_RADIUS):Connect(sync))
+			table.insert(watched, frame:GetAttributeChangedSignal(WINDOW_RADIUS):Connect(sync))
+			if corner then
+				table.insert(watched, corner:GetPropertyChangedSignal("CornerRadius"):Connect(sync))
+			end
+		end
+
+		local function reach(r: number, side: number): number
+			if side >= r then
+				return 0
+			end
+			local across = r - math.max(side, 0)
+			return r - math.sqrt(math.max(r * r - across * across, 0))
+		end
+
+		sync = function()
+			local frame, r = roundedAround()
+			if frame == nil then
+				insetStart:set(0)
+				insetEnd:set(0)
+				return
+			end
+			local fp, fs = frame.AbsolutePosition, frame.AbsoluteSize
+			local rp, rs = root.AbsolutePosition, root.AbsoluteSize
+			local left, top = rp.X - fp.X, rp.Y - fp.Y
+			local right, bottom = (fp.X + fs.X) - (rp.X + rs.X), (fp.Y + fs.Y) - (rp.Y + rs.Y)
+			local startGap, endGap, sideGap
+			if horizontal then
+				sideGap, startGap, endGap = bottom, left, right
+			else
+				sideGap, startGap, endGap = right, top, bottom
+			end
+
+			local clearance = reach(r, sideGap)
+			insetStart:set(math.max(0, clearance - startGap))
+			insetEnd:set(math.max(0, clearance - endGap))
+		end
+		table.insert(scope, root:GetPropertyChangedSignal("AbsolutePosition"):Connect(sync))
+		table.insert(scope, root:GetPropertyChangedSignal("AbsoluteSize"):Connect(sync))
+		table.insert(
+			scope,
+			root.AncestryChanged:Connect(function()
+				bind()
+				sync()
+			end)
+		)
+		table.insert(scope, unwatch)
+		bind()
+		sync()
+		task.defer(function()
+			bind()
+			sync()
+		end)
+	end
 
 	-- Route wheel to the deepest scroll area under the pointer; sink so camera doesn't zoom.
 	table.insert(
