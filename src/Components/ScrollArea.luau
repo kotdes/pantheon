@@ -813,9 +813,9 @@ return function(scope: Types.Scope, props: Types.ScrollAreaProps): Instance
 			return Interaction.lerpColor(idleColor, activeColor, activeAmount(use), use)
 		end),
 		BackgroundTransparency = scope:Computed(function(use)
-			local hide = (1 - use(barVisibleS)) * 0.85
+			-- The thumb stays visible when the bar is idle.
 			local boost = activeAmount(use) * 0.4
-			return math.clamp(0.25 - boost + hide, 0, 1)
+			return math.clamp(0.25 - boost, 0, 1)
 		end),
 		AnchorPoint = if horizontal then Vector2.new(0, 0.5) else Vector2.new(0.5, 0),
 		Position = scope:Computed(function(use)
