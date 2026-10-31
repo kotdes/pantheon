@@ -262,6 +262,7 @@ return function(scope: Types.Scope, props: Types.EmojiPickerProps): Instance
 			Name = "Emojis",
 			BackgroundTransparency = 1,
 			Size = if height then UDim2.new(1, 0, 0, height) else UDim2.fromScale(1, 1),
+			Padding = { 6, 0, 0, 0 },
 			Layout = {
 				Kind = "List",
 				Padding = theme.Metrics.SpaceXs,
@@ -311,7 +312,7 @@ return function(scope: Types.Scope, props: Types.EmojiPickerProps): Instance
 			Open = popoverOpen,
 			Placement = props.Placement or "Auto",
 			Width = props.Width or 328,
-			MaxHeight = height + POPOVER_PADDING * 2,
+			Scrollable = false,
 			ZIndex = props.ZIndex,
 			Children = {
 				scope:Frame({

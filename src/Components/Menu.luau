@@ -147,7 +147,8 @@ return function(scope: Types.Scope, props: Types.MenuProps): Instance
 	end
 
 	local function makeScroll(kids: any, order: number, stretch: boolean): Instance
-		local useScroll = stretch or fill or (maxHeight ~= nil and maxHeight > 0) or #pageInsts > 0
+		local useScroll = props.Scrollable ~= false
+			and (stretch or fill or (maxHeight ~= nil and maxHeight > 0) or #pageInsts > 0)
 		if not useScroll then
 			return scope:Frame({
 				Name = "MenuList",

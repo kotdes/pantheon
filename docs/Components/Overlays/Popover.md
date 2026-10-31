@@ -45,6 +45,7 @@ scope:Popover({
 | `Sections` | `{ MenuSectionProps }` | :x: | - | Groups of rows. See [MenuSection](./MenuSection.md). |
 | `MaxHeight` | `number` | :x: | - | Largest height in pixels of the menu. It scrolls past that. |
 | `AutoHeight` | `boolean` | :x: | `true` | Make the popover as tall as its content, up to `MaxHeight`, and change height with a spring when the content or the page changes. Set `false` for a fixed height. |
+| `Scrollable` | `boolean` | :x: | `true` | Let the content scroll. Set `false` for no scroll area: the popover is as tall as its content, and `MaxHeight` does not make it scroll. |
 | `Children` | `any` | :x: | - | Menu content built from [MenuSection](./MenuSection.md) and [MenuButton](./MenuButton.md). |
 | `Width` | `number` | :x: | `240` | Width of the popover in pixels. |
 | `RootPage` | `string` | :x: | The first page | Id of the first [MenuPage](./MenuPage.md) when `Children` has pages. Set it to `"root"` to show `Items` or `Sections` first. |

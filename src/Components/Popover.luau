@@ -41,6 +41,7 @@ return function(scope: Types.Scope, props: Types.PopoverProps): Instance
 		Sections = props.Sections,
 		MaxHeight = props.MaxHeight,
 		AutoHeight = props.AutoHeight,
+		Scrollable = props.Scrollable,
 		Children = props.Children,
 		RootPage = props.RootPage,
 		Page = props.Page,
@@ -79,8 +80,6 @@ return function(scope: Types.Scope, props: Types.PopoverProps): Instance
 		)
 	end
 
-	-- Placed with the menu's real size: on the preferred side when it fits, else on the other
-	-- side, and always kept inside the layer.
 	local function updatePosition()
 		local target = Layer.asGui(props.Target)
 		local layer = Layer.resolve(props)
@@ -88,10 +87,11 @@ return function(scope: Types.Scope, props: Types.PopoverProps): Instance
 			return
 		end
 		local origin = layer.AbsolutePosition
-		-- The scale of the panel is part of its measured size, so take it out.
 		local size = (menu :: GuiObject).AbsoluteSize
-			/ math.max(if scale then scale.Scale else 1, 0.01)
-		local at = place(
+		if size.X < 1 or size.Y < 1 then
+			return
+		end
+		local placed = place(
 			placement,
 			target.AbsolutePosition - origin,
 			target.AbsoluteSize,
@@ -99,6 +99,8 @@ return function(scope: Types.Scope, props: Types.PopoverProps): Instance
 			8,
 			layer.AbsoluteSize
 		)
+
+		local at = UDim2.fromOffset(math.round(placed.X.Offset), math.round(placed.Y.Offset))
 		if shape then
 			shape.measure(
 				Layer.asGui(props.MorphTarget) or target,
@@ -127,7 +129,6 @@ return function(scope: Types.Scope, props: Types.PopoverProps): Instance
 				ZIndex = props.ZIndex or 90,
 			}))({
 				BackgroundTransparency = scope:Computed(function(use)
-					-- Light dismiss scrim
 					return 1 - math.clamp(use(openS) :: number, 0, 1) * 0.25
 				end),
 			}),
