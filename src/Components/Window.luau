@@ -15,6 +15,7 @@ local Resize = require(script.Parent.Parent.Internal.Resize)
 local Icon = require(script.Parent.Icon)
 local UserInputService = game:GetService("UserInputService")
 local GuiService = game:GetService("GuiService")
+local RunService = game:GetService("RunService")
 
 local ALL_HANDLES =
 	{ "Left", "Right", "Top", "Bottom", "TopLeft", "TopRight", "BottomLeft", "BottomRight" }
@@ -219,22 +220,27 @@ return function(scope: Types.Scope, props: Types.WindowProps): Instance
 		[Children] = chrome,
 	}) :: Frame
 
-	-- ClipsDescendants only clips to a rectangle, so the chrome rounds its own corners. With a
-	-- side rail, the rail takes both left corners and the app bar the top right. With a bottom
-	-- bar, the app bar takes the top corners and the bar the bottom ones.
-	local r: number = radius :: any
-	if hasRail and verticalRail then
-		Corners.apply(props.AppBar, 0, r, 0, 0)
-		Corners.apply(props.Footer, 0, 0, 0, r)
-		Corners.apply(props.NavigationRail, r, 0, r, 0)
-	else
-		Corners.apply(props.AppBar, r, r, 0, 0)
-		Corners.apply(props.Footer, 0, 0, if hasRail then 0 else r, if hasRail then 0 else r)
-		Corners.apply(props.NavigationRail, 0, 0, r, r)
+	local baseRadius: number = radius :: any
+	local currentRadius = baseRadius
+	local function applyRadius(r: number)
+		currentRadius = r
+		local corner = window:FindFirstChildOfClass("UICorner")
+		if corner then
+			corner.CornerRadius = UDim.new(0, r)
+		end
+		if hasRail and verticalRail then
+			Corners.apply(props.AppBar, 0, r, 0, 0)
+			Corners.apply(props.Footer, 0, 0, 0, r)
+			Corners.apply(props.NavigationRail, r, 0, r, 0)
+		else
+			Corners.apply(props.AppBar, r, r, 0, 0)
+			Corners.apply(props.Footer, 0, 0, if hasRail then 0 else r, if hasRail then 0 else r)
+			Corners.apply(props.NavigationRail, 0, 0, r, r)
+		end
+		window:SetAttribute(Corners.WindowRadiusAttribute, r)
 	end
+	applyRadius(baseRadius)
 
-	-- Watch for a docked NavigationDrawer anywhere in the overlay layer. It sets the width it
-	-- takes in the `PantheonDockWidth` attribute, and the widest one decides how far to move over.
 	local DOCK_ATTRIBUTE = "PantheonDockWidth"
 	local dockWidths: { [Instance]: number } = {}
 	local function updateDock()
@@ -274,17 +280,166 @@ return function(scope: Types.Scope, props: Types.WindowProps): Instance
 		end
 	end
 
-	-- Let floating UI that fills the window (scrims, sheets) match its rounding.
-	window:SetAttribute(Corners.WindowRadiusAttribute, r)
+	-- A Value passed as `Size` / `Position` keeps the result across rebuilds.
+	local function write(prop: string, value: UDim2)
+		local source: any = (props :: any)[prop]
+		if typeof(source) == "table" and source.set then
+			source:set(value)
+		else
+			(window :: any)[prop] = value
+		end
+	end
 
-	-- The window is dragged by its app bar, or by `DragHandle` when there is no app bar.
+	local restore: { Size: UDim2, Position: UDim2 }? = nil
+	local draggingNow = false
+	local MAXIMISE_TAP_TIME = 0.35
+	local MAXIMISE_TAP_DISTANCE = 24
+
+	local function parentSize(): Vector2
+		local parent = window.Parent
+		if parent and parent:IsA("GuiBase2d") then
+			return (parent :: any).AbsoluteSize :: Vector2
+		end
+		local host = window:FindFirstAncestorWhichIsA("LayerCollector") :: any
+		return if host then host.AbsoluteSize else window.AbsoluteSize
+	end
+
+	local ANIMATION_TIME = 0.24
+	local animation: RBXScriptConnection? = nil
+	local function stopAnimation()
+		if animation then
+			animation:Disconnect()
+			animation = nil
+		end
+	end
+	table.insert(scope, stopAnimation)
+
+	local function animateTo(size: UDim2, position: UDim2, radiusTo: number)
+		stopAnimation()
+		if theme.Accessibility and theme.Accessibility.ReduceMotion == true then
+			write("Size", size)
+			write("Position", position)
+			applyRadius(radiusTo)
+			return
+		end
+		local fromSize, fromPosition, fromRadius = window.Size, window.Position, currentRadius
+		local elapsed = 0
+		animation = RunService.RenderStepped:Connect(function(dt: number)
+			elapsed += dt
+			local t = math.min(elapsed / ANIMATION_TIME, 1)
+			local eased = 1 - (1 - t) ^ 3
+			write("Size", fromSize:Lerp(size, eased))
+			write("Position", fromPosition:Lerp(position, eased))
+			applyRadius(fromRadius + (radiusTo - fromRadius) * eased)
+			if t >= 1 then
+				stopAnimation()
+			end
+		end)
+	end
+
+	local function maximise()
+		restore = { Size = window.Size, Position = window.Position }
+		local size = parentSize()
+		local anchor = window.AnchorPoint
+		animateTo(
+			UDim2.fromOffset(size.X, size.Y),
+			UDim2.fromOffset(anchor.X * size.X, anchor.Y * size.Y),
+			0
+		)
+	end
+
+	local function unmaximise()
+		local saved = restore
+		restore = nil
+		if saved then
+			animateTo(saved.Size, saved.Position, baseRadius)
+		end
+	end
+
+	do
+		local minimum: Vector2 = props.MinSize or Vector2.new(240, 160)
+		local function keepInside()
+			local host = window:FindFirstAncestorWhichIsA("LayerCollector") :: any
+			if host == nil or window.Parent == nil or draggingNow then
+				return
+			end
+			local area = parentSize()
+			if area.X < 1 or area.Y < 1 then
+				return
+			end
+			if restore then
+				local anchor = window.AnchorPoint
+				animateTo(
+					UDim2.fromOffset(area.X, area.Y),
+					UDim2.fromOffset(anchor.X * area.X, anchor.Y * area.Y),
+					0
+				)
+				return
+			end
+			local size = window.AbsoluteSize
+			local fitted = Vector2.new(
+				math.clamp(size.X, math.min(minimum.X, area.X), area.X),
+				math.clamp(size.Y, math.min(minimum.Y, area.Y), area.Y)
+			)
+			local parent = window.Parent :: any
+			local origin: Vector2 = if parent:IsA("GuiBase2d")
+				then parent.AbsolutePosition
+				else Vector2.zero
+			local topLeft = window.AbsolutePosition - origin
+			local anchor = window.AnchorPoint
+			-- Where the window's top-left is now, with its new size, if it keeps its anchor point.
+			topLeft += anchor * (size - fitted)
+			local inside = Vector2.new(
+				math.clamp(topLeft.X, 0, area.X - fitted.X),
+				math.clamp(topLeft.Y, 0, area.Y - fitted.Y)
+			)
+			if fitted == size and inside == topLeft then
+				return
+			end
+			animateTo(
+				UDim2.fromOffset(fitted.X, fitted.Y),
+				UDim2.fromOffset(inside.X + anchor.X * fitted.X, inside.Y + anchor.Y * fitted.Y),
+				baseRadius
+			)
+		end
+
+		local watched: Instance? = nil
+		local watching: RBXScriptConnection? = nil
+		local function watch()
+			local host = window:FindFirstAncestorWhichIsA("LayerCollector")
+			if host == watched then
+				return
+			end
+			if watching then
+				watching:Disconnect()
+				watching = nil
+			end
+			watched = host
+			if host then
+				watching = (host :: any)
+					:GetPropertyChangedSignal("AbsoluteSize")
+					:Connect(keepInside)
+				task.defer(keepInside)
+			end
+		end
+		table.insert(scope, window.AncestryChanged:Connect(watch))
+		table.insert(scope, function()
+			if watching then
+				watching:Disconnect()
+			end
+		end)
+		watch()
+	end
+
 	local dragHandle = props.DragHandle or props.AppBar
 	if props.Draggable and dragHandle then
 		local handle = dragHandle :: GuiObject
 		local bounds = props.DragBounds or "Titlebar"
 		local keepX = props.DragKeepVisible or 120
+		local maximizable = props.Maximizable ~= false and props.Resizable == true
 
-		-- Where the window's top-left may go (absolute screen space).
+		local lastPress: { Time: number, Point: Vector2, Type: Enum.UserInputType }? = nil
+
 		local function clampTopLeft(topLeft: Vector2): Vector2
 			local host = window:FindFirstAncestorWhichIsA("LayerCollector")
 			if host == nil or bounds == "Free" then
@@ -320,6 +475,29 @@ return function(scope: Types.Scope, props: Types.WindowProps): Instance
 				local startPosition = window.Position
 				local startTopLeft = window.AbsolutePosition
 
+				if maximizable then
+					local now = os.clock()
+					local last = lastPress
+					lastPress = { Time = now, Point = startPointer, Type = input.UserInputType }
+					if
+						last
+						and last.Type == input.UserInputType
+						and now - last.Time <= MAXIMISE_TAP_TIME
+						and (startPointer - last.Point).Magnitude <= MAXIMISE_TAP_DISTANCE
+					then
+						lastPress = nil
+						if restore then
+							unmaximise()
+						else
+							maximise()
+						end
+						return
+					end
+				end
+
+				stopAnimation()
+				draggingNow = true
+				local pending = restore ~= nil
 				ScrollInput.capture(window, function(move: InputObject)
 					return move.UserInputType == Enum.UserInputType.MouseMovement
 						or move.UserInputType == Enum.UserInputType.Touch
@@ -327,6 +505,40 @@ return function(scope: Types.Scope, props: Types.WindowProps): Instance
 					return ended.UserInputType == Enum.UserInputType.MouseButton1
 						or ended.UserInputType == Enum.UserInputType.Touch
 				end, function(pointer: Vector3)
+					if pending then
+						if (Vector2.new(pointer.X, pointer.Y) - startPointer).Magnitude < 4 then
+							return
+						end
+						pending = false
+						local saved = restore
+						restore = nil
+						if saved then
+							local size = window.AbsoluteSize
+							local across = math.clamp(
+								(startPointer.X - startTopLeft.X) / math.max(size.X, 1),
+								0,
+								1
+							)
+							local down = startPointer.Y - startTopLeft.Y
+							write("Size", saved.Size)
+							applyRadius(baseRadius)
+							local restored = window.AbsoluteSize
+							local parent = window.Parent
+							local origin = if parent and parent:IsA("GuiBase2d")
+								then (parent :: any).AbsolutePosition :: Vector2
+								else Vector2.zero
+							local topLeft =
+								Vector2.new(pointer.X - across * restored.X, pointer.Y - down)
+							local anchor = window.AnchorPoint
+							startTopLeft = topLeft
+							startPointer = Vector2.new(pointer.X, pointer.Y)
+							startPosition = UDim2.fromOffset(
+								topLeft.X - origin.X + anchor.X * restored.X,
+								topLeft.Y - origin.Y + anchor.Y * restored.Y
+							)
+							write("Position", startPosition)
+						end
+					end
 					local target = clampTopLeft(
 						startTopLeft + (Vector2.new(pointer.X, pointer.Y) - startPointer)
 					)
@@ -344,7 +556,9 @@ return function(scope: Types.Scope, props: Types.WindowProps): Instance
 					else
 						window.Position = position
 					end
-				end, function() end)
+				end, function()
+					draggingNow = false
+				end)
 			end)
 		)
 	end
@@ -380,16 +594,6 @@ return function(scope: Types.Scope, props: Types.WindowProps): Instance
 				return UDim2.new(0, 0, 1, -c), UDim2.fromOffset(c, c)
 			end
 			return UDim2.new(1, -c, 1, -c), UDim2.fromOffset(c, c)
-		end
-
-		-- A Value passed as `Size` / `Position` keeps the result across rebuilds.
-		local function write(prop: string, value: UDim2)
-			local source: any = (props :: any)[prop]
-			if typeof(source) == "table" and source.set then
-				source:set(value)
-			else
-				(window :: any)[prop] = value
-			end
 		end
 
 		-- Resize cursor: a glyph that follows the pointer while it is over a handle or dragging.
@@ -489,7 +693,6 @@ return function(scope: Types.Scope, props: Types.WindowProps): Instance
 				Active = true,
 				Position = position,
 				Size = size,
-				-- Above the chrome, below the overlay layer (dialogs, sheets).
 				ZIndex = 40,
 				Parent = window,
 			}) :: Frame
@@ -537,14 +740,18 @@ return function(scope: Types.Scope, props: Types.WindowProps): Instance
 						then host.AbsoluteSize
 						else Vector2.new(math.huge, math.huge)
 					local limits: Resize.Limits = {
-						minWidth = minSize.X,
-						minHeight = minSize.Y,
-						maxWidth = if maxSize then maxSize.X else hostSize.X,
-						maxHeight = if maxSize then maxSize.Y else hostSize.Y,
+						minWidth = math.min(minSize.X, hostSize.X),
+						minHeight = math.min(minSize.Y, hostSize.Y),
+						maxWidth = math.min(if maxSize then maxSize.X else hostSize.X, hostSize.X),
+						maxHeight = math.min(if maxSize then maxSize.Y else hostSize.Y, hostSize.Y),
 						ratio = ratio,
 						grid = props.ResizeSnap,
 					}
 
+					restore = nil
+					stopAnimation()
+					draggingNow = true
+					applyRadius(baseRadius)
 					draggingHandle = name
 					refreshCursor()
 
@@ -586,6 +793,7 @@ return function(scope: Types.Scope, props: Types.WindowProps): Instance
 						end
 					end, function()
 						draggingHandle = nil
+						draggingNow = false
 						refreshCursor(false)
 					end)
 				end)

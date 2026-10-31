@@ -1147,6 +1147,7 @@ export type WindowProps = {
 	Elevated: boolean?,
 	--- Drag the window by its app bar.
 	Draggable: boolean?,
+	Maximizable: boolean?,
 	--- "Titlebar" (default): the window may leave the screen but its handle stays reachable;
 	--- "Screen": keep it fully on screen; "Free": no limit.
 	DragBounds: ("Titlebar" | "Screen" | "Free")?,

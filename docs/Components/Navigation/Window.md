@@ -73,6 +73,7 @@ Set `Resizable` to add handles on the edges and corners. Use `MinSize`, `MaxSize
 | `Elevated` | `boolean` | :x: | `true` | Use the raised fill and a larger shadow. |
 | `BackgroundTransparency` | `UsedAs<number>` | :x: | `0` | Transparency of the window fill, from 0 (opaque) to 1. The edges and the content stay opaque. |
 | `Draggable` | `boolean` | :x: | `false` | Let the user drag the window by its app bar. |
+| `Maximizable` | `boolean` | :x: | `true` | With `Draggable` and `Resizable`, two quick presses on the drag handle fill the screen, and two more put the window back. Dragging a maximised window also puts it back to its old size, under the pointer. |
 | `DragBounds` | `"Titlebar" \| "Screen" \| "Free"` | :x: | `"Titlebar"` | `"Titlebar"` lets the window leave the screen but keeps the handle reachable. `"Screen"` keeps the whole window on screen. `"Free"` has no limit. |
 | `DragKeepVisible` | `number` | :x: | `120` | `"Titlebar"` only. How much of the window must stay on screen horizontally, in pixels. |
 | `Resizable` | `boolean` | :x: | `false` | Show resize handles on the edges and corners. |
