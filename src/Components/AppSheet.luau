@@ -32,6 +32,7 @@ return function(scope: Types.Scope, props: Types.AppSheetProps): Instance
 	local theme = resolveTheme(props)
 	local detent = props.Detent or 0.92
 	local showGrabber = props.ShowGrabber ~= false
+	local showHeader = props.ShowHeader ~= false
 	local openRef = props.Open
 	local open = scope:Computed(function(use)
 		if openRef == nil then
@@ -230,17 +231,39 @@ return function(scope: Types.Scope, props: Types.AppSheetProps): Instance
 		},
 		[Children] = headerKids,
 	}) :: Frame
-	attachDrag(header)
-	table.insert(panelKids, header)
+	local pinned = props.Header ~= nil
+	local pinnedHeight: any = props.HeaderHeight or HEADER_HEIGHT
+	if pinned then
+		local custom = scope:Frame({
+			Name = "Header",
+			BackgroundTransparency = 1,
+			Size = scope:Computed(function(use)
+				return UDim2.new(1, 0, 0, use(pinnedHeight))
+			end),
+			LayoutOrder = 2,
+			ZIndex = 2,
+			[Children] = { props.Header },
+		}) :: Frame
+		attachDrag(custom)
+		table.insert(panelKids, custom)
+	elseif showHeader then
+		attachDrag(header)
+		table.insert(panelKids, header)
+	end
 
 	-- The body takes the rest of the height and scrolls when the content is taller.
-	local chrome = HEADER_HEIGHT + (if showGrabber then GRABBER_HEIGHT else 0)
+	local chrome = scope:Computed(function(use)
+		local top = if pinned then use(pinnedHeight) elseif showHeader then HEADER_HEIGHT else 0
+		return top + (if showGrabber then GRABBER_HEIGHT else 0)
+	end)
 	table.insert(
 		panelKids,
 		scope:Frame({
 			Name = "Body",
 			BackgroundTransparency = 1,
-			Size = UDim2.new(1, 0, 1, -chrome),
+			Size = scope:Computed(function(use)
+				return UDim2.new(1, 0, 1, -use(chrome))
+			end),
 			LayoutOrder = 3,
 			[Children] = {
 				ScrollArea(scope, {
@@ -248,6 +271,9 @@ return function(scope: Types.Scope, props: Types.AppSheetProps): Instance
 					Size = UDim2.fromScale(1, 1),
 					ContentPadding = 0,
 					ListPadding = theme.Metrics.SpaceSm,
+					ScrollBarHidden = props.ScrollBarHidden,
+					ScrollOffset = props.ScrollOffset,
+					OnScroll = props.OnScroll,
 					Children = props.Children,
 				}),
 			},

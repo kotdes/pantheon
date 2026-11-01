@@ -76,6 +76,7 @@ To show a very long list, use [VirtualList](./VirtualList.md), which is built on
 | `ClipsDescendants` | `boolean` | :x: | `true` | Clip the content to the area. Turn it off to let borders, focus rings and shadows at the edge show. The content then also draws outside the area while it scrolls. |
 | `CollapseScrollBar` | `boolean` | :x: | `false` | With `AutoHideScrollBar`, the bar slides to the edge when idle and the content grows to the full width. Both come back when the area scrolls or the pointer is over the bar. Has no effect with `ScrollBarOverlay`. |
 | `ContentPadding` | `number` | :x: | `Metrics.SpaceMd` | Padding around the content in pixels. Use `0` for virtual lists. |
+| `ContentInset` | `number` | :x: | `2` | Extra space added around list content on top of `ContentPadding`, so a stroke at the edge of a child is not cut by the clip. Use `0` when the content must reach the edge, such as a tab strip that sits on a divider. |
 | `ListPadding` | `number` | :x: | `Metrics.SpaceLg` | Gap between children in pixels. |
 
 ## Callbacks

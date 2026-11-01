@@ -7,6 +7,7 @@ local resolveTheme = require(script.Parent.Parent.Internal.resolveTheme).resolve
 local Corners = require(script.Parent.Parent.Internal.Corners)
 local Defaults = require(script.Parent.Parent.Internal.Defaults)
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
+local Motion = require(script.Parent.Parent.Internal.Motion)
 local ListItemStyle = require(script.Parent.Parent.Internal.ListItemStyle)
 local P = require(script.Parent.Parent.Internal.props)
 local Icon = require(script.Parent.Icon)
@@ -39,7 +40,6 @@ return function(scope: Types.Scope, props: Types.ListItemProps): Instance
 	local title = if slot and slot.Title ~= nil then slot.Title else props.Title
 	local iconColumn = style.IconSize + style.Gap
 
-	local speed, damping = theme.Motion.SpringSpeed, theme.Motion.SpringDamping
 	local open = scope:Value(slot ~= nil and peek(slot.Open :: any) == true)
 	local opened = scope:Value(peek(open)) -- true once the control has been built
 	local function close()
@@ -125,11 +125,9 @@ return function(scope: Types.Scope, props: Types.ListItemProps): Instance
 			top,
 			scope:Frame({
 				Name = "IconSlot",
-				BackgroundColor3 = theme.Colors.SurfaceContainerHigh,
-				BackgroundTransparency = if flat then 0 else 1,
+				BackgroundTransparency = 1,
 				Size = UDim2.fromOffset(style.IconSize, style.IconSize),
 				LayoutOrder = 1,
-				CornerRadius = if flat then theme.Metrics.RadiusPill else nil,
 				Layout = {
 					Kind = "List",
 					HorizontalAlignment = Enum.HorizontalAlignment.Center,
@@ -139,10 +137,8 @@ return function(scope: Types.Scope, props: Types.ListItemProps): Instance
 					Icon(scope, {
 						Theme = theme,
 						Name = props.Icon,
-						IconSize = if flat then theme.Metrics.IconXl else style.IconSize,
-						Color = if flat
-							then theme.Colors.OnSurface
-							else theme.Colors.OnSurfaceVariant,
+						IconSize = if flat then theme.Metrics.IconLg else style.IconSize,
+						Color = theme.Colors.OnSurfaceVariant,
 					}),
 				},
 			})
@@ -150,12 +146,13 @@ return function(scope: Types.Scope, props: Types.ListItemProps): Instance
 	end
 	table.insert(top, textColumn)
 
-	local progress = scope:Spring(
+	local progress = Motion.spring(
+		scope,
 		scope:Computed(function(use)
 			return if use(open) then 1 else 0
 		end),
-		speed,
-		damping
+		theme,
+		"Smooth"
 	)
 
 	local function chevron(name: string): any
@@ -166,15 +163,17 @@ return function(scope: Types.Scope, props: Types.ListItemProps): Instance
 			Color = theme.Colors.OnSurfaceVariant,
 		})
 		if mode == "Accordion" then
-			return scope:Apply(icon)({
-				Rotation = scope:Computed(function(use)
-					return 180 * math.clamp(use(progress) :: number, 0, 1)
-				end),
-			})
+			local image = icon :: ImageLabel
+			local function turn()
+				image.Rotation = 180 * math.clamp(peek(progress) :: number, 0, 1)
+			end
+			turn()
+			table.insert(scope, scope:Observer(progress):onBind(turn))
 		end
 		return icon
 	end
 
+	local fixedHeight = not (wrap or below)
 	local ends: { any } = {}
 	if props.Value ~= nil then
 		local function valueLine(text: any, font: Font, size: number, colour: any, order: number)
@@ -253,8 +252,8 @@ return function(scope: Types.Scope, props: Types.ListItemProps): Instance
 			scope:Frame({
 				Name = "End",
 				BackgroundTransparency = 1,
-				Size = UDim2.new(0, 0, 0, 0),
-				AutomaticSize = Enum.AutomaticSize.XY,
+				Size = if fixedHeight then UDim2.fromScale(0, 1) else UDim2.new(0, 0, 0, 0),
+				AutomaticSize = if fixedHeight then Enum.AutomaticSize.X else Enum.AutomaticSize.XY,
 				LayoutOrder = 4,
 				Layout = {
 					Kind = "List",
@@ -272,8 +271,8 @@ return function(scope: Types.Scope, props: Types.ListItemProps): Instance
 		scope:Frame({
 			Name = "Top",
 			BackgroundTransparency = 1,
-			Size = UDim2.new(1, 0, 0, 0),
-			AutomaticSize = Enum.AutomaticSize.Y,
+			Size = if fixedHeight then UDim2.fromScale(1, 1) else UDim2.new(1, 0, 0, 0),
+			AutomaticSize = if fixedHeight then Enum.AutomaticSize.None else Enum.AutomaticSize.Y,
 			LayoutOrder = 1,
 			Layout = {
 				Kind = "List",
@@ -377,9 +376,18 @@ return function(scope: Types.Scope, props: Types.ListItemProps): Instance
 					if not use(open) then
 						return nil
 					end
-					return ownTheme(function(here)
-						return slot.Build(here, close)
-					end, inner)
+					return inner:Frame({
+						Name = "SheetContent",
+						BackgroundTransparency = 1,
+						Size = UDim2.new(1, 0, 0, 0),
+						AutomaticSize = Enum.AutomaticSize.Y,
+						Padding = { theme.Metrics.SpaceMd },
+						[Children] = {
+							ownTheme(function(here)
+								return slot.Build(here, close)
+							end, inner),
+						},
+					})
 				end),
 			},
 		})

@@ -51,6 +51,12 @@ If `OnClose` does not close the sheet, it springs back. A sheet always opens at 
 | `Children` | `any` | :x: | - | Content of the sheet. |
 | `Detent` | `number` | :x: | `0.92` | Normal height of the sheet as a fraction, from `0` to `1`, of the layer it is mounted on. Dragging up expands it to `1`. |
 | `ShowGrabber` | `boolean` | :x: | `true` | Show the small handle at the top. |
+| `Header` | `UsedAs<Instance?>` | :x: | - | Content pinned at the top of the sheet, in place of the title row. It does not scroll with the body, so a picture that runs to the top edge keeps its rounded corners. Set `HeaderHeight` as well. |
+| `HeaderHeight` | `UsedAs<number>` | :x: | `48` | Height of `Header`, in pixels. |
+| `ScrollOffset` | `UsedAs<number>` | :x: | `0` | Scroll position of the body, in pixels. A `Value` is followed, so setting it scrolls the body. |
+| `OnScroll` | `(offset: number) -> ()` | :x: | - | Runs when the body scrolls. A pinned `Header` can use it to shrink as the body scrolls. |
+| `ScrollBarHidden` | `boolean` | :x: | `false` | Hide the scroll bar of the body. The content then has no gutter for it. |
+| `ShowHeader` | `boolean` | :x: | `true` | Show the title row with the close button. Turn it off when the content draws its own, such as a picture that runs to the top edge. The sheet can then only be closed by the content, the scrim or `Open`. |
 
 ## Callbacks
 

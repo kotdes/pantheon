@@ -32,9 +32,9 @@ return function(theme: Types.Theme, flat: boolean?): ListItemStyle
 			PaddingX = theme.Metrics.SpaceSm,
 			Gap = theme.Metrics.SpaceMd,
 			Radius = theme.Metrics.RadiusMd,
-			IconSize = 44,
-			Height = 64,
-			HeightWithSubtitle = 72,
+			IconSize = 28,
+			Height = 56,
+			HeightWithSubtitle = 64,
 		}
 	end
 	return {

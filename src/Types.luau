@@ -334,9 +334,27 @@ export type TextProps = {
 	[string]: any,
 }
 
+export type ListItemSlot = {
+	Mode: "Inline" | "Accordion" | "Prompt" | "Page",
+	Build: (scope: Scope, close: () -> ()) -> Instance,
+	Placement: ("Trailing" | "Below")?,
+	Fill: boolean?,
+	Display: Instance?,
+	Title: UsedAs<string>?,
+	Detent: number?,
+	Open: UsedAs<boolean>?,
+}
+
 export type ListItemProps = {
 	--- Space at the left and right of the row, in pixels. Default `SpaceMd`, or `SpaceSm` when flat.
 	PaddingX: number?,
+	Icon: string?,
+	Wrap: boolean?,
+	Below: Instance?,
+	Slot: ListItemSlot?,
+	TitleWidth: number?,
+	Chevron: boolean?,
+	OnPage: ((title: any, build: (scope: Scope, close: () -> ()) -> Instance) -> ())?,
 	--- A borderless row with no fill at rest, a bold name and a round leading image. The blueprint decides when you do not set it.
 	Flat: boolean?,
 	--- Text at the end of the row, right-aligned, such as an amount.
@@ -360,109 +378,104 @@ export type ListItemProps = {
 	CornerRadius: number?,
 }
 
-export type DataListProps = {
-	Theme: ThemeRef?,
-	LayoutOrder: UsedAs<number>?,
-	Size: UsedAs<UDim2>?,
-	Visible: UsedAs<boolean>?,
-	ZIndex: UsedAs<number>?,
-	--- Name of the group, shown over the card.
-	Heading: UsedAs<string>?,
-	--- The rows: `DataRow`, `DataToggle`, `DataLink`, `DataSlider`, `DataSegmented` or `ListItem`.
-	Children: { Instance }?,
-	--- Radius of the card in px (default `RadiusMd`).
-	CornerRadius: number?,
-	[string]: any,
-}
+export type ItemMode = "Inline" | "Accordion" | "Prompt" | "Page"
 
-export type DataRowProps = {
+export type ItemBaseProps = {
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
 	Visible: UsedAs<boolean>?,
 	ZIndex: UsedAs<number>?,
+	Layer: Instance?,
 	Icon: string?,
 	Title: UsedAs<string>,
-	Summary: UsedAs<string>?,
-	--- An element at the end of the row, such as a switch.
-	Trailing: Instance?,
-	--- A control under the text, such as a slider or a segmented choice.
-	Below: Instance?,
-	OnClick: (() -> ())?,
+	Subtitle: UsedAs<string>?,
 	Disabled: UsedAs<boolean>?,
-	--- Corner radius in px. Leave it out and the corners are concentric with the card.
-	CornerRadius: number?,
-	[string]: any,
+	OnPage: ((title: any, build: (scope: Scope, close: () -> ()) -> Instance) -> ())?,
 }
 
-export type DataToggleProps = {
+export type ListItemGroupProps = {
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
 	Size: UsedAs<UDim2>?,
 	Visible: UsedAs<boolean>?,
 	ZIndex: UsedAs<number>?,
-	Icon: string?,
-	Title: UsedAs<string>,
-	Summary: UsedAs<string>?,
-	--- A Value state is set when the switch changes.
+	Heading: UsedAs<string>?,
+	Children: { Instance }?,
+	CornerRadius: number?,
+}
+
+export type ItemSwitchProps = ItemBaseProps & {
 	Value: UsedAs<boolean>,
 	OnChanged: ((boolean) -> ())?,
-	Disabled: UsedAs<boolean>?,
-	[string]: any,
 }
 
-export type DataLinkProps = {
-	Theme: ThemeRef?,
-	LayoutOrder: UsedAs<number>?,
-	Size: UsedAs<UDim2>?,
-	Visible: UsedAs<boolean>?,
-	ZIndex: UsedAs<number>?,
-	Icon: string?,
-	Title: UsedAs<string>,
-	Summary: UsedAs<string>?,
-	--- Text before the chevron, such as the current choice.
-	Value: UsedAs<string>?,
-	Trailing: Instance?,
-	OnClick: (() -> ())?,
-	Disabled: UsedAs<boolean>?,
-	[string]: any,
+export type ItemCheckboxProps = ItemBaseProps & {
+	Value: UsedAs<boolean>,
+	OnChanged: ((boolean) -> ())?,
 }
 
-export type DataSliderProps = {
-	Theme: ThemeRef?,
-	LayoutOrder: UsedAs<number>?,
-	Size: UsedAs<UDim2>?,
-	Visible: UsedAs<boolean>?,
-	ZIndex: UsedAs<number>?,
-	Title: UsedAs<string>,
-	--- A Value state is set as the slider moves.
+export type ItemSliderProps = ItemBaseProps & {
 	Value: UsedAs<number>,
 	Min: number?,
 	Max: number?,
 	Step: number?,
-	--- Text for the value at the end of the row. A range of 0 to 1 shows a percentage.
 	Format: ((number) -> string)?,
-	--- Width of the name in px (default 112). Give a group of sliders the same width.
-	LabelWidth: number?,
+	TitleWidth: number?,
 	OnChanged: ((number) -> ())?,
-	Disabled: UsedAs<boolean>?,
-	[string]: any,
 }
 
-export type DataSegmentedProps = {
-	Theme: ThemeRef?,
-	LayoutOrder: UsedAs<number>?,
-	Size: UsedAs<UDim2>?,
-	Visible: UsedAs<boolean>?,
-	ZIndex: UsedAs<number>?,
-	Icon: string?,
-	Title: UsedAs<string>,
-	Summary: UsedAs<string>?,
+export type ItemSelectProps = ItemBaseProps & {
 	Value: UsedAs<string>,
-	Options: { { Value: string, Label: string } },
+	Options: { SelectOption },
+	Mode: ItemMode?,
+	Detent: number?,
+	Placeholder: UsedAs<string>?,
 	OnChanged: ((string) -> ())?,
-	Disabled: UsedAs<boolean>?,
-	[string]: any,
+}
+
+export type ItemRadioProps = ItemBaseProps & {
+	Value: UsedAs<string>,
+	Options: { RadioOption },
+	Mode: ItemMode?,
+	Detent: number?,
+	OnChanged: ((string) -> ())?,
+}
+
+export type ItemTextProps = ItemBaseProps & {
+	Value: UsedAs<string>,
+	Mode: ItemMode?,
+	Detent: number?,
+	Multiline: boolean?,
+	Placeholder: UsedAs<string>?,
+	OnChanged: ((string) -> ())?,
+}
+
+export type ItemNumberProps = ItemBaseProps & {
+	Value: UsedAs<number>,
+	Mode: ("Inline" | "Prompt")?,
+	Detent: number?,
+	Min: number?,
+	Max: number?,
+	Step: number?,
+	Decimals: number?,
+	Suffix: string?,
+	OnChanged: ((number) -> ())?,
+}
+
+export type ItemColourProps = ItemBaseProps & {
+	Value: UsedAs<Color3>,
+	Mode: ("Accordion" | "Prompt" | "Page")?,
+	Detent: number?,
+	ShowAlpha: boolean?,
+	Modes: { string }?,
+	OnChanged: ((Color3) -> ())?,
+}
+
+export type ItemSegmentedProps = ItemBaseProps & {
+	Value: UsedAs<string>,
+	Options: { ChoiceGroupOption },
+	OnChanged: ((string) -> ())?,
 }
 
 export type ChipProps = {
@@ -681,6 +694,7 @@ export type SelectProps = {
 	Visible: UsedAs<boolean>?,
 	ZIndex: UsedAs<number>?,
 	Layer: Instance?,
+	MorphTarget: Instance?,
 	Options: { SelectOption },
 	Value: UsedAs<string>?,
 	Placeholder: UsedAs<string>?,
@@ -701,6 +715,7 @@ export type MultiSelectProps = {
 	Visible: UsedAs<boolean>?,
 	ZIndex: UsedAs<number>?,
 	Layer: Instance?,
+	MorphTarget: Instance?,
 	Options: { SelectOption },
 	Value: UsedAs<{ string }>?,
 	Placeholder: UsedAs<string>?,
@@ -977,6 +992,7 @@ export type TabsProps = {
 	ZIndex: UsedAs<number>?,
 	Layer: Instance?,
 	Items: { TabItem },
+	Variant: ("Chips" | "Underline")?,
 	Selected: UsedAs<string>?,
 	OnChanged: ((string) -> ())?,
 	[string]: any,
@@ -1588,35 +1604,6 @@ export type EmptyStateProps = {
 	[string]: any,
 }
 
-export type SettingsListItem = {
-	Id: string?,
-	Title: UsedAs<string>,
-	Subtitle: UsedAs<string>?,
-	Icon: string?,
-	OnClick: (() -> ())?,
-	Trailing: Instance?,
-	ShowChevron: boolean?,
-	Disabled: boolean?,
-	[string]: any,
-}
-
-export type SettingsListProps = {
-	Theme: ThemeRef?,
-	LayoutOrder: UsedAs<number>?,
-	Size: UsedAs<UDim2>?,
-	Visible: UsedAs<boolean>?,
-	ZIndex: UsedAs<number>?,
-	Layer: Instance?,
-	--- Hub rows (iOS Settings style cards)
-	Items: { any }?,
-	--- Section title above the card group
-	Header: UsedAs<string>?,
-	Footer: UsedAs<string>?,
-	Children: any?,
-	InsetGrouped: boolean?,
-	[string]: any,
-}
-
 export type AppSheetProps = {
 	Theme: ThemeRef?,
 	LayoutOrder: UsedAs<number>?,
@@ -1635,6 +1622,12 @@ export type AppSheetProps = {
 	--- Detent height scale 0–1 of host. Default 0.92
 	Detent: number?,
 	ShowGrabber: boolean?,
+	ShowHeader: boolean?,
+	Header: any?,
+	HeaderHeight: UsedAs<number>?,
+	ScrollOffset: UsedAs<number>?,
+	OnScroll: ((offset: number) -> ())?,
+	ScrollBarHidden: boolean?,
 	[string]: any,
 }
 
@@ -1769,6 +1762,7 @@ export type ScrollAreaProps = {
 	Children: any?,
 	ClipsDescendants: boolean?,
 	Orientation: ("Vertical" | "Horizontal")?,
+	ContentInset: number?,
 	CollapseScrollBar: boolean?,
 	ScrollBarThickness: number?,
 	ScrollBarColor: Color3?,
@@ -1842,6 +1836,7 @@ export type NumberFieldProps = {
 	Label: string?,
 	--- Fixed text at the end of the field, such as a unit.
 	Suffix: string?,
+	TextXAlignment: Enum.TextXAlignment?,
 	--- Value change per pixel of scrubbing (default: the range over 300 px, or a step per 4 px).
 	ScrubSpeed: number?,
 	Disabled: UsedAs<boolean>?,

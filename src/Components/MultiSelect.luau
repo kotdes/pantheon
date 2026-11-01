@@ -14,7 +14,10 @@ local Persist = require(script.Parent.Parent.Internal.Persist)
 local Bind = require(script.Parent.Parent.Internal.Bind)
 local CanvasFade = require(script.Parent.Parent.Internal.CanvasFade)
 local Interaction = require(script.Parent.Parent.Internal.Interaction)
+local Corners = require(script.Parent.Parent.Internal.Corners)
 local Layer = require(script.Parent.Parent.Internal.Layer)
+local Dropdown = require(script.Parent.Parent.Internal.Dropdown)
+local Presence = require(script.Parent.Parent.Internal.Presence)
 local Follow = require(script.Parent.Parent.Internal.Follow)
 local Icon = require(script.Parent.Icon)
 local Chip = require(script.Parent.Chip)
@@ -71,14 +74,18 @@ return function(scope: Types.Scope, props: Types.MultiSelectProps): Instance
 	local theme = resolveTheme(props)
 	local outlined = Defaults.outlined(theme, "MultiSelect", props.Outlined)
 	local open = scope:Value(false)
-	local openS = Motion.spring(
-		scope,
-		scope:Computed(function(use)
-			return if use(open) then 1 else 0
-		end),
-		theme,
-		"Smooth"
-	)
+	local morphing = Dropdown.morphs(theme, props)
+	local panelRadius = if morphing then theme.Metrics.RadiusPanel else theme.Metrics.RadiusSm
+	local openS = if morphing
+		then Presence.create(scope, open, theme, "LiquidHeight").Progress
+		else Motion.spring(
+			scope,
+			scope:Computed(function(use)
+				return if use(open) then 1 else 0
+			end),
+			theme,
+			"Smooth"
+		)
 	local selected = Persist.value(
 		scope,
 		Persist.key("MultiSelect", typeof(props.Value) == "table"),
@@ -130,7 +137,7 @@ return function(scope: Types.Scope, props: Types.MultiSelectProps): Instance
 			Size = UDim2.new(1, 0, 0, 40),
 			LayoutOrder = i,
 			ClipsDescendants = true,
-			CornerRadius = theme.Metrics.RadiusSm - theme.Metrics.Space2xs,
+			CornerRadius = Corners.concentric(panelRadius, theme.Metrics.Space2xs),
 			Padding = { theme.Metrics.SpaceXs, theme.Metrics.SpaceSm },
 			Layout = {
 				Kind = "List",
@@ -389,9 +396,11 @@ return function(scope: Types.Scope, props: Types.MultiSelectProps): Instance
 		BackgroundColor3 = theme.Colors.Surface,
 		Size = UDim2.fromOffset(0, 0),
 		AutomaticSize = Enum.AutomaticSize.XY,
-		Visible = CanvasFade.shown(scope, openS, nil, { Theme = theme }),
-		BackgroundTransparency = CanvasFade.surfaceTransparency(scope, openS, { Theme = theme }),
-		CornerRadius = theme.Metrics.RadiusSm,
+		Visible = if morphing then true else CanvasFade.shown(scope, openS, nil, { Theme = theme }),
+		BackgroundTransparency = if morphing
+			then 1
+			else CanvasFade.surfaceTransparency(scope, openS, { Theme = theme }),
+		CornerRadius = panelRadius,
 		Outline = if outlined
 			then {
 				Color = theme.Colors.Outline,
@@ -408,12 +417,14 @@ return function(scope: Types.Scope, props: Types.MultiSelectProps): Instance
 		SizeConstraint = {
 			MinSize = Vector2.new(160, 0),
 		},
-		Shadow = {
-			BlurRadius = 8,
-			Transparency = scope:Computed(function(use)
-				return 1 - (use(openS) :: number) * 0.1
-			end),
-		},
+		Shadow = if morphing
+			then nil
+			else {
+				BlurRadius = 8,
+				Transparency = scope:Computed(function(use)
+					return 1 - (use(openS) :: number) * 0.1
+				end),
+			},
 		ZIndex = 200,
 		[Children] = popKids,
 	})
@@ -446,31 +457,43 @@ return function(scope: Types.Scope, props: Types.MultiSelectProps): Instance
 		},
 	}) :: Frame
 
-	local chrome = CanvasFade.host(scope, popover, openS, { Theme = theme })
-	if chrome ~= popover then
-		popover.Size = UDim2.new(1, 0, 0, 0)
+	if morphing then
 		popover.AutomaticSize = Enum.AutomaticSize.Y
-	end
-	local mounted = Layer.mount(scope, props, chrome)
-	if not mounted then
-		chrome.Parent = field
-		chrome.Size = UDim2.new(1, 0, 0, 0)
-		chrome.AutomaticSize = Enum.AutomaticSize.Y
-		chrome.Position = UDim2.fromOffset(0, closedHeight + 4)
+		Dropdown.mount(scope, props, {
+			Theme = theme,
+			Open = open,
+			Trigger = trigger,
+			Panel = popover,
+			MinWidth = 240,
+			MorphTarget = props.MorphTarget,
+		})
 	else
-		Follow(scope, open, function(v)
-			return v == true
-		end, function()
-			local layer = Layer.resolve(props)
-			if layer == nil then
-				return
-			end
-			local tp = trigger.AbsolutePosition
-			local ts = trigger.AbsoluteSize
-			local lp = layer.AbsolutePosition
-			chrome.Position = UDim2.fromOffset(tp.X - lp.X, tp.Y - lp.Y + ts.Y + 4)
-			chrome.Size = UDim2.fromOffset(math.max(ts.X, 160), 0)
-		end)
+		local chrome = CanvasFade.host(scope, popover, openS, { Theme = theme })
+		if chrome ~= popover then
+			popover.Size = UDim2.new(1, 0, 0, 0)
+			popover.AutomaticSize = Enum.AutomaticSize.Y
+		end
+		local mounted = Layer.mount(scope, props, chrome)
+		if not mounted then
+			chrome.Parent = field
+			chrome.Size = UDim2.new(1, 0, 0, 0)
+			chrome.AutomaticSize = Enum.AutomaticSize.Y
+			chrome.Position = UDim2.fromOffset(0, closedHeight + 4)
+		else
+			Follow(scope, open, function(v)
+				return v == true
+			end, function()
+				local layer = Layer.resolve(props)
+				if layer == nil then
+					return
+				end
+				local tp = trigger.AbsolutePosition
+				local ts = trigger.AbsoluteSize
+				local lp = layer.AbsolutePosition
+				chrome.Position = UDim2.fromOffset(tp.X - lp.X, tp.Y - lp.Y + ts.Y + 4)
+				chrome.Size = UDim2.fromOffset(math.max(ts.X, 160), 0)
+			end)
+		end
 	end
 
 	Focus.escape(scope, open, function()

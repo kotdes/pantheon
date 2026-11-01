@@ -6,7 +6,7 @@ tags:
 
 # Tabs
 
-Tabs is a row of chips that switches between views. The row scrolls sideways when it does not fit.
+Tabs is a row of chips, or of underlined labels, that switches between views. The row scrolls sideways when it does not fit.
 
 <div class="es-preview" data-component="Tabs"></div>
 
@@ -34,6 +34,7 @@ scope:Tabs({
 | `LayoutOrder` | `UsedAs<number>` | :x: | `0` | Position in a parent `UIListLayout` or `UIGridLayout`. |
 | `Size` | `UsedAs<UDim2>` | :x: | `UDim2.new(1, 0, 0, 44)` | Size of the component. |
 | `Items` | `{ TabItem }` | :white_check_mark: | - | The tabs. Each has an `Id` and a `Label`. |
+| `Variant` | `"Chips" \| "Underline"` | :x: | `"Chips"` | `Underline` draws the labels as text with a line under the selected one, and a thin divider under the row. |
 | `Selected` | `UsedAs<string>` | :x: | The first item | `Id` of the selected tab. A plain value is only the starting tab. A `Value` is followed, and is set when the user picks one. |
 
 ## Callbacks

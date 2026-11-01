@@ -9,7 +9,7 @@ local Text = require(script.Parent.Text)
 
 local Children = Fusion.Children
 
-return function(scope: Types.Scope, props: Types.DataListProps): Instance
+return function(scope: Types.Scope, props: Types.ListItemGroupProps): Instance
 	local theme = resolveTheme(props)
 	local rows: { any } = {}
 	for _, row in props.Children or {} do
@@ -19,7 +19,6 @@ return function(scope: Types.Scope, props: Types.DataListProps): Instance
 				scope:Frame({
 					Name = "Divider",
 					BackgroundColor3 = theme.Colors.OutlineVariant,
-					-- Starts where the text of a row starts.
 					Size = UDim2.new(1, -ListItemStyle(theme).PaddingX * 2, 0, 1),
 					LayoutOrder = #rows + 1,
 				})
@@ -50,7 +49,7 @@ return function(scope: Types.Scope, props: Types.DataListProps): Instance
 
 	local heading = props.Heading
 	return scope:Frame({
-		Name = "DataList",
+		Name = "ListItemGroup",
 		BackgroundTransparency = 1,
 		Size = props.Size or UDim2.new(1, 0, 0, 0),
 		AutomaticSize = Enum.AutomaticSize.Y,

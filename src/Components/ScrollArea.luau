@@ -60,7 +60,7 @@ return function(scope: Types.Scope, props: Types.ScrollAreaProps): Instance
 	local listPad = if props.ListPadding ~= nil then props.ListPadding else theme.Metrics.SpaceLg
 	local useListLayout = contentLayout ~= "None"
 	-- Extra inset so UIStroke near full-bleed children isn't sheared by root clip.
-	local padInset = if useListLayout then contentPad + 2 else contentPad
+	local padInset = if useListLayout then contentPad + (props.ContentInset or 2) else contentPad
 
 	local idleColor = props.ScrollBarColor or theme.Colors.Outline
 	local railIdleColor = props.ScrollBarRailColor or theme.Colors.OutlineVariant

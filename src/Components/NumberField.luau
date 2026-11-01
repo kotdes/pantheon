@@ -94,7 +94,7 @@ return function(scope: Types.Scope, props: Types.NumberFieldProps): Instance
 		FontFace = theme.Fonts.Body,
 		TextSize = theme.Typography.Label.Size,
 		TextColor3 = if disabled then theme.Colors.OnSurfaceVariant else theme.Colors.OnSurface,
-		TextXAlignment = Enum.TextXAlignment.Left,
+		TextXAlignment = props.TextXAlignment or Enum.TextXAlignment.Left,
 		Text = scope:Computed(formatted),
 		LayoutOrder = 2,
 		Size = UDim2.fromOffset(0, 0),

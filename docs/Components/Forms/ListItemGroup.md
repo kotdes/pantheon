@@ -1,28 +1,28 @@
 ---
 tags:
-  - Data
+  - Forms
   - Components
 ---
 
-# DataList
+# ListItemGroup
 
-DataList is a group of rows on a card, with an optional heading. It puts a divider between the rows. The card is a [container](../../Theming/Corners.md#concentric-corners), so the rows round themselves to fit it.
+ListItemGroup is a group of rows on a card, with an optional heading. It puts a divider between the rows. The card is a [container](../../Theming/Corners.md#concentric-corners), so the rows round themselves to fit it.
 
-Use it with the data rows: [DataRow](./DataRow.md), `DataToggle`, `DataLink`, `DataSlider` and `DataSegmented`. A [ListItem](../Forms/ListItem.md) fits in it too. All of them have the same type, padding and states, so a settings page and a list of commands look alike.
+Use it with the [input rows](./Items.md). A [ListItem](./ListItem.md) fits in it too. All of them have the same type, padding and states, so a settings page and a list of commands look alike.
 
 ## Usage
 
 ```luau
-scope:DataList({
+scope:ListItemGroup({
 	Heading = "Sounds",
 	Children = {
-		scope:DataToggle({
+		scope:ItemSwitch({
 			Icon = "bell",
 			Title = "Notification sounds",
-			Summary = "Play a sound when a message appears.",
+			Subtitle = "Play a sound when a message appears.",
 			Value = notices,
 		}),
-		scope:DataSlider({ Title = "Volume", Value = volume }),
+		scope:ItemSlider({ Title = "Volume", Value = volume }),
 	},
 })
 ```
@@ -37,10 +37,10 @@ scope:DataList({
 | `Visible` | `UsedAs<boolean>` | :x: | `true` | Whether the component is shown. |
 | `ZIndex` | `UsedAs<number>` | :x: | - | Z index of the component. |
 | `Heading` | `UsedAs<string>` | :x: | - | Name of the group, over the card. It is hidden while it is empty. |
-| `Children` | `{ Instance }` | :x: | - | The rows. DataList sets their `LayoutOrder`. |
+| `Children` | `{ Instance }` | :x: | - | The rows. ListItemGroup sets their `LayoutOrder`. |
 | `CornerRadius` | `number` | :x: | `RadiusMd` | Radius of the card in pixels. |
 
 ## See also
 
-- [DataRow](./DataRow.md)
-- [ListItem](../Forms/ListItem.md)
+- [Items](./Items.md)
+- [ListItem](./ListItem.md)

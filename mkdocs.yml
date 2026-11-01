@@ -117,6 +117,8 @@ nav:
         - Components/Forms/ChoiceGroup.md
         - Components/Forms/Combobox.md
         - Components/Forms/Form.md
+        - Components/Forms/ListItemGroup.md
+        - Components/Forms/Items.md
         - Components/Forms/ListItem.md
         - Components/Forms/MultiSelect.md
         - Components/Forms/NumberField.md
@@ -126,14 +128,10 @@ nav:
         - Components/Forms/RangeSlider.md
         - Components/Forms/SegmentedControl.md
         - Components/Forms/Select.md
-        - Components/Forms/SettingsList.md
         - Components/Forms/Slider.md
         - Components/Forms/StarRating.md
         - Components/Forms/Switch.md
         - Components/Forms/TextField.md
-    - Data:
-        - Components/Data/DataList.md
-        - Components/Data/DataRow.md
     - Feedback:
         - Components/Feedback/Alert.md
         - Components/Feedback/EmptyState.md

@@ -179,47 +179,42 @@ local function startWith(blueprint: any): () -> ()
 				scope:Chip({ Text = "Chip", Selected = true, LayoutOrder = 7 }),
 			})
 			appendSection(scope, sections, "Cadence controls", 7, {
-				scope:SettingsList({
+				scope:ListItemGroup({
 					LayoutOrder = 1,
-					Header = "Account",
-					Items = {
-						{
+					Heading = "Account",
+					Children = {
+						scope:ListItem({
 							Title = "Profile",
 							Subtitle = "Name, email, avatar",
 							Icon = "user",
+							Chevron = true,
 							OnClick = function() end,
-						},
-						{
+						}),
+						scope:ListItem({
 							Title = "Notifications",
 							Subtitle = "Push & email",
 							Icon = "bell",
+							Chevron = true,
 							OnClick = function() end,
-						},
-						{
+						}),
+						scope:ItemSwitch({
 							Title = "Animate theme",
 							Subtitle = "Use Theme.createAnimated in apps",
 							Icon = "sparkles",
-							Trailing = scope:Switch({
-								Checked = peek(animateTheme),
-								OnChanged = function(on)
-									animateTheme:set(on)
-								end,
-							}),
-							ShowChevron = false,
-						},
-						{
+							Value = animateTheme,
+						}),
+						scope:ItemSwitch({
 							Title = "Dark mode",
 							Subtitle = "Appearance",
 							Icon = "moon",
-							Trailing = scope:Switch({
-								Checked = peek(mode) == "Dark",
-								OnChanged = function(on)
-									mode:set(if on then "Dark" else "Light")
-								end,
-							}),
-							ShowChevron = false,
-						},
-					} :: { any },
+							Value = scope:Computed(function(use)
+								return use(mode) == "Dark"
+							end),
+							OnChanged = function(on: boolean)
+								mode:set(if on then "Dark" else "Light")
+							end,
+						}),
+					},
 				}),
 				scope:SegmentedControl({
 					LayoutOrder = 2,
